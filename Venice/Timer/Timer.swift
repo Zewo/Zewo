@@ -1,4 +1,4 @@
-// Epoch.swift
+// Timer.swift
 //
 // The MIT License (MIT)
 //
@@ -21,3 +21,30 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+public final class Timer {
+    private var internalChannel = Channel<Void>()
+    private var stopped: Bool = false
+
+    public var channel: SendingChannel<Void> {
+        return internalChannel.sendingChannel
+    }
+
+    public init(deadline: Deadline) {
+        co {
+            wakeUp(deadline)
+            if !self.stopped {
+                self.stopped = true
+                self.internalChannel <- Void()
+            }
+        }
+    }
+
+    public func stop() -> Bool {
+        if !stopped {
+            self.stopped = true
+            return true
+        }
+        return false
+    }
+}

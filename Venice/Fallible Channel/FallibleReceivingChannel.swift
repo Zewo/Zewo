@@ -1,4 +1,4 @@
-// Epoch.swift
+// FallibleReceivingChannel.swift
 //
 // The MIT License (MIT)
 //
@@ -21,3 +21,35 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+public final class FallibleReceivingChannel<T> : FallibleReceivable {
+    private let channel: FallibleChannel<T>
+    
+    init(_ channel: FallibleChannel<T>) {
+        self.channel = channel
+    }
+
+    public func receiveResult(result: ChannelResult<T>) {
+        return channel.receiveResult(result)
+    }
+    
+    public func receive(value: T) {
+        return channel.receive(value)
+    }
+
+    func receive(value: T, clause: UnsafeMutablePointer<Void>, index: Int) {
+        return channel.receive(value, clause: clause, index: index)
+    }
+    
+    public func receiveError(error: ErrorType) {
+        return channel.receiveError(error)
+    }
+
+    func receive(error: ErrorType, clause: UnsafeMutablePointer<Void>, index: Int) {
+        return channel.receive(error, clause: clause, index: index)
+    }
+    
+    var closed: Bool {
+        return channel.closed
+    }
+}

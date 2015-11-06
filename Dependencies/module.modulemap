@@ -1,0 +1,9 @@
+module libmill [system] {
+    header "libmill/libmill_swift.h"
+    export *
+}
+
+module Incandescence [system] {
+    header "Incandescence/incandescence_swift.h"
+    export *
+}

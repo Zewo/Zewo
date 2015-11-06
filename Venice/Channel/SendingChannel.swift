@@ -1,4 +1,4 @@
-// Epoch.swift
+// SendingChannel.swift
 //
 // The MIT License (MIT)
 //
@@ -21,3 +21,31 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+public final class SendingChannel<T> : Sendable, SequenceType {
+    private let channel: Channel<T>
+    
+    init(_ channel: Channel<T>) {
+        self.channel = channel
+    }
+    
+    public func send() -> T? {
+        return channel.send()
+    }
+    
+    public func generate() -> ChannelGenerator<T> {
+        return ChannelGenerator(channel: self)
+    }
+    
+    public func close() {
+        channel.close()
+    }
+    
+    public func registerSend(clause: UnsafeMutablePointer<Void>, index: Int) {
+        return channel.registerSend(clause, index: index)
+    }
+    
+    func getValueFromBuffer() -> T? {
+        return channel.getValueFromBuffer()
+    }
+}

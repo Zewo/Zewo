@@ -1,4 +1,4 @@
-// Epoch.swift
+// HTTPParser.swift
 //
 // The MIT License (MIT)
 //
@@ -21,3 +21,24 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+struct HTTPParser : RequestParserType {
+    func parseRequest(client: StreamType, completion: Result<HTTPRequest> -> Void) {
+        let parser = HTTPRequestParser { request in
+            completion(Result(request))
+        }
+
+        client.receive { result in
+            result.success { data in
+                do {
+                    try parser.parse(data)
+                } catch {
+                    completion(Result(error))
+                }
+            }
+            result.failure { error in
+                completion(Result(error))
+            }
+        }
+    }
+}

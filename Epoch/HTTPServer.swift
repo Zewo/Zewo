@@ -1,4 +1,4 @@
-// Epoch.swift
+// HTTPServer.swift
 //
 // The MIT License (MIT)
 //
@@ -21,3 +21,20 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+struct HTTPServer : RequestResponseServer {
+    var server: ServerType
+    var parser = HTTPParser()
+    var serializer = HTTPSerializer()
+
+    private let respondRequest: (request: HTTPRequest, completion: HTTPResponse -> Void) -> Void
+
+    init(port: Int, respond: (request: HTTPRequest, completion: HTTPResponse -> Void) -> Void) {
+        self.server = TCPServer(port: port)
+        self.respondRequest = respond
+    }
+
+    func respond(request: HTTPRequest, completion: HTTPResponse -> Void) {
+        respondRequest(request: request, completion: completion)
+    }
+}

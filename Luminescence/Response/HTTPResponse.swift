@@ -1,4 +1,4 @@
-// Epoch.swift
+// HTTPResponse.swift
 //
 // The MIT License (MIT)
 //
@@ -21,3 +21,12 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+public struct HTTPResponse {
+    public let statusCode: Int
+    public let reasonPhrase: String
+    public let majorVersion: Int
+    public let minorVersion: Int
+    public let headers: [String: String]
+    public let body: [Int8]
+}

@@ -1,4 +1,4 @@
-// Epoch.swift
+// incandescence_swift.h
 //
 // The MIT License (MIT)
 //
@@ -21,3 +21,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+#ifndef http_parser_swift_h
+#define http_parser_swift_h
+
+#include "http_parser.h"
+
+struct parsed_uri {
+    const char *scheme;
+    const char *user_info;
+    const char *host;
+    const unsigned short *port;
+    const char *path;
+    const char *query;
+    const char *fragment;
+};
+
+struct parsed_uri parse_uri(const char *uri_string);
+void free_parsed_uri(struct parsed_uri uri);
+
+#endif /* http_parser_swift_h */

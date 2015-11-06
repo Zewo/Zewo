@@ -1,4 +1,4 @@
-// Epoch.swift
+// FallibleSendable.swift
 //
 // The MIT License (MIT)
 //
@@ -21,3 +21,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+public protocol FallibleSendable {
+    typealias T
+    func send() throws -> T?
+}
+
+public prefix func <-<R: FallibleSendable>(channel: R) throws -> R.T? {
+    return try channel.send()
+}
+
+public prefix func !<-<R: FallibleSendable>(channel: R) throws -> R.T! {
+    return try channel.send()!
+}

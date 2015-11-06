@@ -1,4 +1,4 @@
-// Epoch.swift
+// Poller.swift
 //
 // The MIT License (MIT)
 //
@@ -21,3 +21,35 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+import libmill
+
+public struct PollEvent : OptionSetType {
+    public let rawValue: Int
+
+    public init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+
+    public static let Read  = PollEvent(rawValue: Int(FDW_IN))
+    public static let Write = PollEvent(rawValue: Int(FDW_OUT))
+}
+
+public struct PollResult : OptionSetType {
+    public let rawValue: Int
+
+    public init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+
+    public static let Timeout = PollResult(rawValue: 0)
+    public static let Read    = PollResult(rawValue: Int(FDW_IN))
+    public static let Write   = PollResult(rawValue: Int(FDW_OUT))
+    public static let Error   = PollResult(rawValue: Int(FDW_ERR))
+}
+
+/// Polls file descriptor for events
+public func pollFileDescriptor(fileDescriptor: Int32, events: PollEvent, deadline: Deadline = NoDeadline) -> PollResult {
+    let event = mill_fdwait(fileDescriptor, Int32(events.rawValue), deadline)
+    return PollResult(rawValue: Int(event))
+}

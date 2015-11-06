@@ -1,4 +1,4 @@
-// Epoch.swift
+// FallibleSendingChannel.swift
 //
 // The MIT License (MIT)
 //
@@ -21,3 +21,36 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+public final class FallibleSendingChannel<T> : FallibleSendable, SequenceType {
+    private let channel: FallibleChannel<T>
+    
+    init(_ channel: FallibleChannel<T>) {
+        self.channel = channel
+    }
+    
+    public func send() throws -> T? {
+        return try channel.send()
+    }
+
+    public func sendResult() -> ChannelResult<T>? {
+        return channel.sendResult()
+    }
+    
+    public func generate() -> FallibleChannelGenerator<T> {
+        return FallibleChannelGenerator(channel: self)
+    }
+    
+    public func close() {
+        channel.close()
+    }
+
+    func registerSend(clause: UnsafeMutablePointer<Void>, index: Int) {
+        return channel.registerSend(clause, index: index)
+    }
+
+    func getResultFromBuffer() -> ChannelResult<T>? {
+        return channel.getResultFromBuffer()
+    }
+
+}

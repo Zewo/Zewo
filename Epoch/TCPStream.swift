@@ -1,4 +1,4 @@
-// Epoch.swift
+// TCPStream.swift
 //
 // The MIT License (MIT)
 //
@@ -21,3 +21,40 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+final class TCPStream : StreamType {
+    let socket: TCPClientSocket
+
+    init(socket: TCPClientSocket) {
+        self.socket = socket
+    }
+
+    func receive(completion: Result<[Int8]> -> Void) {
+        do {
+            try socket.receive(bufferSize: 1) { data in
+                completion(Result(data))
+            }
+        } catch TCPError.ConnectionResetByPeer(_, let data) {
+            completion(Result(data))
+            close()
+        } catch {
+            completion(Result(error))
+        }
+    }
+
+    func send(data: [Int8], completion: Result<Void> -> Void) {
+        do {
+            try socket.send(data)
+            completion(Result())
+        } catch TCPError.ConnectionResetByPeer {
+            completion(Result())
+            close()
+        } catch {
+            completion(Result(error))
+        }
+    }
+
+    func close() {
+        socket.close()
+    }
+}

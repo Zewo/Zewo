@@ -1,4 +1,4 @@
-// Epoch.swift
+// HTTPRequest.swift
 //
 // The MIT License (MIT)
 //
@@ -21,3 +21,13 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+public struct HTTPRequest {
+    public let method: HTTPMethod
+    public let uri: URI
+    public let majorVersion: Int
+    public let minorVersion: Int
+    public let headers: [String: String]
+    public let body: [Int8]
+    public let keepAlive: Bool
+}

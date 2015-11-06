@@ -1,4 +1,4 @@
-// Epoch.swift
+// RequestParserType.swift
 //
 // The MIT License (MIT)
 //
@@ -21,3 +21,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+protocol RequestParserType {
+    typealias Request
+    func parseRequest(client: StreamType, completion: Result<Request> -> Void)
+}

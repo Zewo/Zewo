@@ -1,4 +1,4 @@
-// Epoch.swift
+// FallibleReceivable.swift
 //
 // The MIT License (MIT)
 //
@@ -21,3 +21,22 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+public protocol FallibleReceivable {
+    typealias T
+    func receive(value: T)
+    func receiveError(error: ErrorType)
+    func receiveResult(result: ChannelResult<T>)
+}
+
+public func <-<W: FallibleReceivable>(channel: W, result: ChannelResult<W.T>) {
+    channel.receiveResult(result)
+}
+
+public func <-<W: FallibleReceivable>(channel: W, value: W.T) {
+    channel.receive(value)
+}
+
+public func <-<W: FallibleReceivable>(channel: W, error: ErrorType) {
+    channel.receiveError(error)
+}

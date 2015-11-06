@@ -1,4 +1,4 @@
-// Epoch.swift
+// Ticker.swift
 //
 // The MIT License (MIT)
 //
@@ -21,3 +21,27 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+public final class Ticker {
+    private let internalChannel = Channel<Int64>()
+    private var stopped: Bool = false
+
+    public var channel: SendingChannel<Int64> {
+        return internalChannel.sendingChannel
+    }
+
+    public init(period: Int64) {
+        co {
+            while true {
+                nap(period)
+                if self.stopped { break }
+                self.internalChannel <- now
+            }
+        }
+    }
+
+    public func stop() {
+        self.stopped = true
+    }
+    
+}

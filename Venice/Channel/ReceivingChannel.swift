@@ -1,4 +1,4 @@
-// Epoch.swift
+// ReceivingChannel.swift
 //
 // The MIT License (MIT)
 //
@@ -21,3 +21,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+public final class ReceivingChannel<T> : Receivable {
+    private let channel: Channel<T>
+    
+    init(_ channel: Channel<T>) {
+        self.channel = channel
+    }
+    
+    public func receive(value: T) {
+        return channel.receive(value)
+    }
+    
+    func receive(value: T, clause: UnsafeMutablePointer<Void>, index: Int) {
+        return channel.receive(value, clause: clause, index: index)
+    }
+
+    var closed: Bool {
+        return channel.closed
+    }
+}

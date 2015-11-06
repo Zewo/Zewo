@@ -1,4 +1,4 @@
-// Epoch.swift
+// Receivable.swift
 //
 // The MIT License (MIT)
 //
@@ -21,3 +21,12 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+public protocol Receivable {
+    typealias T
+    func receive(value: T)
+}
+
+public func <-<R: Receivable>(receiver: R, value: R.T) {
+    receiver.receive(value)
+}

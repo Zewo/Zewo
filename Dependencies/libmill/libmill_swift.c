@@ -1,4 +1,4 @@
-// Epoch.swift
+// libmill_swift.c
 //
 // The MIT License (MIT)
 //
@@ -21,3 +21,25 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+#include "libmill_swift.h"
+
+void co(void (^routine)(void)) {
+    void *mill_sp = mill_go_prologue();
+    if(mill_sp) {
+        int mill_anchor[mill_unoptimisable1];
+        mill_unoptimisable2 = &mill_anchor;
+        char mill_filler[(char*)&mill_anchor - (char*)(mill_sp)];
+        mill_unoptimisable2 = &mill_filler;
+        routine();
+        mill_go_epilogue();
+    }
+}
+
+size_t mill_clauselen() {
+    return MILL_CLAUSELEN;
+}
+
+pid_t mill_fork() {
+    return fork();
+}

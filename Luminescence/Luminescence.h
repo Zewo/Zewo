@@ -1,4 +1,4 @@
-// Epoch.swift
+// Luminescence.h
 //
 // The MIT License (MIT)
 //

@@ -1,4 +1,4 @@
-// Epoch.swift
+// HTTPSerializer.swift
 //
 // The MIT License (MIT)
 //
@@ -21,3 +21,20 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+struct HTTPSerializer : ResponseSerializerType {
+    func serializeResponse(client: StreamType, response: HTTPResponse, completion: Result<Void> -> Void) {
+        var string = "HTTP/\(response.majorVersion).\(response.minorVersion) \(response.statusCode) \(response.reasonPhrase)\r\n"
+
+        for (name, value) in response.headers {
+            string += "\(name): \(value)\r\n"
+        }
+
+        string += "\r\n"
+
+        var data = string.utf8.map { Int8($0) }
+        data += response.body
+
+        client.send(data, completion: completion)
+    }
+}
