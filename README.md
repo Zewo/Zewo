@@ -10,7 +10,7 @@ Epoch
 
 ## Features
 
-- [x] No `Foundation` depency (**Linux ready**)
+- [x] No `Foundation` dependency (**Linux ready**)
 - [x] Completely Asynchronous
 
 ## Dependencies
