@@ -82,6 +82,8 @@ Percentage of the requests served within a certain time (ms)
  100%    130 (longest request)
 ```
 
+To make this results have any meaning you should create, for example, a node.js server that responds with 200 OK and compare it with **Epoch**.
+
 ## Installation
 
 ### Carthage
