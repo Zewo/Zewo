@@ -23,21 +23,23 @@ Epoch
 ## Usage
 
 ```swift
-func respond(request: HTTPRequest, completion: HTTPResponse -> Void) {
-	// do something based on HTTPRequest
-    completion(
-        HTTPResponse(
-            statusCode: 200,
-            reasonPhrase: "OK",
-            majorVersion: 1,
-            minorVersion: 1,
-            headers: [:],
-            body: []
+struct HTTPServerResponder : HTTPResponder {
+    func respond(request: HTTPRequest, completion: HTTPResponse -> Void) {
+        completion(
+            HTTPResponse(
+                statusCode: 200,
+                reasonPhrase: "OK",
+                majorVersion: 1,
+                minorVersion: 1,
+                headers: [:],
+                body: []
+            )
         )
-    )
+    }
 }
 
-let server = HTTPServer(port: 8080, respond: respond)
+let responder = HTTPServerResponder()
+let server = HTTPServer(port: 8080, responder: responder)
 server.start()
 ```
 
