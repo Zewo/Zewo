@@ -22,19 +22,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPServer : RequestResponseServer {
-    var server: ServerType
-    var parser = HTTPParser()
-    var serializer = HTTPSerializer()
+public protocol HTTPResponder : ResponderType {
+    typealias Request = HTTPRequest
+    typealias Response = HTTPResponse
 
-    private let respondRequest: (request: HTTPRequest, completion: HTTPResponse -> Void) -> Void
+    func respond(request: HTTPRequest, completion: HTTPResponse -> Void)
+}
 
-    init(port: Int, respond: (request: HTTPRequest, completion: HTTPResponse -> Void) -> Void) {
-        self.server = TCPServer(port: port)
-        self.respondRequest = respond
+public struct HTTPServer<Responder: HTTPResponder where Responder.Request == HTTPRequest, Responder.Response == HTTPResponse> {
+    let server: RequestResponseServer<HTTPParser, Responder, HTTPSerializer>
+
+    public init(port: Int, responder: Responder) {
+        self.server = RequestResponseServer(
+            server: TCPServer(port: port),
+            parser: HTTPParser(),
+            responder: responder,
+            serializer: HTTPSerializer()
+        )
     }
 
-    func respond(request: HTTPRequest, completion: HTTPResponse -> Void) {
-        respondRequest(request: request, completion: completion)
+    public func start(failure: ErrorType -> Void = HTTPServer<Responder>.defaultFailureHandler) {
+        server.start(failure: failure)
+    }
+    
+    public func stop() {
+        server.stop()
+    }
+
+    private static func defaultFailureHandler(error: ErrorType) -> Void {
+        print("Error: \(error)")
     }
 }

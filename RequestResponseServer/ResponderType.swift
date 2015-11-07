@@ -1,4 +1,4 @@
-// Result.swift
+// ResponderType.swift
 //
 // The MIT License (MIT)
 //
@@ -22,29 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-enum Result<T> {
-    case Success(T)
-    case Failure(ErrorType)
-
-    init(_ v: T) {
-        self = Success(v)
-    }
-
-    init(_ e: ErrorType) {
-        self = Failure(e)
-    }
-
-    func success(f: T -> Void) {
-        switch self {
-        case Success(let v): f(v)
-        default: break
-        }
-    }
-
-    func failure(f: ErrorType -> Void) {
-        switch self {
-        case Failure(let e): f(e)
-        default: break
-        }
-    }
+public protocol ResponderType {
+    typealias Request
+    typealias Response
+    
+    func respond(request: Request, completion: Response -> Void)
 }

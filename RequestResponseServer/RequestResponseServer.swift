@@ -22,24 +22,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol RequestResponseServer {
-    typealias Parser: RequestParserType
-    typealias Serializer: ResponseSerializerType
-
-    var server: ServerType { get }
-    var parser: Parser { get }
-    var serializer: Serializer { get }
-
-    func respond(request: Parser.Request, completion: Serializer.Response -> Void) 
-}
-
-extension RequestResponseServer {
-    func start(failure: ErrorType -> Void = Self.defaultFailureHandler) {
+struct RequestResponseServer<Parser: RequestParserType, Responder: ResponderType, Serializer: ResponseSerializerType where Parser.Request == Responder.Request, Serializer.Response == Responder.Response> {
+    let server: ServerType
+    let parser: Parser
+    let responder: Responder
+    let serializer: Serializer
+    
+    func start(failure failure: ErrorType -> Void) {
         server.acceptClient { acceptResult in
             acceptResult.success { client in
                 self.parser.parseRequest(client) { parseResult in
                     parseResult.success { request in
-                        self.respond(request) { response in
+                        self.responder.respond(request) { response in
                             self.serializer.serializeResponse(client, response: response) { serializeResult in
                                 serializeResult.success {
                                     if !self.keepAlive(request) {
@@ -67,11 +61,7 @@ extension RequestResponseServer {
         server.stop()
     }
     
-    private func keepAlive(request: Self.Parser.Request) -> Bool {
+    private func keepAlive(request: Responder.Request) -> Bool {
         return (request as? KeepAliveType)?.shouldKeepAlive ?? false
-    }
-
-    private static func defaultFailureHandler(error: ErrorType) {
-        print("Error: \(error)")
     }
 }
