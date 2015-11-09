@@ -25,6 +25,9 @@ Epoch
 ```swift
 struct HTTPServerResponder : HTTPResponder {
     func respond(request: HTTPRequest, completion: HTTPResponse -> Void) {
+            
+        // do something based on the HTTPRequest
+        
         completion(
             HTTPResponse(
                 statusCode: 200,
