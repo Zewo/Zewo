@@ -390,6 +390,98 @@ size_t tcprecv(tcpsock s, void *buf, size_t len, int64_t deadline) {
     }
 }
 
+size_t tcprecvlh(tcpsock s, void *buf, size_t lowwater, size_t highwater, int64_t deadline) {
+    if(s->type != MILL_TCPCONN)
+        mill_panic("trying to receive from an unconnected socket");
+    struct mill_tcpconn *conn = (struct mill_tcpconn*)s;
+    /* The buffer is between lowwater and highwater. */
+    if(conn->ilen >= lowwater && conn->ilen <= highwater) {
+        memcpy(buf, &conn->ibuf[conn->ifirst], conn->ilen);
+        conn->ifirst = 0;
+        conn->ilen = 0;
+        errno = 0;
+        return conn->ilen;
+    }
+
+    /* The buffer is above the highwater. */
+    if(conn->ilen >= highwater) {
+        memcpy(buf, &conn->ibuf[conn->ifirst], highwater);
+        conn->ifirst += highwater;
+        conn->ilen -= highwater;
+        errno = 0;
+        return highwater;
+    }
+
+    /* The buffer is below the lowwater. */
+    /* Let's move all the data from the buffer first. */
+    char *pos = (char*)buf;
+    size_t remaining = highwater;
+    memcpy(pos, &conn->ibuf[conn->ifirst], conn->ilen);
+    pos += conn->ilen;
+    remaining -= conn->ilen;
+    conn->ifirst = 0;
+    conn->ilen = 0;
+
+    mill_assert(remaining);
+    while(1) {
+        if(remaining > MILL_TCP_BUFLEN) {
+            /* If we still have a lot to read try to read it in one go directly
+             into the destination buffer. */
+            ssize_t sz = recv(conn->fd, pos, remaining, 0);
+            if(!sz) {
+                errno = ECONNRESET;
+                return highwater - remaining;
+            }
+            if(sz == -1) {
+                if(errno != EAGAIN && errno != EWOULDBLOCK)
+                    return highwater - remaining;
+                sz = 0;
+            }
+            if(highwater - remaining + (size_t)sz >= lowwater) {
+                errno = 0;
+                return highwater - remaining + (size_t)sz;
+            }
+            pos += sz;
+            remaining -= sz;
+        }
+        else {
+            /* If we have just a little to read try to read the full connection
+             buffer to minimise the number of system calls. */
+            ssize_t sz = recv(conn->fd, conn->ibuf, MILL_TCP_BUFLEN, 0);
+            if(!sz) {
+                errno = ECONNRESET;
+                return highwater - remaining;
+            }
+            if(sz == -1) {
+                if(errno != EAGAIN && errno != EWOULDBLOCK)
+                    return highwater - remaining;
+                sz = 0;
+            }
+            if(highwater - remaining + (size_t)sz < lowwater) {
+                memcpy(pos, conn->ibuf, sz);
+                pos += sz;
+                remaining -= sz;
+                conn->ifirst = 0;
+                conn->ilen = 0;
+            }
+            else {
+                memcpy(pos, conn->ibuf, remaining);
+                conn->ifirst = remaining;
+                conn->ilen = sz - remaining;
+                errno = 0;
+                return highwater - remaining + (size_t)sz;
+            }
+        }
+
+        /* Wait till there's more data to read. */
+        int res = mill_fdwait(conn->fd, FDW_IN, deadline);
+        if(!res) {
+            errno = ETIMEDOUT;
+            return highwater - remaining;
+        }
+    }
+}
+
 size_t tcprecvuntil(tcpsock s, void *buf, size_t len,
       const char *delims, size_t delimcount, int64_t deadline) {
     if(s->type != MILL_TCPCONN)

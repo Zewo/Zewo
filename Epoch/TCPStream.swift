@@ -31,7 +31,7 @@ final class TCPStream : StreamType {
 
     func receive(completion: Result<[Int8]> -> Void) {
         do {
-            try socket.receive(bufferSize: 1) { data in
+            try socket.receive(lowWaterMark: 1) { data in
                 completion(Result(data))
             }
         } catch TCPError.ConnectionResetByPeer(_, let data) {

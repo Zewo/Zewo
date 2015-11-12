@@ -131,6 +131,7 @@ MILL_EXPORT tcpsock tcpconnect(ipaddr addr, int64_t deadline);
 MILL_EXPORT size_t tcpsend(tcpsock s, const void *buf, size_t len, int64_t deadline);
 MILL_EXPORT void tcpflush(tcpsock s, int64_t deadline);
 MILL_EXPORT size_t tcprecv(tcpsock s, void *buf, size_t len, int64_t deadline);
+MILL_EXPORT size_t tcprecvlh(tcpsock s, void *buf, size_t lowwater, size_t highwater, int64_t deadline);
 MILL_EXPORT size_t tcprecvuntil(tcpsock s, void *buf, size_t len, const char *delims, size_t delimcount, int64_t deadline);
 MILL_EXPORT void tcpclose(tcpsock s);
 MILL_EXPORT tcpsock tcpattach(int fd, int listening);

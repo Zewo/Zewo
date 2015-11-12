@@ -93,6 +93,21 @@ public final class TCPClientSocket {
         return processedDataFromSource(data, bytesProcessed: bytesProcessed)
     }
 
+    public func receiveLowWaterMark(lowWaterMark: Int = 256, highWaterMark: Int = 256, deadline: Deadline = NoDeadline) throws -> [Int8] {
+        if closed {
+            throw TCPError.Generic(description: "Closed socket")
+        }
+
+        var data: [Int8] = [Int8](count: highWaterMark, repeatedValue: 0)
+        let bytesProcessed = tcprecvlh(socket, &data, lowWaterMark, highWaterMark, deadline)
+
+        if errno != 0 {
+            throw TCPError.lastErrorWithData(data, bytesProcessed: bytesProcessed)
+        }
+
+        return processedDataFromSource(data, bytesProcessed: bytesProcessed)
+    }
+
     public func receive(bufferSize bufferSize: Int = 256, untilDelimiter delimiter: String, deadline: Deadline = NoDeadline) throws -> [Int8] {
         if closed {
             throw TCPError.Generic(description: "Closed socket")
@@ -165,12 +180,12 @@ extension TCPClientSocket {
         return String.fromCString(response)
     }
 
-    public func receive(bufferSize bufferSize: Int = 256, received: [Int8] -> Void) throws {
+    public func receive(lowWaterMark lowWaterMark: Int = 256, highWaterMark: Int = 256, received: [Int8] -> Void) throws {
         var sequentialErrorsCount = 0
 
         while !closed {
             do {
-                let data = try receive(bufferSize: bufferSize)
+                let data = try receiveLowWaterMark(lowWaterMark, highWaterMark: highWaterMark)
                 sequentialErrorsCount = 0
                 co(received(data))
             } catch {
