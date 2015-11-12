@@ -158,6 +158,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3A0E03741BF4A64200B15C63 /* Epoch.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Epoch.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B00511C51BEC3497001B3F26 /* Epoch.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Epoch.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B00511C81BEC3497001B3F26 /* Epoch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Epoch.h; sourceTree = "<group>"; };
 		B00511CA1BEC3497001B3F26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -240,6 +241,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3A0E03701BF4A64200B15C63 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B00511C11BEC3497001B3F26 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -285,6 +293,7 @@
 				B00511C51BEC3497001B3F26 /* Epoch.framework */,
 				B00511CF1BEC3497001B3F26 /* EpochTests.xctest */,
 				B00512891BEC3B73001B3F26 /* Epoch Command Line Application */,
+				3A0E03741BF4A64200B15C63 /* Epoch.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -553,6 +562,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		3A0E03711BF4A64200B15C63 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B00511C21BEC3497001B3F26 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -578,9 +594,27 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		B00511C41BEC3497001B3F26 /* Epoch */ = {
+		3A0E03731BF4A64200B15C63 /* Epoch iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B00511D91BEC3497001B3F26 /* Build configuration list for PBXNativeTarget "Epoch" */;
+			buildConfigurationList = 3A0E03791BF4A64200B15C63 /* Build configuration list for PBXNativeTarget "Epoch iOS" */;
+			buildPhases = (
+				3A0E036F1BF4A64200B15C63 /* Sources */,
+				3A0E03701BF4A64200B15C63 /* Frameworks */,
+				3A0E03711BF4A64200B15C63 /* Headers */,
+				3A0E03721BF4A64200B15C63 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Epoch iOS";
+			productName = "Epoch iOS";
+			productReference = 3A0E03741BF4A64200B15C63 /* Epoch.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		B00511C41BEC3497001B3F26 /* Epoch OSX */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B00511D91BEC3497001B3F26 /* Build configuration list for PBXNativeTarget "Epoch OSX" */;
 			buildPhases = (
 				B00511C01BEC3497001B3F26 /* Sources */,
 				B00511C11BEC3497001B3F26 /* Frameworks */,
@@ -591,7 +625,7 @@
 			);
 			dependencies = (
 			);
-			name = Epoch;
+			name = "Epoch OSX";
 			productName = Epoch;
 			productReference = B00511C51BEC3497001B3F26 /* Epoch.framework */;
 			productType = "com.apple.product-type.framework";
@@ -641,6 +675,9 @@
 				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = Zewo;
 				TargetAttributes = {
+					3A0E03731BF4A64200B15C63 = {
+						CreatedOnToolsVersion = 7.1;
+					};
 					B00511C41BEC3497001B3F26 = {
 						CreatedOnToolsVersion = 7.1;
 					};
@@ -664,7 +701,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B00511C41BEC3497001B3F26 /* Epoch */,
+				B00511C41BEC3497001B3F26 /* Epoch OSX */,
+				3A0E03731BF4A64200B15C63 /* Epoch iOS */,
 				B00511CE1BEC3497001B3F26 /* EpochTests */,
 				B00512881BEC3B73001B3F26 /* Epoch Command Line Application */,
 			);
@@ -672,6 +710,13 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		3A0E03721BF4A64200B15C63 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B00511C31BEC3497001B3F26 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -689,6 +734,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3A0E036F1BF4A64200B15C63 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B00511C01BEC3497001B3F26 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -825,12 +877,53 @@
 /* Begin PBXTargetDependency section */
 		B00511D21BEC3497001B3F26 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B00511C41BEC3497001B3F26 /* Epoch */;
+			target = B00511C41BEC3497001B3F26 /* Epoch OSX */;
 			targetProxy = B00511D11BEC3497001B3F26 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		3A0E037A1BF4A64200B15C63 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = Epoch/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.zewo.EpochiOS;
+				PRODUCT_NAME = Epoch;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3A0E037B1BF4A64200B15C63 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = Epoch/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.zewo.EpochiOS;
+				PRODUCT_NAME = Epoch;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		B00511D71BEC3497001B3F26 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -929,8 +1022,9 @@
 				INFOPLIST_FILE = Epoch/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.zewo.Epoch;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zewo.EpochOSX;
+				PRODUCT_NAME = Epoch;
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/Dependencies";
 			};
@@ -948,8 +1042,9 @@
 				INFOPLIST_FILE = Epoch/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.zewo.Epoch;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zewo.EpochOSX;
+				PRODUCT_NAME = Epoch;
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/Dependencies";
 			};
@@ -997,6 +1092,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3A0E03791BF4A64200B15C63 /* Build configuration list for PBXNativeTarget "Epoch iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3A0E037A1BF4A64200B15C63 /* Debug */,
+				3A0E037B1BF4A64200B15C63 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		B00511BF1BEC3497001B3F26 /* Build configuration list for PBXProject "Epoch" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1006,7 +1109,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B00511D91BEC3497001B3F26 /* Build configuration list for PBXNativeTarget "Epoch" */ = {
+		B00511D91BEC3497001B3F26 /* Build configuration list for PBXNativeTarget "Epoch OSX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B00511DA1BEC3497001B3F26 /* Debug */,
