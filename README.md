@@ -3,10 +3,11 @@ Epoch
 
 [![Swift 2.1](https://img.shields.io/badge/Swift-2.1-orange.svg?style=flat)](https://developer.apple.com/swift/)
 [![Platforms OS X | iOS](https://img.shields.io/badge/Platforms-OS%20X%20%7C%20iOS-lightgray.svg?style=flat)](https://developer.apple.com/swift/)
+[![Cocoapods Compatible](https://img.shields.io/badge/Cocoapods-Compatible-4BC51D.svg?style=flat)](https://cocoapods.org/pods/Epoch)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-Compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![License MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](https://github.com/Carthage/Carthage)
 
-**Epoch** is a Venice based HTTP server for **Swift 2**.
+**Epoch** is a Epoch based HTTP server for **Swift 2**.
 
 ## Features
 
@@ -17,7 +18,7 @@ Epoch
 
 **Epoch** is made of:
 
-- [Venice](https://github.com/Zewo/Currents) - CSP and TCP/IP
+- [Epoch](https://github.com/Zewo/Currents) - CSP and TCP/IP
 - [Luminescence](https://github.com/Zewo/Luminescence) - HTTP parser
 
 ## Usage
@@ -90,6 +91,31 @@ Percentage of the requests served within a certain time (ms)
 To make this results have any meaning you should create, for example, a node.js server that responds with 200 OK and compare it with **Epoch**.
 
 ## Installation
+
+### CocoaPods
+
+[CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects. You can install it with the following command:
+
+```bash
+$ gem install cocoapods
+```
+
+> CocoaPods 0.39.0+ is required to build Epoch.
+
+To integrate Epoch into your Xcode project using CocoaPods, specify it in your `Podfile`:
+
+```ruby
+source 'https://github.com/CocoaPods/Specs.git'
+use_frameworks!
+
+pod 'Epoch'
+```
+
+Then, run the following command:
+
+```bash
+$ pod install
+```
 
 ### Carthage
 
