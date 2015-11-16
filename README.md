@@ -18,7 +18,7 @@ Epoch
 
 **Epoch** is made of:
 
-- [Epoch](https://github.com/Zewo/Currents) - CSP and TCP/IP
+- [Venice](https://github.com/Zewo/Venice) - CSP and TCP/IP
 - [Luminescence](https://github.com/Zewo/Luminescence) - HTTP parser
 
 ## Usage
