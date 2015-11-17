@@ -397,10 +397,11 @@ size_t tcprecvlh(tcpsock s, void *buf, size_t lowwater, size_t highwater, int64_
     /* The buffer is between lowwater and highwater. */
     if(conn->ilen >= lowwater && conn->ilen <= highwater) {
         memcpy(buf, &conn->ibuf[conn->ifirst], conn->ilen);
+        size_t len = conn->ilen;
         conn->ifirst = 0;
         conn->ilen = 0;
         errno = 0;
-        return conn->ilen;
+        return len;
     }
 
     /* The buffer is above the highwater. */
@@ -416,9 +417,11 @@ size_t tcprecvlh(tcpsock s, void *buf, size_t lowwater, size_t highwater, int64_
     /* Let's move all the data from the buffer first. */
     char *pos = (char*)buf;
     size_t remaining = highwater;
+    size_t received = 0;
     memcpy(pos, &conn->ibuf[conn->ifirst], conn->ilen);
     pos += conn->ilen;
     remaining -= conn->ilen;
+    received += conn->ilen;
     conn->ifirst = 0;
     conn->ilen = 0;
 
@@ -430,19 +433,20 @@ size_t tcprecvlh(tcpsock s, void *buf, size_t lowwater, size_t highwater, int64_
             ssize_t sz = recv(conn->fd, pos, remaining, 0);
             if(!sz) {
                 errno = ECONNRESET;
-                return highwater - remaining;
+                return received;
             }
             if(sz == -1) {
                 if(errno != EAGAIN && errno != EWOULDBLOCK)
-                    return highwater - remaining;
+                    return received;
                 sz = 0;
             }
-            if(highwater - remaining + (size_t)sz >= lowwater) {
+            if(received + (size_t)sz >= lowwater) {
                 errno = 0;
-                return highwater - remaining + (size_t)sz;
+                return received + (size_t)sz;
             }
             pos += sz;
             remaining -= sz;
+            received += sz;
         }
         else {
             /* If we have just a little to read try to read the full connection
@@ -450,26 +454,34 @@ size_t tcprecvlh(tcpsock s, void *buf, size_t lowwater, size_t highwater, int64_
             ssize_t sz = recv(conn->fd, conn->ibuf, MILL_TCP_BUFLEN, 0);
             if(!sz) {
                 errno = ECONNRESET;
-                return highwater - remaining;
+                return received;
             }
             if(sz == -1) {
                 if(errno != EAGAIN && errno != EWOULDBLOCK)
-                    return highwater - remaining;
+                    return received;
                 sz = 0;
             }
-            if(highwater - remaining + (size_t)sz < lowwater) {
+            if(received + (size_t)sz < lowwater) {
                 memcpy(pos, conn->ibuf, sz);
                 pos += sz;
                 remaining -= sz;
+                received += sz;
                 conn->ifirst = 0;
                 conn->ilen = 0;
             }
-            else {
+            else if(received + (size_t)sz > highwater) {
                 memcpy(pos, conn->ibuf, remaining);
                 conn->ifirst = remaining;
                 conn->ilen = sz - remaining;
                 errno = 0;
-                return highwater - remaining + (size_t)sz;
+                return highwater;
+            }
+            else {
+                memcpy(pos, conn->ibuf, sz);
+                conn->ifirst = 0;
+                conn->ilen = 0;
+                errno = 0;
+                return received + (size_t)sz;
             }
         }
 
@@ -477,7 +489,7 @@ size_t tcprecvlh(tcpsock s, void *buf, size_t lowwater, size_t highwater, int64_
         int res = mill_fdwait(conn->fd, FDW_IN, deadline);
         if(!res) {
             errno = ETIMEDOUT;
-            return highwater - remaining;
+            return received;
         }
     }
 }

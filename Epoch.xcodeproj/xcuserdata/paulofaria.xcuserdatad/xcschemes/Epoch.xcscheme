@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B00511C41BEC3497001B3F26"
                BuildableName = "Epoch.framework"
-               BlueprintName = "Epoch"
+               BlueprintName = "Epoch OSX"
                ReferencedContainer = "container:Epoch.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -44,7 +44,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B00511C41BEC3497001B3F26"
             BuildableName = "Epoch.framework"
-            BlueprintName = "Epoch"
+            BlueprintName = "Epoch OSX"
             ReferencedContainer = "container:Epoch.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -66,7 +66,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B00511C41BEC3497001B3F26"
             BuildableName = "Epoch.framework"
-            BlueprintName = "Epoch"
+            BlueprintName = "Epoch OSX"
             ReferencedContainer = "container:Epoch.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -84,7 +84,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B00511C41BEC3497001B3F26"
             BuildableName = "Epoch.framework"
-            BlueprintName = "Epoch"
+            BlueprintName = "Epoch OSX"
             ReferencedContainer = "container:Epoch.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

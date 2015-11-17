@@ -35,7 +35,9 @@ final class TCPStream : StreamType {
                 completion(Result(data))
             }
         } catch TCPError.ConnectionResetByPeer(_, let data) {
-            completion(Result(data))
+            if data.count > 0 {
+                completion(Result(data))
+            }
             close()
         } catch {
             completion(Result(error))
@@ -45,6 +47,7 @@ final class TCPStream : StreamType {
     func send(data: [Int8], completion: Result<Void> -> Void) {
         do {
             try socket.send(data)
+            try socket.flush()
             completion(Result())
         } catch TCPError.ConnectionResetByPeer {
             completion(Result())
