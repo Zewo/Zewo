@@ -24,21 +24,12 @@ Epoch
 ## Usage
 
 ```swift
-struct HTTPServerResponder : HTTPResponder {
-    func respond(request: HTTPRequest, completion: HTTPResponse -> Void) {
-            
+struct HTTPServerResponder : HTTPResponderType {
+    func respond(request: HTTPRequest) -> HTTPResponse {
+    
         // do something based on the HTTPRequest
-        
-        completion(
-            HTTPResponse(
-                statusCode: 200,
-                reasonPhrase: "OK",
-                majorVersion: 1,
-                minorVersion: 1,
-                headers: [:],
-                body: []
-            )
-        )
+
+        return HTTPResponse(statusCode: 200, reasonPhrase: "OK")
     }
 }
 
