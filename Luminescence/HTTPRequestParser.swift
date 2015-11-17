@@ -129,7 +129,9 @@ func onRequestHeaderValue(parser: UnsafeMutablePointer<http_parser>, data: Unsaf
 
     var buffer: [Int8] = [Int8](count: length + 1, repeatedValue: 0)
     strncpy(&buffer, data, length)
-    context.memory.currentHeaderField = context.memory.buildingHeaderField
+    if context.memory.buildingHeaderField != "" {
+        context.memory.currentHeaderField = context.memory.buildingHeaderField
+    }
     context.memory.buildingHeaderField = ""
     let headerField = context.memory.currentHeaderField
     let previousHeaderValue = context.memory.headers[headerField] ?? ""
