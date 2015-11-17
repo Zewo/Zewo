@@ -28,16 +28,29 @@
 #include "http_parser.h"
 
 struct parsed_uri {
-    const char *scheme;
-    const char *user_info;
-    const char *host;
-    const unsigned short *port;
-    const char *path;
-    const char *query;
-    const char *fragment;
+    const uint16_t field_set;
+
+    const uint16_t scheme_start;
+    const uint16_t scheme_end;
+
+    const uint16_t user_info_start;
+    const uint16_t user_info_end;
+
+    const uint16_t host_start;
+    const uint16_t host_end;
+
+    const unsigned short port;
+
+    const uint16_t path_start;
+    const uint16_t path_end;
+
+    const uint16_t query_start;
+    const uint16_t query_end;
+
+    const uint16_t fragment_start;
+    const uint16_t fragment_end;
 };
 
 struct parsed_uri parse_uri(const char *uri_string);
-void free_parsed_uri(struct parsed_uri uri);
 
 #endif /* http_parser_swift_h */

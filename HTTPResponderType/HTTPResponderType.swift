@@ -1,4 +1,4 @@
-// ServerType.swift
+// HTTPResponderType.swift
 //
 // The MIT License (MIT)
 //
@@ -22,7 +22,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol ServerType {
-    func acceptClient(completion: Result<StreamType> -> Void)
-    func stop()
+public protocol HTTPResponderType {
+    func respond(request: HTTPRequest) -> HTTPResponse
 }

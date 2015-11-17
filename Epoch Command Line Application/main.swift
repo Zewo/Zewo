@@ -22,18 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPServerResponder : HTTPResponder {
-    func respond(request: HTTPRequest, completion: HTTPResponse -> Void) {
-        completion(
-            HTTPResponse(
-                statusCode: 200,
-                reasonPhrase: "OK",
-                majorVersion: 1,
-                minorVersion: 1,
-                headers: [:],
-                body: []
-            )
-        )
+struct HTTPServerResponder : HTTPResponderType {
+    func respond(request: HTTPRequest) -> HTTPResponse {
+        return HTTPResponse(statusCode: 200, reasonPhrase: "OK")
     }
 }
 

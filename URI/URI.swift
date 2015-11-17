@@ -1,4 +1,4 @@
-// HTTPServer.swift
+// URI.swift
 //
 // The MIT License (MIT)
 //
@@ -22,26 +22,57 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public struct HTTPServer : HTTPServerType {
-    public let server: TCPServerType
-    public let parser: HTTPRequestParserType = HTTPParser()
-    public let responder: HTTPResponderType
-    public let serializer: HTTPResponseSerializerType = HTTPSerializer()
+public struct URI {
+    public struct UserInfo {
+        public let username: String
+        public let password: String
+    }
 
-    struct HTTPResponder : HTTPResponderType {
-        let respond: (request: HTTPRequest) -> HTTPResponse
-        func respond(request: HTTPRequest) -> HTTPResponse {
-            return respond(request: request)
+    public let scheme: String?
+    public let userInfo: UserInfo?
+    public let host: String?
+    public let port: Int?
+    public let path: String?
+    public let query: [String : String]
+    public let fragment: String?
+}
+
+extension URI : CustomStringConvertible {
+    public var description: String {
+        var string = ""
+
+        if let scheme = scheme {
+            string += "\(scheme)://"
         }
-    }
 
-    public init(port: Int, respond: HTTPRequest -> HTTPResponse) {
-        self.server = TCPServer(port: port)
-        self.responder = HTTPResponder(respond: respond)
-    }
+        if let userInfo = userInfo {
+            string += "\(userInfo.username):\(userInfo.password)@"
+        }
 
-    public init(port: Int, responder: HTTPResponderType) {
-        self.server = TCPServer(port: port)
-        self.responder = responder
+        if let host = host {
+            string += "\(host)"
+        }
+
+        if let port = port {
+            string += ":\(port)"
+        }
+
+        if let path = path {
+            string += "\(path)"
+        }
+
+        if query.count > 0 {
+            string += "?"
+        }
+
+        for (name, value) in query {
+            string += "\(name)=\(value)"
+        }
+
+        if let fragment = fragment {
+            string += "#\(fragment)"
+        }
+
+        return string
     }
 }

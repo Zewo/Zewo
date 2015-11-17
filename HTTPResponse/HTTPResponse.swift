@@ -1,4 +1,4 @@
-// HTTPRequest.swift
+// HTTPResponse.swift
 //
 // The MIT License (MIT)
 //
@@ -22,12 +22,42 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public struct HTTPRequest {
-    public let method: HTTPMethod
-    public let uri: URI
+public struct HTTPResponse {
+    public let statusCode: Int
+    public let reasonPhrase: String
     public let majorVersion: Int
     public let minorVersion: Int
     public let headers: [String: String]
     public let body: [Int8]
-    public let keepAlive: Bool
+
+    public init(statusCode: Int, reasonPhrase: String, majorVersion: Int = 1, minorVersion: Int = 1, headers: [String: String] = [:], body: [Int8] = []) {
+        self.statusCode = statusCode
+        self.reasonPhrase = reasonPhrase
+        self.majorVersion = majorVersion
+        self.minorVersion = minorVersion
+        self.headers = headers
+        self.body = body
+    }
+}
+
+extension HTTPResponse : CustomStringConvertible {
+    public var description: String {
+        var string = "HTTP/1.1 \(statusCode) \(reasonPhrase)\n"
+
+        for (header, value) in headers {
+            string += "\(header): \(value)\n"
+        }
+
+        if body.count > 500 {
+            string += "Request body too big to be printed."
+        } else if body.count > 0 {
+            if let bodyString = String.fromCString(self.body + [0]) where self.body.count > 0 {
+                string += "\n" + bodyString
+            } else  {
+                string += "\n" + body.reduce("", combine: {$0.0 + String($0.1)})
+            }
+        }
+
+        return string
+    }
 }

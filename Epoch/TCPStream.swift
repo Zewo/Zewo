@@ -22,38 +22,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-final class TCPStream : StreamType {
+final class TCPStream : TCPStreamType {
     let socket: TCPClientSocket
 
     init(socket: TCPClientSocket) {
         self.socket = socket
     }
 
-    func receive(completion: Result<[Int8]> -> Void) {
+    func receive(completion: (data: [Int8], error: ErrorType?) -> Void) {
         do {
             try socket.receive(lowWaterMark: 1) { data in
-                completion(Result(data))
+                completion(data: data, error: nil)
             }
         } catch TCPError.ConnectionResetByPeer(_, let data) {
             if data.count > 0 {
-                completion(Result(data))
+                completion(data: data, error: nil)
             }
             close()
         } catch {
-            completion(Result(error))
+            completion(data: [], error: error)
         }
     }
 
-    func send(data: [Int8], completion: Result<Void> -> Void) {
+    func send(data: [Int8], completion: (error: ErrorType?) -> Void) {
         do {
             try socket.send(data)
             try socket.flush()
-            completion(Result())
+            completion(error: nil)
         } catch TCPError.ConnectionResetByPeer {
-            completion(Result())
+            completion(error: nil)
             close()
         } catch {
-            completion(Result(error))
+            completion(error: error)
         }
     }
 

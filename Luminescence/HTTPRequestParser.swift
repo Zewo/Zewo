@@ -25,14 +25,15 @@
 import Incandescence
 
 struct HTTPRequestParserContext {
-    var method: HTTPMethod = .UNKNOWN
-    var uri: URI = URI()
+    var method: HTTPMethod! = nil
+    var uri: URI! = nil
     var majorVersion: Int = 0
     var minorVersion: Int = 0
     var headers: [String: String] = [:]
     var body: [Int8] = []
     
     var currentURI = ""
+    var buildingHeaderField = ""
     var currentHeaderField = ""
     var completion: HTTPRequest -> Void
 
@@ -118,7 +119,7 @@ func onRequestHeaderField(parser: UnsafeMutablePointer<http_parser>, data: Unsaf
 
     var buffer: [Int8] = [Int8](count: length + 1, repeatedValue: 0)
     strncpy(&buffer, data, length)
-    context.memory.currentHeaderField += String.fromCString(buffer)!
+    context.memory.buildingHeaderField += String.fromCString(buffer)!
 
     return 0
 }
@@ -128,6 +129,8 @@ func onRequestHeaderValue(parser: UnsafeMutablePointer<http_parser>, data: Unsaf
 
     var buffer: [Int8] = [Int8](count: length + 1, repeatedValue: 0)
     strncpy(&buffer, data, length)
+    context.memory.currentHeaderField = context.memory.buildingHeaderField
+    context.memory.buildingHeaderField = ""
     let headerField = context.memory.currentHeaderField
     let previousHeaderValue = context.memory.headers[headerField] ?? ""
     context.memory.headers[headerField] = previousHeaderValue + String.fromCString(buffer)!
@@ -144,6 +147,7 @@ func onRequestHeadersComplete(parser: UnsafeMutablePointer<http_parser>) -> Int3
     context.memory.uri = URI(string: context.memory.currentURI)
 
     context.memory.currentURI = ""
+    context.memory.buildingHeaderField = ""
     context.memory.currentHeaderField = ""
 
     return 0
@@ -174,8 +178,8 @@ func onRequestMessageComplete(parser: UnsafeMutablePointer<http_parser>) -> Int3
     
     context.memory.completion(request)
 
-    context.memory.method = .UNKNOWN
-    context.memory.uri = URI()
+    context.memory.method = nil
+    context.memory.uri = nil
     context.memory.majorVersion = 0
     context.memory.minorVersion = 0
     context.memory.headers = [:]

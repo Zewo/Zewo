@@ -1,4 +1,4 @@
-// KeepAliveType.swift
+// HTTPFallibleResponderType.swift
 //
 // The MIT License (MIT)
 //
@@ -22,6 +22,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-protocol KeepAliveType {
-    var shouldKeepAlive: Bool { get }
+public protocol HTTPFallibleResponderType {
+    func respond(request: HTTPRequest) throws -> HTTPResponse
 }

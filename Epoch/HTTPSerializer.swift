@@ -22,8 +22,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-struct HTTPSerializer : ResponseSerializerType {
-    func serializeResponse(client: StreamType, response: HTTPResponse, completion: Result<Void> -> Void) {
+public struct HTTPSerializer : HTTPResponseSerializerType {
+    public func serializeResponse(client: TCPStreamType, response: HTTPResponse, completion: (error: ErrorType?) -> Void) {
         var string = "HTTP/\(response.majorVersion).\(response.minorVersion) \(response.statusCode) \(response.reasonPhrase)\r\n"
 
         for (name, value) in response.headers {

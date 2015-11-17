@@ -1,4 +1,4 @@
-// URI.swift
+// URI+Luminescence.swift
 //
 // The MIT License (MIT)
 //
@@ -24,62 +24,68 @@
 
 import Incandescence
 
-public struct URIUserInfo {
-    public let username: String
-    public let password: String
-}
-
-public struct URI {
-    public let scheme: String?
-    public let userInfo: URIUserInfo?
-    public let host: String?
-    public let port: Int?
-    public let path: String?
-    public let query: [String: String]
-    public let fragment: String?
-
-}
-
 extension URI {
-    init() {
-        self.scheme = nil
-        self.userInfo = nil
-        self.host = nil
-        self.port = nil
-        self.path = nil
-        self.query = [:]
-        self.fragment = nil
-    }
-}
+    public init(string: String) {
+        let u = parse_uri(string)
 
-extension URI {
-    init(uri: parsed_uri) {
-        self.scheme        = String.fromCString(uri.scheme)
-        let userInfoString = String.fromCString(uri.user_info)
-        self.userInfo      = URI.parseUserInfo(userInfoString)
-        self.host          = String.fromCString(uri.host)
-        self.port          = (uri.port != nil) ? Int(uri.port.memory) : nil
-        self.path          = String.fromCString(uri.path)
-        let queryString    = String.fromCString(uri.query)
-        self.query         = URI.parseQueryString(queryString)
-        self.fragment      = String.fromCString(uri.fragment)
-    }
-
-    private static func parseUserInfo(userInfoString: String?) -> URIUserInfo? {
-        guard let userInfoString = userInfoString else {
-            return nil
+        if u.field_set & 1 != 0 {
+            scheme = URI.getSubstring(string, start: u.scheme_start, end: u.scheme_end)
+        } else {
+            scheme = nil
         }
+
+        if u.field_set & 2 != 0 {
+            host = URI.getSubstring(string, start: u.host_start, end: u.host_end)
+        } else {
+            host = nil
+        }
+
+        if u.field_set & 4 != 0 {
+            port = Int(u.port)
+        } else {
+            port = nil
+        }
+
+        if u.field_set & 8 != 0 {
+            path = URI.getSubstring(string, start: u.path_start, end: u.path_end)
+        } else {
+            path = nil
+        }
+
+        if u.field_set & 16 != 0 {
+            let queryString = URI.getSubstring(string, start: u.query_start, end: u.query_end)
+            query = URI.parseQueryString(queryString)
+        } else {
+            query = [:]
+        }
+
+        if u.field_set & 32 != 0 {
+            fragment = URI.getSubstring(string, start: u.fragment_start, end: u.fragment_end)
+        } else {
+            fragment = nil
+        }
+
+        if u.field_set & 64 != 0 {
+            let userInfoString = URI.getSubstring(string, start: u.user_info_start, end: u.user_info_end)
+            userInfo = URI.parseUserInfoString(userInfoString)
+        } else {
+            userInfo = nil
+        }
+    }
+
+    @inline(__always) private static func getSubstring(string: String, start: UInt16, end: UInt16) -> String {
+        return string[string.startIndex.advancedBy(Int(start)) ..< string.startIndex.advancedBy(Int(end))]
+    }
+
+    @inline(__always) private static func parseUserInfoString(userInfoString: String) -> URI.UserInfo? {
         let userInfoElements = userInfoString.characters.split{$0 == ":"}.map(String.init)
-        return URIUserInfo(
+        return URI.UserInfo(
             username: userInfoElements[0],
             password: userInfoElements[1]
         )
     }
 
-    private static func parseQueryString(queryString: String?) -> [String: String] {
-        guard let queryString = queryString else {
-            return [:]
-        }
+    @inline(__always) private static func parseQueryString(queryString: String) -> [String: String] {
         var query: [String: String] = [:]
         let queryTuples = queryString.characters.split{$0 == "&"}.map(String.init)
         for tuple in queryTuples {
@@ -91,13 +97,5 @@ extension URI {
             }
         }
         return query
-    }
-}
-
-extension URI {
-    public init(string: String) {
-        let parsedURI = parse_uri(string)
-        self = URI(uri: parsedURI)
-        free_parsed_uri(parsedURI)
     }
 }
