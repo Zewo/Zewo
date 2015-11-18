@@ -24,7 +24,7 @@
 
 struct HTTPServerResponder : HTTPResponderType {
     func respond(request: HTTPRequest) -> HTTPResponse {
-        return HTTPResponse(statusCode: 200, reasonPhrase: "OK")
+        return HTTPResponse(status: .OK)
     }
 }
 
