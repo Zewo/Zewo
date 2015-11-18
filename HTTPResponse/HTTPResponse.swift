@@ -30,13 +30,58 @@ public struct HTTPResponse {
     public let headers: [String: String]
     public let body: [Int8]
 
-    public init(statusCode: Int, reasonPhrase: String, majorVersion: Int = 1, minorVersion: Int = 1, headers: [String: String] = [:], body: [Int8] = []) {
+    public init(statusCode: Int, reasonPhrase: String, majorVersion: Int = 1, minorVersion: Int = 1, var headers: [String: String] = [:], body: [Int8] = []) {
         self.statusCode = statusCode
         self.reasonPhrase = reasonPhrase
         self.majorVersion = majorVersion
         self.minorVersion = minorVersion
+
+        if body.count > 0 {
+            headers["content-length"] = "\(body.count)"
+        }
+        
         self.headers = headers
         self.body = body
+    }
+}
+
+extension HTTPResponse {
+    public init(status: HTTPStatus, headers: [String: String] = [:], body: [Int8] = []) {
+        self.init(
+            statusCode: status.statusCode,
+            reasonPhrase: status.reasonPhrase,
+            headers: headers,
+            body: body
+        )
+    }
+
+    public var status: HTTPStatus {
+        return HTTPStatus(statusCode: statusCode)
+    }
+}
+
+extension HTTPResponse {
+    public init(status: HTTPStatus, headers: [String: String] = [:], body: String) {
+        self.init(
+            status: status,
+            headers: headers,
+            body: body.utf8.map({Int8($0)})
+        )
+    }
+
+    var bodyString: String? {
+        return String.fromCString(body + [0])
+    }
+
+    var bodyHexString: String {
+        var string = ""
+        for (index, value) in body.enumerate() {
+            if index % 2 == 0 && index > 0 {
+                string += " "
+            }
+            string += (value < 16 ? "0" : "") + String(value, radix: 16)
+        }
+        return string
     }
 }
 
@@ -48,13 +93,11 @@ extension HTTPResponse : CustomStringConvertible {
             string += "\(header): \(value)\n"
         }
 
-        if body.count > 500 {
-            string += "Request body too big to be printed."
-        } else if body.count > 0 {
-            if let bodyString = String.fromCString(self.body + [0]) where self.body.count > 0 {
+        if body.count > 0 {
+            if let bodyString = bodyString {
                 string += "\n" + bodyString
             } else  {
-                string += "\n" + body.reduce("", combine: {$0.0 + String($0.1)})
+                string += "\n" + bodyHexString
             }
         }
 

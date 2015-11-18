@@ -174,8 +174,7 @@ func onRequestMessageComplete(parser: UnsafeMutablePointer<http_parser>) -> Int3
         majorVersion: context.memory.majorVersion,
         minorVersion: context.memory.minorVersion,
         headers: context.memory.headers,
-        body: context.memory.body,
-        keepAlive: http_should_keep_alive(parser) != 0
+        body: context.memory.body
     )
     
     context.memory.completion(request)

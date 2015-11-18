@@ -30,18 +30,53 @@ public struct HTTPRequest {
     public let headers: [String: String]
     public let body: [Int8]
 
-    public let keepAlive: Bool
     public var parameters: [String : String] = [:]
     public var data: [String : String] = [:]
 
-    public init(method: HTTPMethod, uri: URI, majorVersion: Int = 1, minorVersion: Int = 1, headers: [String: String] = [:], body: [Int8] = [], keepAlive: Bool = false) {
+    public init(method: HTTPMethod, uri: URI, majorVersion: Int = 1, minorVersion: Int = 1, var headers: [String: String] = [:], body: [Int8] = []) {
         self.method = method
         self.uri = uri
         self.majorVersion = majorVersion
         self.minorVersion = minorVersion
+
+        if body.count > 0 {
+            headers["content-length"] = "\(body.count)"
+        }
+
         self.headers = headers
         self.body = body
-        self.keepAlive = keepAlive
+    }
+}
+
+extension HTTPRequest {
+    var keepAlive: Bool {
+        return (headers["connection"]?.lowercaseString == "keep-alive") ?? false
+    }
+}
+
+extension HTTPRequest {
+    public init(method: HTTPMethod, uri: URI, headers: [String: String] = [:], body: String) {
+        self.init(
+            method: method,
+            uri: uri,
+            headers: headers,
+            body: body.utf8.map { Int8($0) }
+        )
+    }
+
+    var bodyString: String? {
+        return String.fromCString(body + [0])
+    }
+
+    var bodyHexString: String {
+        var string = ""
+        for (index, value) in body.enumerate() {
+            if index % 2 == 0 && index > 0 {
+                string += " "
+            }
+            string += (value < 16 ? "0" : "") + String(value, radix: 16)
+        }
+        return string
     }
 }
 
@@ -53,16 +88,14 @@ extension HTTPRequest : CustomStringConvertible {
             string += "\(header): \(value)\n"
         }
 
-        if body.count > 500 {
-            string += "Request body too big to be printed."
-        } else if body.count > 0 {
-            if let bodyString = String.fromCString(self.body + [0]) where self.body.count > 0 {
-                string += "\n" + bodyString + "\n"
+        if body.count > 0 {
+            if let bodyString = bodyString {
+                string += "\n" + bodyString
             } else  {
-                string += "\n" + body.reduce("", combine: {$0.0 + String($0.1)}) + "\n"
+                string += "\n" + bodyHexString
             }
         }
-
+        
         return string
     }
 }
