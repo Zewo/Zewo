@@ -149,6 +149,9 @@
 		B06ABA361BFBD87800BB869A /* URI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA171BFBD87800BB869A /* URI.swift */; };
 		B06ABA371BFBD87800BB869A /* URI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA171BFBD87800BB869A /* URI.swift */; };
 		B06ABA381BFBD87800BB869A /* URI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA171BFBD87800BB869A /* URI.swift */; };
+		B06ABA481BFC313000BB869A /* HTTPStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA471BFC313000BB869A /* HTTPStatus.swift */; };
+		B06ABA491BFC313000BB869A /* HTTPStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA471BFC313000BB869A /* HTTPStatus.swift */; };
+		B06ABA4A1BFC313000BB869A /* HTTPStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA471BFC313000BB869A /* HTTPStatus.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -254,6 +257,7 @@
 		B06ABA141BFBD87800BB869A /* TCPServerType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPServerType.swift; sourceTree = "<group>"; };
 		B06ABA151BFBD87800BB869A /* TCPStreamType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPStreamType.swift; sourceTree = "<group>"; };
 		B06ABA171BFBD87800BB869A /* URI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URI.swift; sourceTree = "<group>"; };
+		B06ABA471BFC313000BB869A /* HTTPStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPStatus.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -542,6 +546,7 @@
 		B06ABA0E1BFBD87800BB869A /* HTTPResponse */ = {
 			isa = PBXGroup;
 			children = (
+				B06ABA471BFC313000BB869A /* HTTPStatus.swift */,
 				B06ABA0F1BFBD87800BB869A /* HTTPResponse.swift */,
 			);
 			path = HTTPResponse;
@@ -749,6 +754,7 @@
 				B06AB9FD1BFBD85800BB869A /* HTTPParseError.swift in Sources */,
 				B06ABA281BFBD87800BB869A /* HTTPRequestParserType.swift in Sources */,
 				B06ABA1F1BFBD87800BB869A /* HTTPFallibleResponderType.swift in Sources */,
+				B06ABA491BFC313000BB869A /* HTTPStatus.swift in Sources */,
 				B06ABA251BFBD87800BB869A /* HTTPResponse.swift in Sources */,
 				B06ABA371BFBD87800BB869A /* URI.swift in Sources */,
 				B06ABA2B1BFBD87800BB869A /* HTTPResponseSerializerType.swift in Sources */,
@@ -818,6 +824,7 @@
 				B00512031BEC356A001B3F26 /* incandescence_swift.c in Sources */,
 				B06ABA301BFBD87800BB869A /* TCPServerType.swift in Sources */,
 				B00512101BEC356A001B3F26 /* poller.c in Sources */,
+				B06ABA481BFC313000BB869A /* HTTPStatus.swift in Sources */,
 				B005126A1BEC3575001B3F26 /* FallibleReceivingChannel.swift in Sources */,
 				B005126C1BEC3575001B3F26 /* FallibleSendingChannel.swift in Sources */,
 				B005126E1BEC3575001B3F26 /* IP.swift in Sources */,
@@ -893,6 +900,7 @@
 				B06ABA1A1BFBD87800BB869A /* HTTPMethod.swift in Sources */,
 				B06ABA041BFBD85800BB869A /* HTTPResponseParser.swift in Sources */,
 				B06ABA231BFBD87800BB869A /* HTTPResponderType.swift in Sources */,
+				B06ABA4A1BFC313000BB869A /* HTTPStatus.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
