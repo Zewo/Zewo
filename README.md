@@ -6,7 +6,7 @@ Epoch
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-Compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![License MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](https://github.com/Carthage/Carthage)
 
-**Epoch** is a Epoch based HTTP server for **Swift 2**.
+**Epoch** is a Venice based HTTP server for **Swift 2**.
 
 ## Features
 
