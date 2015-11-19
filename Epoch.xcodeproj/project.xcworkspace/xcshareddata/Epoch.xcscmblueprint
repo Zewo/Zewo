@@ -1,0 +1,51 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "E183E19EBC37EFDFA20734294B0253734CDD4430",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "7926375CF48B2FF472FD622211E467ACFF61BE5A" : 0,
+    "900D198C3FB851E8F8E01B008846A319DD357A70" : 0,
+    "E183E19EBC37EFDFA20734294B0253734CDD4430" : 0,
+    "D4199CF4A45E212E54A4CEE7E34326E0BC446862" : 0,
+    "57932305D7AF3390B1D4C8A3D4D1FCFFE771843F" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "D181B415-10BC-4692-B823-B80C7E7BA48A",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "7926375CF48B2FF472FD622211E467ACFF61BE5A" : "Epoch\/Carthage\/Checkouts\/Otherside\/",
+    "900D198C3FB851E8F8E01B008846A319DD357A70" : "Epoch\/Carthage\/Checkouts\/Venice\/",
+    "E183E19EBC37EFDFA20734294B0253734CDD4430" : "Epoch\/",
+    "D4199CF4A45E212E54A4CEE7E34326E0BC446862" : "Epoch\/Carthage\/Checkouts\/Curvature\/",
+    "57932305D7AF3390B1D4C8A3D4D1FCFFE771843F" : "Epoch\/Carthage\/Checkouts\/Luminescence\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Epoch",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Epoch.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Zewo\/Luminescence.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "57932305D7AF3390B1D4C8A3D4D1FCFFE771843F"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Zewo\/Otherside.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "7926375CF48B2FF472FD622211E467ACFF61BE5A"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Zewo\/Venice.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "900D198C3FB851E8F8E01B008846A319DD357A70"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Zewo\/Curvature.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D4199CF4A45E212E54A4CEE7E34326E0BC446862"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Zewo\/Epoch.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E183E19EBC37EFDFA20734294B0253734CDD4430"
+    }
+  ]
+}
