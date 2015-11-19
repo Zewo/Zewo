@@ -3,7 +3,6 @@ Epoch
 
 [![Swift 2.1](https://img.shields.io/badge/Swift-2.1-orange.svg?style=flat)](https://developer.apple.com/swift/)
 [![Platforms OS X | iOS](https://img.shields.io/badge/Platforms-OS%20X%20%7C%20iOS-lightgray.svg?style=flat)](https://developer.apple.com/swift/)
-[![Cocoapods Compatible](https://img.shields.io/badge/Cocoapods-Compatible-4BC51D.svg?style=flat)](https://cocoapods.org/pods/Epoch)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-Compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![License MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](https://github.com/Carthage/Carthage)
 
@@ -12,18 +11,30 @@ Epoch
 ## Features
 
 - [x] No `Foundation` dependency (**Linux ready**)
-- [x] Completely Asynchronous
 
 ## Dependencies
 
 **Epoch** is made of:
 
 - [Venice](https://github.com/Zewo/Venice) - CSP and TCP/IP
+- [Curvature](https://github.com/Zewo/Curvature) - HTTP request/response
 - [Luminescence](https://github.com/Zewo/Luminescence) - HTTP parser
+- [Otherside](https://github.com/Zewo/Otherside) - HTTP responder interface
+
+## Related Projects
+
+- [Spell](https://github.com/Zewo/Spell) - HTTP router
+- [Fuzz](https://github.com/Zewo/Fuzz) - HTTP middleware framework
 
 ## Usage
 
+### Standalone
+
 ```swift
+import Curvature
+import Otherside
+import Epoch
+
 struct HTTPServerResponder : HTTPResponderType {
     func respond(request: HTTPRequest) -> HTTPResponse {
     
@@ -38,75 +49,35 @@ let server = HTTPServer(port: 8080, responder: responder)
 server.start()
 ```
 
-## Performance
+### Epoch + Spell
 
-Start *Epoch Command Line Application* and then run:
+```swift
+import Curvature
+import Otherside
+import Epoch
+import Spell
 
-```bash
-> ab -n 12800 -c 128 http://localhost:8080/   
+let router = HTTPRouter { router in
+	router.post("/users") { request in
+	
+        // do something based on the HTTPRequest
+        
+        return HTTPResponse(status: .Created)
+    }
+    
+    router.get("/users/:id") { request in
+    
+        // do something based on the HTTPRequest
+        
+        return HTTPResponse(status: .OK)
+    } 
+}
+
+let server = HTTPServer(port: 8080, responder: router)
+server.start()
 ```
-
-Results in a Macbook Pro early 2013:
-
-```
-Concurrency Level:      128
-Time taken for tests:   4.734 seconds
-Complete requests:      12800
-Failed requests:        0
-Total transferred:      0 bytes
-HTML transferred:       0 bytes
-Requests per second:    2703.60 [#/sec] (mean)
-Time per request:       47.344 [ms] (mean)
-Time per request:       0.370 [ms] (mean, across all concurrent requests)
-Transfer rate:          0.00 [Kbytes/sec] received
-
-Connection Times (ms)
-              min  mean[+/-sd] median   max
-Connect:        0    8  13.3      0     119
-Processing:     1   39  14.2     40     130
-Waiting:        0    0   0.0      0       0
-Total:          8   47  14.5     42     130
-
-Percentage of the requests served within a certain time (ms)
-  50%     42
-  66%     45
-  75%     47
-  80%     53
-  90%     59
-  95%     62
-  98%    114
-  99%    120
- 100%    130 (longest request)
-```
-
-To make this results have any meaning you should create, for example, a node.js server that responds with 200 OK and compare it with **Epoch**.
 
 ## Installation
-
-### CocoaPods
-
-[CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects. You can install it with the following command:
-
-```bash
-$ gem install cocoapods
-```
-
-> CocoaPods 0.39.0+ is required to build Epoch.
-
-To integrate Epoch into your Xcode project using CocoaPods, specify it in your `Podfile`:
-
-```ruby
-source 'https://github.com/CocoaPods/Specs.git'
-use_frameworks!
-
-pod 'Epoch'
-```
-
-Then, run the following command:
-
-```bash
-$ pod install
-```
 
 ### Carthage
 
