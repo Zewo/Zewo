@@ -15,27 +15,16 @@
 		B00512821BEC3605001B3F26 /* HTTPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B005127C1BEC3605001B3F26 /* HTTPServer.swift */; };
 		B00512831BEC3605001B3F26 /* TCPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B005127D1BEC3605001B3F26 /* TCPServer.swift */; };
 		B00512841BEC3605001B3F26 /* TCPStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B005127E1BEC3605001B3F26 /* TCPStream.swift */; };
-		B005128C1BEC3B73001B3F26 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B005128B1BEC3B73001B3F26 /* main.swift */; };
-		B00512BF1BEC3C03001B3F26 /* HTTPParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00512791BEC3605001B3F26 /* HTTPParser.swift */; };
-		B00512C11BEC3C03001B3F26 /* HTTPSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B005127B1BEC3605001B3F26 /* HTTPSerializer.swift */; };
-		B00512C21BEC3C03001B3F26 /* HTTPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B005127C1BEC3605001B3F26 /* HTTPServer.swift */; };
-		B00512C31BEC3C03001B3F26 /* TCPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B005127D1BEC3605001B3F26 /* TCPServer.swift */; };
-		B00512C41BEC3C03001B3F26 /* TCPStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = B005127E1BEC3605001B3F26 /* TCPStream.swift */; };
 		B06ABA271BFBD87800BB869A /* HTTPRequestParserType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA111BFBD87800BB869A /* HTTPRequestParserType.swift */; };
 		B06ABA281BFBD87800BB869A /* HTTPRequestParserType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA111BFBD87800BB869A /* HTTPRequestParserType.swift */; };
-		B06ABA291BFBD87800BB869A /* HTTPRequestParserType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA111BFBD87800BB869A /* HTTPRequestParserType.swift */; };
 		B06ABA2A1BFBD87800BB869A /* HTTPResponseSerializerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA121BFBD87800BB869A /* HTTPResponseSerializerType.swift */; };
 		B06ABA2B1BFBD87800BB869A /* HTTPResponseSerializerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA121BFBD87800BB869A /* HTTPResponseSerializerType.swift */; };
-		B06ABA2C1BFBD87800BB869A /* HTTPResponseSerializerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA121BFBD87800BB869A /* HTTPResponseSerializerType.swift */; };
 		B06ABA2D1BFBD87800BB869A /* HTTPServerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA131BFBD87800BB869A /* HTTPServerType.swift */; };
 		B06ABA2E1BFBD87800BB869A /* HTTPServerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA131BFBD87800BB869A /* HTTPServerType.swift */; };
-		B06ABA2F1BFBD87800BB869A /* HTTPServerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA131BFBD87800BB869A /* HTTPServerType.swift */; };
 		B06ABA301BFBD87800BB869A /* TCPServerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA141BFBD87800BB869A /* TCPServerType.swift */; };
 		B06ABA311BFBD87800BB869A /* TCPServerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA141BFBD87800BB869A /* TCPServerType.swift */; };
-		B06ABA321BFBD87800BB869A /* TCPServerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA141BFBD87800BB869A /* TCPServerType.swift */; };
 		B06ABA331BFBD87800BB869A /* TCPStreamType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA151BFBD87800BB869A /* TCPStreamType.swift */; };
 		B06ABA341BFBD87800BB869A /* TCPStreamType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA151BFBD87800BB869A /* TCPStreamType.swift */; };
-		B06ABA351BFBD87800BB869A /* TCPStreamType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06ABA151BFBD87800BB869A /* TCPStreamType.swift */; };
 		B08FC4501BFDF18F005A1705 /* HTTPParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00512791BEC3605001B3F26 /* HTTPParser.swift */; };
 		B08FC4511BFDF18F005A1705 /* HTTPSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B005127B1BEC3605001B3F26 /* HTTPSerializer.swift */; };
 		B08FC4521BFDF18F005A1705 /* HTTPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B005127C1BEC3605001B3F26 /* HTTPServer.swift */; };
@@ -242,18 +231,6 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		B00512871BEC3B73001B3F26 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		3A0E03741BF4A64200B15C63 /* Epoch.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Epoch.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B00511C51BEC3497001B3F26 /* Epoch.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Epoch.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -267,8 +244,6 @@
 		B005127C1BEC3605001B3F26 /* HTTPServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPServer.swift; sourceTree = "<group>"; };
 		B005127D1BEC3605001B3F26 /* TCPServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPServer.swift; sourceTree = "<group>"; };
 		B005127E1BEC3605001B3F26 /* TCPStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPStream.swift; sourceTree = "<group>"; };
-		B00512891BEC3B73001B3F26 /* Epoch Command Line Application */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Epoch Command Line Application"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B005128B1BEC3B73001B3F26 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		B03EF2FF1BFDED9B00858663 /* Curvature.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Curvature.xcodeproj; path = Carthage/Checkouts/Curvature/Curvature.xcodeproj; sourceTree = SOURCE_ROOT; };
 		B03EF30E1BFDEDA100858663 /* Luminescence.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Luminescence.xcodeproj; path = Carthage/Checkouts/Luminescence/Luminescence.xcodeproj; sourceTree = SOURCE_ROOT; };
 		B03EF3211BFDEDA800858663 /* Otherside.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Otherside.xcodeproj; path = Carthage/Checkouts/Otherside/Otherside.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -303,13 +278,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B00512861BEC3B73001B3F26 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -323,7 +291,6 @@
 				B06ABA101BFBD87800BB869A /* HTTPServerType */,
 				B00511C71BEC3497001B3F26 /* Epoch */,
 				B00511DF1BEC352F001B3F26 /* Epoch Tests */,
-				B005128A1BEC3B73001B3F26 /* Epoch Command Line Application */,
 				B00511C61BEC3497001B3F26 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -333,7 +300,6 @@
 			children = (
 				B00511C51BEC3497001B3F26 /* Epoch.framework */,
 				B00511CF1BEC3497001B3F26 /* EpochTests.xctest */,
-				B00512891BEC3B73001B3F26 /* Epoch Command Line Application */,
 				3A0E03741BF4A64200B15C63 /* Epoch.framework */,
 			);
 			name = Products;
@@ -360,14 +326,6 @@
 				B00511E11BEC352F001B3F26 /* Info.plist */,
 			);
 			path = "Epoch Tests";
-			sourceTree = "<group>";
-		};
-		B005128A1BEC3B73001B3F26 /* Epoch Command Line Application */ = {
-			isa = PBXGroup;
-			children = (
-				B005128B1BEC3B73001B3F26 /* main.swift */,
-			);
-			path = "Epoch Command Line Application";
 			sourceTree = "<group>";
 		};
 		B03EF3001BFDED9B00858663 /* Products */ = {
@@ -512,23 +470,6 @@
 			productReference = B00511CF1BEC3497001B3F26 /* EpochTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		B00512881BEC3B73001B3F26 /* Epoch Command Line Application */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B005128D1BEC3B73001B3F26 /* Build configuration list for PBXNativeTarget "Epoch Command Line Application" */;
-			buildPhases = (
-				B00512851BEC3B73001B3F26 /* Sources */,
-				B00512861BEC3B73001B3F26 /* Frameworks */,
-				B00512871BEC3B73001B3F26 /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Epoch Command Line Application";
-			productName = "Epoch Command Line Application";
-			productReference = B00512891BEC3B73001B3F26 /* Epoch Command Line Application */;
-			productType = "com.apple.product-type.tool";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -546,9 +487,6 @@
 						CreatedOnToolsVersion = 7.1;
 					};
 					B00511CE1BEC3497001B3F26 = {
-						CreatedOnToolsVersion = 7.1;
-					};
-					B00512881BEC3B73001B3F26 = {
 						CreatedOnToolsVersion = 7.1;
 					};
 				};
@@ -586,7 +524,6 @@
 				B00511C41BEC3497001B3F26 /* Epoch OSX */,
 				3A0E03731BF4A64200B15C63 /* Epoch iOS */,
 				B00511CE1BEC3497001B3F26 /* EpochTests */,
-				B00512881BEC3B73001B3F26 /* Epoch Command Line Application */,
 			);
 		};
 /* End PBXProject section */
@@ -796,24 +733,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B00512851BEC3B73001B3F26 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B06ABA2C1BFBD87800BB869A /* HTTPResponseSerializerType.swift in Sources */,
-				B06ABA2F1BFBD87800BB869A /* HTTPServerType.swift in Sources */,
-				B06ABA351BFBD87800BB869A /* TCPStreamType.swift in Sources */,
-				B00512C11BEC3C03001B3F26 /* HTTPSerializer.swift in Sources */,
-				B00512C41BEC3C03001B3F26 /* TCPStream.swift in Sources */,
-				B00512C21BEC3C03001B3F26 /* HTTPServer.swift in Sources */,
-				B00512C31BEC3C03001B3F26 /* TCPServer.swift in Sources */,
-				B06ABA321BFBD87800BB869A /* TCPServerType.swift in Sources */,
-				B06ABA291BFBD87800BB869A /* HTTPRequestParserType.swift in Sources */,
-				B00512BF1BEC3C03001B3F26 /* HTTPParser.swift in Sources */,
-				B005128C1BEC3B73001B3F26 /* main.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -906,6 +825,7 @@
 				PRODUCT_NAME = Epoch;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1036,6 +956,7 @@
 				PRODUCT_NAME = Epoch;
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/Dependencies";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
 		};
@@ -1058,23 +979,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zewo.EpochTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
-		B005128E1BEC3B73001B3F26 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/Dependencies";
-			};
-			name = Debug;
-		};
-		B005128F1BEC3B73001B3F26 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/Dependencies";
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
 		};
@@ -1113,15 +1017,6 @@
 			buildConfigurations = (
 				B00511DD1BEC3497001B3F26 /* Debug */,
 				B00511DE1BEC3497001B3F26 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B005128D1BEC3B73001B3F26 /* Build configuration list for PBXNativeTarget "Epoch Command Line Application" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B005128E1BEC3B73001B3F26 /* Debug */,
-				B005128F1BEC3B73001B3F26 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
