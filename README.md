@@ -29,6 +29,10 @@ Epoch
 
 ## Usage
 
+### Solo
+
+You can use **Epoch** without any extra dependencies if you wish.
+
 ```swift
 import Curvature
 import Otherside
@@ -45,6 +49,37 @@ struct HTTPServerResponder : HTTPResponderType {
 
 let responder = HTTPServerResponder()
 let server = HTTPServer(port: 8080, responder: responder)
+server.start()
+```
+
+### Epoch + Spell
+
+You'll probably need an HTTP router to make thinks easier. **Epoch** and [Spell](https://www.github.com/Zewo/Spell) were designed to work with each other seamlessly.
+
+```swift
+import Curvature
+import Otherside
+import Epoch
+import Spell
+
+let router = HTTPRouter { router in
+    router.post("/users") { request in
+
+        // do something based on the HTTPRequest
+
+        return HTTPResponse(status: .Created)
+    }
+
+    router.get("/users/:id") { request in
+
+        // do something based on the HTTPRequest
+        let id = request.parameters["id"]
+
+        return HTTPResponse(status: .OK)
+    } 
+}
+
+let server = HTTPServer(port: 8080, responder: router)
 server.start()
 ```
 
@@ -66,7 +101,7 @@ To integrate **Epoch** into your Xcode project using CocoaPods, specify it in yo
 source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
-pod 'Epoch', '0.3'
+pod 'Epoch', '0.3.1'
 ```
 
 Then, run the following command:
@@ -89,7 +124,7 @@ $ brew install carthage
 To integrate **Epoch** into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "Zewo/Epoch" == 0.3
+github "Zewo/Epoch" == 0.3.1
 ```
 
 ### Command Line Application
