@@ -88,7 +88,7 @@ server.start()
 $ gem install cocoapods
 ```
 
-> CocoaPods 0.39.0+ is required to build Luminescence.
+> CocoaPods 0.39.0+ is required to build Epoch.
 
 To integrate Epoch into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
