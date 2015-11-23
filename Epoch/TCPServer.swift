@@ -24,7 +24,7 @@
 
 import Venice
 
-struct TCPServer : TCPServerType {
+struct TCPServer: TCPServerType {
     let port: Int
     let closeChannel = Channel<Void>()
 

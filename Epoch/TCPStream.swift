@@ -24,7 +24,7 @@
 
 import Venice
 
-final class TCPStream : TCPStreamType {
+final class TCPStream: TCPStreamType {
     let socket: TCPClientSocket
 
     init(socket: TCPClientSocket) {

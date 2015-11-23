@@ -25,7 +25,7 @@
 import Luminescence
 import Curvature
 
-public struct HTTPParser : HTTPRequestParserType {
+public struct HTTPParser: HTTPRequestParserType {
     public func parseRequest(client: TCPStreamType, completion: (request: HTTPRequest?, error: ErrorType?) -> Void) {
         let parser = HTTPRequestParser { request in
             completion(request: request, error: nil)

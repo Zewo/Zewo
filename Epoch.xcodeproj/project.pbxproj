@@ -96,13 +96,6 @@
 			remoteGlobalIDString = B0B94B1B1BD099AE00D297F3;
 			remoteInfo = "Luminescence iOS Tests";
 		};
-		B03EF31F1BFDEDA100858663 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B03EF30E1BFDEDA100858663 /* Luminescence.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3AB6337E1BD1354500579B74;
-			remoteInfo = "Luminescence Command Line";
-		};
 		B03EF3291BFDEDA900858663 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B03EF3211BFDEDA800858663 /* Otherside.xcodeproj */;
@@ -158,20 +151,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 3A7ADE6C1BD5015D00675E77;
 			remoteInfo = "Venice iOS Tests";
-		};
-		B03EF3421BFDEDB000858663 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B03EF3311BFDEDAF00858663 /* Venice.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3A7ADE6D1BD5015D00675E77;
-			remoteInfo = "Chinese Whispers";
-		};
-		B03EF3441BFDEDB000858663 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B03EF3311BFDEDAF00858663 /* Venice.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = B00512C61BEC5AFD001B3F26;
-			remoteInfo = "Greet Server";
 		};
 		B03EF3481BFDEDED00858663 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -239,11 +218,11 @@
 		B00511CF1BEC3497001B3F26 /* EpochTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EpochTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B00511E01BEC352F001B3F26 /* EpochTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpochTests.swift; sourceTree = "<group>"; };
 		B00511E11BEC352F001B3F26 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B00512791BEC3605001B3F26 /* HTTPParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPParser.swift; sourceTree = "<group>"; };
-		B005127B1BEC3605001B3F26 /* HTTPSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPSerializer.swift; sourceTree = "<group>"; };
-		B005127C1BEC3605001B3F26 /* HTTPServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPServer.swift; sourceTree = "<group>"; };
-		B005127D1BEC3605001B3F26 /* TCPServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPServer.swift; sourceTree = "<group>"; };
-		B005127E1BEC3605001B3F26 /* TCPStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPStream.swift; sourceTree = "<group>"; };
+		B00512791BEC3605001B3F26 /* HTTPParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HTTPParser.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		B005127B1BEC3605001B3F26 /* HTTPSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HTTPSerializer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		B005127C1BEC3605001B3F26 /* HTTPServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HTTPServer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		B005127D1BEC3605001B3F26 /* TCPServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = TCPServer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		B005127E1BEC3605001B3F26 /* TCPStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = TCPStream.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B03EF2FF1BFDED9B00858663 /* Curvature.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Curvature.xcodeproj; path = Carthage/Checkouts/Curvature/Curvature.xcodeproj; sourceTree = SOURCE_ROOT; };
 		B03EF30E1BFDEDA100858663 /* Luminescence.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Luminescence.xcodeproj; path = Carthage/Checkouts/Luminescence/Luminescence.xcodeproj; sourceTree = SOURCE_ROOT; };
 		B03EF3211BFDEDA800858663 /* Otherside.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Otherside.xcodeproj; path = Carthage/Checkouts/Otherside/Otherside.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -346,7 +325,6 @@
 				B03EF31A1BFDEDA100858663 /* Luminescence.framework */,
 				B03EF31C1BFDEDA100858663 /* HTTPParser OSX Tests.xctest */,
 				B03EF31E1BFDEDA100858663 /* LuminescenceTests.xctest */,
-				B03EF3201BFDEDA100858663 /* HTTPParser Command Line */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -369,8 +347,6 @@
 				B03EF33D1BFDEDB000858663 /* Venice.framework */,
 				B03EF33F1BFDEDB000858663 /* Venice iOS Tests.xctest */,
 				B03EF3411BFDEDB000858663 /* Venice iOS Tests.xctest */,
-				B03EF3431BFDEDB000858663 /* Chinese Whispers */,
-				B03EF3451BFDEDB000858663 /* Greet Server */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -574,7 +550,6 @@
 		B03EF31C1BFDEDA100858663 /* HTTPParser OSX Tests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			name = "HTTPParser OSX Tests.xctest";
 			path = LuminescenceTests.xctest;
 			remoteRef = B03EF31B1BFDEDA100858663 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -584,14 +559,6 @@
 			fileType = wrapper.cfbundle;
 			path = LuminescenceTests.xctest;
 			remoteRef = B03EF31D1BFDEDA100858663 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		B03EF3201BFDEDA100858663 /* HTTPParser Command Line */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.executable";
-			name = "HTTPParser Command Line";
-			path = Luminescence;
-			remoteRef = B03EF31F1BFDEDA100858663 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		B03EF32A1BFDEDA900858663 /* Otherside.framework */ = {
@@ -648,20 +615,6 @@
 			fileType = wrapper.cfbundle;
 			path = "Venice iOS Tests.xctest";
 			remoteRef = B03EF3401BFDEDB000858663 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		B03EF3431BFDEDB000858663 /* Chinese Whispers */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.executable";
-			path = "Chinese Whispers";
-			remoteRef = B03EF3421BFDEDB000858663 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		B03EF3451BFDEDB000858663 /* Greet Server */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.executable";
-			path = "Greet Server";
-			remoteRef = B03EF3441BFDEDB000858663 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */

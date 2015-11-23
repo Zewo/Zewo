@@ -25,13 +25,13 @@
 import Otherside
 import Curvature
 
-public struct HTTPServer : HTTPServerType {
+public struct HTTPServer: HTTPServerType {
     public let server: TCPServerType
     public let parser: HTTPRequestParserType = HTTPParser()
     public let responder: HTTPResponderType
     public let serializer: HTTPResponseSerializerType = HTTPSerializer()
 
-    struct HTTPResponder : HTTPResponderType {
+    struct HTTPResponder: HTTPResponderType {
         let respond: (request: HTTPRequest) -> HTTPResponse
         func respond(request: HTTPRequest) -> HTTPResponse {
             return respond(request: request)
