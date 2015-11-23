@@ -38,7 +38,7 @@ import Curvature
 import Otherside
 import Epoch
 
-struct HTTPServerResponder : HTTPResponderType {
+struct HTTPServerResponder: HTTPResponderType {
     func respond(request: HTTPRequest) -> HTTPResponse {
     
         // do something based on the HTTPRequest
