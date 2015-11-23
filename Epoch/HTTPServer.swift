@@ -38,13 +38,35 @@ public struct HTTPServer : HTTPServerType {
         }
     }
 
-    public init(port: Int, respond: HTTPRequest -> HTTPResponse) {
-        self.server = TCPServer(port: port)
-        self.responder = HTTPResponder(respond: respond)
-    }
-
     public init(port: Int, responder: HTTPResponderType) {
         self.server = TCPServer(port: port)
         self.responder = responder
+    }
+
+    public init(port: Int, responder: HTTPFallibleResponderType) {
+        self.server = TCPServer(port: port)
+        self.responder = HTTPResponder { request in
+            do {
+                return try responder.respond(request)
+            } catch {
+                return HTTPResponse(status: .InternalServerError)
+            }
+        }
+    }
+
+    public init(port: Int, respond: HTTPRequest throws -> HTTPResponse) {
+        self.server = TCPServer(port: port)
+        self.responder = HTTPResponder { request in
+            do {
+                return try respond(request)
+            } catch {
+                return HTTPResponse(status: .InternalServerError)
+            }
+        }
+    }
+
+    public init(port: Int, respond: HTTPRequest -> HTTPResponse) {
+        self.server = TCPServer(port: port)
+        self.responder = HTTPResponder(respond: respond)
     }
 }
