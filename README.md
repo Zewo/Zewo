@@ -29,8 +29,6 @@ Epoch
 
 ## Usage
 
-### Standalone
-
 ```swift
 import Curvature
 import Otherside
@@ -47,34 +45,6 @@ struct HTTPServerResponder : HTTPResponderType {
 
 let responder = HTTPServerResponder()
 let server = HTTPServer(port: 8080, responder: responder)
-server.start()
-```
-
-### Epoch + Spell
-
-```swift
-import Curvature
-import Otherside
-import Epoch
-import Spell
-
-let router = HTTPRouter { router in
-	router.post("/users") { request in
-	
-        // do something based on the HTTPRequest
-        
-        return HTTPResponse(status: .Created)
-    }
-    
-    router.get("/users/:id") { request in
-    
-        // do something based on the HTTPRequest
-        
-        return HTTPResponse(status: .OK)
-    } 
-}
-
-let server = HTTPServer(port: 8080, responder: router)
 server.start()
 ```
 
