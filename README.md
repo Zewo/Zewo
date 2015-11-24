@@ -114,7 +114,7 @@ $ pod install
 To use **Epoch** in a command line application:
 
 - Install the [Swift Command Line Application](https://github.com/Zewo/Swift-Command-Line-Application-Template) Xcode template
-- Follow [Cocoa Pods](#cocoapods) or [Carthage](#carthage) instructions.
+- Follow [Cocoa Pods](#cocoapods) instructions.
 
 License
 -------
