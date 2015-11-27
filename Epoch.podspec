@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
                    'HTTPServerType/**/*.swift'
 
   s.dependency 'Venice', '0.9'
-  s.dependency 'Luminescence', '0.3'
+  s.dependency 'Luminescence', '0.3.1'
   s.dependency 'Otherside', '0.1.1'
 
   s.requires_arc = true
