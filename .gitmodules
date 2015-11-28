@@ -1,12 +1,8 @@
-[submodule "Carthage/Checkouts/Luminescence"]
-	path = Carthage/Checkouts/Luminescence
-	url = https://github.com/Zewo/Luminescence.git
-[submodule "Carthage/Checkouts/Curvature"]
-	path = Carthage/Checkouts/Curvature
-	url = https://github.com/Zewo/Curvature.git
-[submodule "Carthage/Checkouts/Venice"]
-	path = Carthage/Checkouts/Venice
+[submodule "Venice"]
+	path = Venice
 	url = https://github.com/Zewo/Venice.git
-[submodule "Carthage/Checkouts/Otherside"]
-	path = Carthage/Checkouts/Otherside
-	url = https://github.com/Zewo/Otherside.git
+	branch = master
+[submodule "HTTPParser"]
+	path = HTTPParser
+	url = https://github.com/Zewo/HTTPParser.git
+	branch = master

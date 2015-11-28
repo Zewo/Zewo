@@ -17,14 +17,14 @@ Epoch
 **Epoch** is made of:
 
 - [Venice](https://github.com/Zewo/Venice) - CSP and TCP/IP
-- [Curvature](https://github.com/Zewo/Curvature) - HTTP request/response
-- [Luminescence](https://github.com/Zewo/Luminescence) - HTTP parser
-- [Otherside](https://github.com/Zewo/Otherside) - HTTP responder interface
+- [URI](https://github.com/Zewo/URI) - URI
+- [HTTP](https://github.com/Zewo/HTTP) - HTTP request/response
+- [HTTPParser](https://github.com/Zewo/HTTPParser) - HTTP parser
 
 ## Related Projects
 
-- [Spell](https://github.com/Zewo/Spell) - HTTP router
-- [Fuzz](https://github.com/Zewo/Fuzz) - HTTP middleware framework
+- [HTTPRouter](https://github.com/Zewo/HTTPRouter) - HTTP router
+- [HTTPMiddleware](https://github.com/Zewo/HTTPMiddleware) - HTTP middleware framework
 
 ## Usage
 
@@ -33,8 +33,7 @@ Epoch
 You can use **Epoch** without any extra dependencies if you wish.
 
 ```swift
-import Curvature
-import Otherside
+import HTTP
 import Epoch
 
 struct HTTPServerResponder: HTTPResponderType {
@@ -51,29 +50,24 @@ let server = HTTPServer(port: 8080, responder: responder)
 server.start()
 ```
 
-### Epoch + Spell
+### Epoch + HTTPRouter
 
-You'll probably need an HTTP router to make thinks easier. **Epoch** and [Spell](https://www.github.com/Zewo/Spell) were designed to work with each other seamlessly.
+You'll probably need an HTTP router to make thinks easier. **Epoch** and [HTTPRouter](https://www.github.com/Zewo/HTTPRouter) were designed to work with each other seamlessly.
 
 ```swift
-import Curvature
-import Otherside
+import HTTP
+import HTTPRouter
 import Epoch
-import Spell
 
 let router = HTTPRouter { router in
     router.post("/users") { request in
-
         // do something based on the HTTPRequest
-
         return HTTPResponse(status: .Created)
     }
 
     router.get("/users/:id") { request in
-
-        // do something based on the HTTPRequest
         let id = request.parameters["id"]
-
+        // do something based on the HTTPRequest and id
         return HTTPResponse(status: .OK)
     } 
 }
@@ -97,11 +91,13 @@ $ gem install cocoapods
 To integrate **Epoch** into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
+source 'https://github.com/Zewo/Specs.git'
 source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
-pod 'Epoch', '0.3.1'
+pod 'Epoch', '0.4'
 ```
+> Don't forget  `source 'https://github.com/Zewo/Specs.git'`. This is very important. It should always come before the official CocoaPods repo.
 
 Then, run the following command:
 

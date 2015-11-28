@@ -22,8 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Otherside
-import Curvature
+import HTTP
 
 public protocol HTTPServerType {
     var server: TCPServerType { get }

@@ -7,6 +7,7 @@
     "7926375CF48B2FF472FD622211E467ACFF61BE5A" : 0,
     "900D198C3FB851E8F8E01B008846A319DD357A70" : 0,
     "E183E19EBC37EFDFA20734294B0253734CDD4430" : 0,
+    "66FB12B2039D50DE5AF09A44F1172B3A2880CFB8" : 0,
     "D4199CF4A45E212E54A4CEE7E34326E0BC446862" : 0,
     "57932305D7AF3390B1D4C8A3D4D1FCFFE771843F" : 0
   },
@@ -15,6 +16,7 @@
     "7926375CF48B2FF472FD622211E467ACFF61BE5A" : "Epoch\/Carthage\/Checkouts\/Otherside\/",
     "900D198C3FB851E8F8E01B008846A319DD357A70" : "Epoch\/Carthage\/Checkouts\/Venice\/",
     "E183E19EBC37EFDFA20734294B0253734CDD4430" : "Epoch\/",
+    "66FB12B2039D50DE5AF09A44F1172B3A2880CFB8" : "Epoch\/HTTPParser\/HTTP\/URI\/",
     "D4199CF4A45E212E54A4CEE7E34326E0BC446862" : "Epoch\/Carthage\/Checkouts\/Curvature\/",
     "57932305D7AF3390B1D4C8A3D4D1FCFFE771843F" : "Epoch\/Carthage\/Checkouts\/Luminescence\/"
   },
@@ -26,6 +28,11 @@
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Zewo\/Luminescence.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "57932305D7AF3390B1D4C8A3D4D1FCFFE771843F"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Zewo\/URI.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "66FB12B2039D50DE5AF09A44F1172B3A2880CFB8"
     },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Zewo\/Otherside.git",
