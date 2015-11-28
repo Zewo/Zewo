@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.source_files = 'Epoch/**/*.swift'
 
   s.dependency 'Venice', '0.9'
-  s.dependency 'HTTP'
+  s.dependency 'HTTPParser'
 
   s.requires_arc = true
 end
