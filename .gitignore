@@ -8,6 +8,7 @@
 ## Build generated
 build/
 DerivedData
+Carthage/
 
 ## Various settings
 *.pbxuser
@@ -24,3 +25,4 @@ xcuserdata
 *.xccheckout
 *.moved-aside
 *.xcuserstate
+*.xcscmblueprint
