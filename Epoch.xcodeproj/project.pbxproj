@@ -28,6 +28,8 @@
 		B0B0A4931C09DF6B005E92B0 /* TCPServerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0A4801C09DF6B005E92B0 /* TCPServerType.swift */; };
 		B0B0A4941C09DF6B005E92B0 /* TCPStreamType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0A4811C09DF6B005E92B0 /* TCPStreamType.swift */; };
 		B0B0A4951C09DF6B005E92B0 /* TCPStreamType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0A4811C09DF6B005E92B0 /* TCPStreamType.swift */; };
+		B0D253571C0B627F002486D6 /* HTTPServerResponderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D253561C0B627F002486D6 /* HTTPServerResponderType.swift */; };
+		B0D253581C0B627F002486D6 /* HTTPServerResponderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D253561C0B627F002486D6 /* HTTPServerResponderType.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -136,6 +138,7 @@
 		B0B0A4811C09DF6B005E92B0 /* TCPStreamType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPStreamType.swift; sourceTree = "<group>"; };
 		B0B0A4961C09E033005E92B0 /* HTTPParser.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = HTTPParser.xcodeproj; path = HTTPParser/HTTPParser.xcodeproj; sourceTree = "<group>"; };
 		B0B0A4A61C09E038005E92B0 /* Venice.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Venice.xcodeproj; path = Venice/Venice.xcodeproj; sourceTree = "<group>"; };
+		B0D253561C0B627F002486D6 /* HTTPServerResponderType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPServerResponderType.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -213,6 +216,7 @@
 			children = (
 				B0B0A47D1C09DF6B005E92B0 /* HTTPRequestParserType.swift */,
 				B0B0A47E1C09DF6B005E92B0 /* HTTPResponseSerializerType.swift */,
+				B0D253561C0B627F002486D6 /* HTTPServerResponderType.swift */,
 				B0B0A47F1C09DF6B005E92B0 /* HTTPServerType.swift */,
 				B0B0A4801C09DF6B005E92B0 /* TCPServerType.swift */,
 				B0B0A4811C09DF6B005E92B0 /* TCPStreamType.swift */,
@@ -438,6 +442,7 @@
 				B0B0A4931C09DF6B005E92B0 /* TCPServerType.swift in Sources */,
 				B0B0A4911C09DF6B005E92B0 /* HTTPServerType.swift in Sources */,
 				B0B0A4851C09DF6B005E92B0 /* HTTPSerializer.swift in Sources */,
+				B0D253581C0B627F002486D6 /* HTTPServerResponderType.swift in Sources */,
 				B0B0A4891C09DF6B005E92B0 /* TCPServer.swift in Sources */,
 				B0B0A48D1C09DF6B005E92B0 /* HTTPRequestParserType.swift in Sources */,
 				B0B0A48B1C09DF6B005E92B0 /* TCPStream.swift in Sources */,
@@ -455,6 +460,7 @@
 				B0B0A4921C09DF6B005E92B0 /* TCPServerType.swift in Sources */,
 				B0B0A4901C09DF6B005E92B0 /* HTTPServerType.swift in Sources */,
 				B0B0A4841C09DF6B005E92B0 /* HTTPSerializer.swift in Sources */,
+				B0D253571C0B627F002486D6 /* HTTPServerResponderType.swift in Sources */,
 				B0B0A4881C09DF6B005E92B0 /* TCPServer.swift in Sources */,
 				B0B0A48C1C09DF6B005E92B0 /* HTTPRequestParserType.swift in Sources */,
 				B0B0A48A1C09DF6B005E92B0 /* TCPStream.swift in Sources */,
