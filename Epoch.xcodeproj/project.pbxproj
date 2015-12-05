@@ -30,6 +30,8 @@
 		B0B0A4951C09DF6B005E92B0 /* TCPStreamType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B0A4811C09DF6B005E92B0 /* TCPStreamType.swift */; };
 		B0D253571C0B627F002486D6 /* HTTPServerResponderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D253561C0B627F002486D6 /* HTTPServerResponderType.swift */; };
 		B0D253581C0B627F002486D6 /* HTTPServerResponderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D253561C0B627F002486D6 /* HTTPServerResponderType.swift */; };
+		B0D831111C130377001AD1F2 /* EpochTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D831101C130377001AD1F2 /* EpochTests.swift */; };
+		B0D831131C130377001AD1F2 /* Epoch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B00511C51BEC3497001B3F26 /* Epoch.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -117,6 +119,13 @@
 			remoteGlobalIDString = B0B94B101BD099AD00D297F3;
 			remoteInfo = "HTTPParser iOS";
 		};
+		B0D831141C130377001AD1F2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B00511BC1BEC3497001B3F26 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B00511C41BEC3497001B3F26;
+			remoteInfo = "Epoch OSX";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -139,6 +148,9 @@
 		B0B0A4961C09E033005E92B0 /* HTTPParser.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = HTTPParser.xcodeproj; path = HTTPParser/HTTPParser.xcodeproj; sourceTree = "<group>"; };
 		B0B0A4A61C09E038005E92B0 /* Venice.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Venice.xcodeproj; path = Venice/Venice.xcodeproj; sourceTree = "<group>"; };
 		B0D253561C0B627F002486D6 /* HTTPServerResponderType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPServerResponderType.swift; sourceTree = "<group>"; };
+		B0D8310E1C130377001AD1F2 /* EpochTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EpochTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0D831101C130377001AD1F2 /* EpochTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpochTests.swift; sourceTree = "<group>"; };
+		B0D831121C130377001AD1F2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,6 +168,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B0D8310B1C130377001AD1F2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B0D831131C130377001AD1F2 /* Epoch.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -166,6 +186,7 @@
 				B0B0A4961C09E033005E92B0 /* HTTPParser.xcodeproj */,
 				B00511C71BEC3497001B3F26 /* Epoch */,
 				B00511DF1BEC352F001B3F26 /* Epoch Tests */,
+				B0D8310F1C130377001AD1F2 /* EpochTests */,
 				B00511C61BEC3497001B3F26 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -175,6 +196,7 @@
 			children = (
 				B00511C51BEC3497001B3F26 /* Epoch.framework */,
 				3A0E03741BF4A64200B15C63 /* Epoch.framework */,
+				B0D8310E1C130377001AD1F2 /* EpochTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -246,6 +268,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		B0D8310F1C130377001AD1F2 /* EpochTests */ = {
+			isa = PBXGroup;
+			children = (
+				B0D831101C130377001AD1F2 /* EpochTests.swift */,
+				B0D831121C130377001AD1F2 /* Info.plist */,
+			);
+			path = EpochTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -307,6 +338,24 @@
 			productReference = B00511C51BEC3497001B3F26 /* Epoch.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		B0D8310D1C130377001AD1F2 /* EpochTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B0D8311C1C130377001AD1F2 /* Build configuration list for PBXNativeTarget "EpochTests" */;
+			buildPhases = (
+				B0D8310A1C130377001AD1F2 /* Sources */,
+				B0D8310B1C130377001AD1F2 /* Frameworks */,
+				B0D8310C1C130377001AD1F2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B0D831151C130377001AD1F2 /* PBXTargetDependency */,
+			);
+			name = EpochTests;
+			productName = EpochTests;
+			productReference = B0D8310E1C130377001AD1F2 /* EpochTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -322,6 +371,9 @@
 					};
 					B00511C41BEC3497001B3F26 = {
 						CreatedOnToolsVersion = 7.1;
+					};
+					B0D8310D1C130377001AD1F2 = {
+						CreatedOnToolsVersion = 7.1.1;
 					};
 				};
 			};
@@ -349,6 +401,7 @@
 			targets = (
 				B00511C41BEC3497001B3F26 /* Epoch OSX */,
 				3A0E03731BF4A64200B15C63 /* Epoch iOS */,
+				B0D8310D1C130377001AD1F2 /* EpochTests */,
 			);
 		};
 /* End PBXProject section */
@@ -371,7 +424,6 @@
 		B0B0A4A31C09E033005E92B0 /* LuminescenceTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			name = LuminescenceTests.xctest;
 			path = HTTPParserTests.xctest;
 			remoteRef = B0B0A4A21C09E033005E92B0 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -379,7 +431,6 @@
 		B0B0A4A51C09E033005E92B0 /* LuminescenceTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			name = LuminescenceTests.xctest;
 			path = HTTPParserTests.xctest;
 			remoteRef = B0B0A4A41C09E033005E92B0 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -429,6 +480,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B0D8310C1C130377001AD1F2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -468,6 +526,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B0D8310A1C130377001AD1F2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B0D831111C130377001AD1F2 /* EpochTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -490,6 +556,11 @@
 			isa = PBXTargetDependency;
 			name = "HTTPParser iOS";
 			targetProxy = B0B0A4BB1C09E067005E92B0 /* PBXContainerItemProxy */;
+		};
+		B0D831151C130377001AD1F2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B00511C41BEC3497001B3F26 /* Epoch OSX */;
+			targetProxy = B0D831141C130377001AD1F2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -670,6 +741,30 @@
 			};
 			name = Release;
 		};
+		B0D831161C130377001AD1F2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = EpochTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zewo.EpochTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		B0D831171C130377001AD1F2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = EpochTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zewo.EpochTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -699,6 +794,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		B0D8311C1C130377001AD1F2 /* Build configuration list for PBXNativeTarget "EpochTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B0D831161C130377001AD1F2 /* Debug */,
+				B0D831171C130377001AD1F2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

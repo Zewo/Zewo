@@ -24,5 +24,21 @@
 
 import XCTest
 import Epoch
+import HTTP
 
-class EpochTests: XCTestCase {}
+class EpochTests: XCTestCase {
+    func test() {
+        struct HTTPServerResponder: HTTPResponderType {
+            func respond(request: HTTPRequest) -> HTTPResponse {
+
+                // do something based on the HTTPRequest
+
+                return HTTPResponse(status: .OK)
+            }
+        }
+
+        let responder = HTTPServerResponder()
+        let server = HTTPServer(port: 8080, responder: responder)
+        server.start()
+    }
+}
