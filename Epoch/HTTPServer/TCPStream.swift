@@ -72,6 +72,7 @@ final class TCPStream: StreamType {
 
     func pipe() -> StreamType {
         closeChannel.send()
+        closeChannel.receive()
         return TCPStream(socket: socket)
     }
 }

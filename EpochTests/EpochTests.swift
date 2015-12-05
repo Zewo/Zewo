@@ -28,12 +28,25 @@ import HTTP
 
 class EpochTests: XCTestCase {
     func test() {
-        struct HTTPServerResponder: HTTPResponderType {
-            func respond(request: HTTPRequest) -> HTTPResponse {
-
-                // do something based on the HTTPRequest
-
-                return HTTPResponse(status: .OK, body: "hello")
+        struct HTTPServerResponder: HTTPContextResponderType {
+            func respond(context: HTTPContext) {
+                let response = HTTPResponse(status: .SwitchingProtocols)
+                context.upgrade(response) { result in
+                    do {
+                        let stream = try result()
+                        print(stream)
+                        stream.receive { result in
+                            do {
+                                let data = try result()
+                                print(data)
+                            } catch {
+                                print(error)
+                            }
+                        }
+                    } catch {
+                        print(error)
+                    }
+                }
             }
         }
 
