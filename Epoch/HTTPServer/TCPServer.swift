@@ -23,12 +23,13 @@
 // SOFTWARE.
 
 import Venice
+import Stream
 
 struct TCPServer: TCPServerType {
     let port: Int
     let closeChannel = Channel<Void>()
 
-    func acceptClient(completion: (stream: TCPStreamType?, error: ErrorType?) -> Void) {
+    func acceptClient(completion: (Void throws -> StreamType) -> Void) {
         do {
             let ip = try IP(port: port)
             let socket = try TCPServerSocket(ip: ip, backlog: 128)
@@ -41,9 +42,9 @@ struct TCPServer: TCPServerType {
                         let clientSocket = try socket.accept()
                         errorCount = 0
                         let socketStream = TCPStream(socket: clientSocket)
-                        completion(stream: socketStream, error: nil)
+                        completion({ socketStream })
                     } catch {
-                        completion(stream: nil, error: error)
+                        completion({ throw error })
                         ++errorCount
                         if errorCount == maxErrors {
                             self.stop()
@@ -55,7 +56,7 @@ struct TCPServer: TCPServerType {
             
             closeChannel.send()
         } catch {
-            completion(stream: nil, error: error)
+            completion({ throw error })
         }
     }
 

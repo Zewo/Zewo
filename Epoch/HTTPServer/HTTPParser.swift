@@ -24,22 +24,20 @@
 
 import HTTP
 import HTTPParser
+import Stream
 
-public struct HTTPParser: HTTPRequestParserType {
-    public func parseRequest(client: TCPStreamType, completion: (request: HTTPRequest?, error: ErrorType?) -> Void) {
+struct HTTPParser: HTTPRequestParserType {
+    func parseRequest(client: StreamType, completion: (Void throws -> HTTPRequest) -> Void) {
         let parser = HTTPRequestParser { request in
-            completion(request: request, error: nil)
+            completion({ request })
         }
 
-        client.receive { data, error in
-            if let error = error {
-                completion(request: nil, error: error)
-            } else {
-                do {
-                    try parser.parse(data)
-                } catch {
-                    completion(request: nil, error: error)
-                }
+        client.receive { result in
+            do {
+                let data = try result()
+                try parser.parse(data)
+            } catch {
+                completion({ throw error })
             }
         }
     }

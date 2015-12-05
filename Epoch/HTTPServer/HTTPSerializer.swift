@@ -23,9 +23,10 @@
 // SOFTWARE.
 
 import HTTP
+import Stream
 
-public struct HTTPSerializer: HTTPResponseSerializerType {
-    public func serializeResponse(client: TCPStreamType, response: HTTPResponse, completion: (error: ErrorType?) -> Void) {
+struct HTTPSerializer: HTTPResponseSerializerType {
+    func serializeResponse(client: StreamType, response: HTTPResponse, completion: (Void throws -> Void) -> Void) {
         var string = "HTTP/\(response.majorVersion).\(response.minorVersion) \(response.statusCode) \(response.reasonPhrase)\r\n"
 
         for (name, value) in response.headers {

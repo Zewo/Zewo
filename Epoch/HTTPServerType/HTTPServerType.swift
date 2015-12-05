@@ -23,38 +23,57 @@
 // SOFTWARE.
 
 import HTTP
+import Stream
 
 public protocol HTTPServerType {
     var server: TCPServerType { get }
     var parser: HTTPRequestParserType { get }
-    var responder: HTTPServerResponderType { get }
+    var responder: HTTPContextResponderType { get }
     var serializer: HTTPResponseSerializerType  { get }
 }
 
 extension HTTPServerType {
     public func start(failure failure: ErrorType -> Void = Self.defaultFailureHandler) {
-        server.acceptClient { client, error in
-            if let error = error {
-                failure(error)
-            } else if let client = client {
-                self.parser.parseRequest(client) { request, error in
-                    if let error = error {
-                        failure(error)
-                        client.close()
-                    } else if let request = request {
-                        let response = self.responder.respond(request)
-                        self.serializer.serializeResponse(client, response: response) { error in
-                            if let error = error {
-                                failure(error)
-                                client.close()
-                            } else {
-                                if !request.keepAlive {
-                                    client.close()
+        server.acceptClient { acceptResult in
+            do {
+                let stream = try acceptResult()
+                self.parser.parseRequest(stream) { parseResult in
+                    do {
+                        let request = try parseResult()
+                        let respond: HTTPResponse -> Void = { response in
+                            self.serializer.serializeResponse(stream, response: response) { serializeResult in
+                                do {
+                                    try serializeResult()
+                                    if !request.keepAlive {
+                                        stream.close()
+                                    }
+                                } catch {
+                                    failure(error)
+                                    stream.close()
                                 }
                             }
                         }
+                        let upgrade: (HTTPResponse, (Void throws -> StreamType) -> Void) -> Void = { response, completion in
+                            self.serializer.serializeResponse(stream, response: response) { serializeResult in
+                                do {
+                                    try serializeResult()
+                                    completion({ stream.pipe() })
+                                } catch {
+                                    completion({ throw error })
+                                    failure(error)
+                                    stream.close()
+                                }
+                            }
+                        }
+                        let context = HTTPContext(request: request, respond: respond, upgrade: upgrade)
+                        self.responder.respond(context)
+                    } catch {
+                        failure(error)
+                        stream.close()
                     }
                 }
+            } catch {
+                failure(error)
             }
         }
     }

@@ -23,7 +23,8 @@
 // SOFTWARE.
 
 import HTTP
+import Stream
 
 public protocol HTTPRequestParserType {
-    func parseRequest(client: TCPStreamType, completion: (request: HTTPRequest?, error: ErrorType?) -> Void)
+    func parseRequest(client: StreamType, completion: (Void throws -> HTTPRequest) -> Void)
 }

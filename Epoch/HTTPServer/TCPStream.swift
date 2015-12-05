@@ -23,47 +23,55 @@
 // SOFTWARE.
 
 import Venice
+import Stream
 
-final class TCPStream: TCPStreamType {
+final class TCPStream: StreamType {
     let socket: TCPClientSocket
+    let closeChannel = Channel<Void>()
 
     init(socket: TCPClientSocket) {
         self.socket = socket
     }
 
-    func receive(completion: (data: [Int8], error: ErrorType?) -> Void) {
+    func receive(completion: (Void throws -> [Int8]) -> Void) {
         co {
-            do {
-                try self.socket.receive(lowWaterMark: 1) { data in
-                    completion(data: data, error: nil)
+            self.socket.receive(closeChannel: self.closeChannel, lowWaterMark: 1) { result in
+                do {
+                    let data = try result()
+                    completion({ data })
+                } catch TCPError.ConnectionResetByPeer(_, let data) {
+                    if data.count > 0 {
+                        completion({ data })
+                    }
+                    self.close()
+                } catch {
+                    completion({ throw error })
                 }
-            } catch TCPError.ConnectionResetByPeer(_, let data) {
-                if data.count > 0 {
-                    completion(data: data, error: nil)
-                }
-                self.close()
-            } catch {
-                completion(data: [], error: error)
             }
         }
     }
 
-    func send(data: [Int8], completion: (error: ErrorType?) -> Void) {
+    func send(data: [Int8], completion: (Void throws -> Void) -> Void) {
         co {
             do {
                 try self.socket.send(data)
                 try self.socket.flush()
-                completion(error: nil)
+                completion({})
             } catch TCPError.ConnectionResetByPeer {
-                completion(error: nil)
+                completion({})
                 self.close()
             } catch {
-                completion(error: error)
+                completion({ throw error })
             }
         }
     }
 
     func close() {
         socket.close()
+    }
+
+    func pipe() -> StreamType {
+        closeChannel.send()
+        return TCPStream(socket: socket)
     }
 }
