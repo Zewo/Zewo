@@ -32,30 +32,34 @@ final class TCPStream: TCPStreamType {
     }
 
     func receive(completion: (data: [Int8], error: ErrorType?) -> Void) {
-        do {
-            try socket.receive(lowWaterMark: 1) { data in
-                completion(data: data, error: nil)
+        co {
+            do {
+                try self.socket.receive(lowWaterMark: 1) { data in
+                    completion(data: data, error: nil)
+                }
+            } catch TCPError.ConnectionResetByPeer(_, let data) {
+                if data.count > 0 {
+                    completion(data: data, error: nil)
+                }
+                self.close()
+            } catch {
+                completion(data: [], error: error)
             }
-        } catch TCPError.ConnectionResetByPeer(_, let data) {
-            if data.count > 0 {
-                completion(data: data, error: nil)
-            }
-            close()
-        } catch {
-            completion(data: [], error: error)
         }
     }
 
     func send(data: [Int8], completion: (error: ErrorType?) -> Void) {
-        do {
-            try socket.send(data)
-            try socket.flush()
-            completion(error: nil)
-        } catch TCPError.ConnectionResetByPeer {
-            completion(error: nil)
-            close()
-        } catch {
-            completion(error: error)
+        co {
+            do {
+                try self.socket.send(data)
+                try self.socket.flush()
+                completion(error: nil)
+            } catch TCPError.ConnectionResetByPeer {
+                completion(error: nil)
+                self.close()
+            } catch {
+                completion(error: error)
+            }
         }
     }
 

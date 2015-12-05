@@ -33,7 +33,7 @@ class EpochTests: XCTestCase {
 
                 // do something based on the HTTPRequest
 
-                return HTTPResponse(status: .OK)
+                return HTTPResponse(status: .OK, body: "hello")
             }
         }
 
