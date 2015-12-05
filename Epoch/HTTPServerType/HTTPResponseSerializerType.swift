@@ -23,7 +23,8 @@
 // SOFTWARE.
 
 import HTTP
+import Stream
 
 public protocol HTTPResponseSerializerType {
-    func serializeResponse(client: TCPStreamType, response: HTTPResponse, completion: (error: ErrorType?) -> Void)
+    func serializeResponse(client: StreamType, response: HTTPResponse, completion: (Void throws -> Void) -> Void)
 }

@@ -27,36 +27,35 @@ import HTTP
 public struct HTTPServer: HTTPServerType {
     public let server: TCPServerType
     public let parser: HTTPRequestParserType = HTTPParser()
-    public let responder: HTTPServerResponderType
+    public let responder: HTTPContextResponderType
     public let serializer: HTTPResponseSerializerType = HTTPSerializer()
 
-    struct HTTPResponder: HTTPServerResponderType {
-        let respond: (request: HTTPRequest) -> HTTPResponse
-        func respond(request: HTTPRequest) -> HTTPResponse {
-            return respond(request: request)
+    struct HTTPResponder: HTTPContextResponderType {
+        let respond: HTTPRequest throws -> HTTPResponse
+        func respond(context: HTTPContext) {
+            let response: HTTPResponse
+            do {
+                response = try respond(context.request)
+            } catch {
+                response = HTTPResponse(status: .InternalServerError)
+            }
+            context.respond(response)
         }
+    }
+
+    public init(port: Int, responder: HTTPContextResponderType) {
+        self.server = TCPServer(port: port)
+        self.responder = responder
     }
 
     public init(port: Int, responder: HTTPResponderType) {
         self.server = TCPServer(port: port)
-        self.responder = HTTPResponder { request in
-            do {
-                return try responder.respond(request)
-            } catch {
-                return HTTPResponse(status: .InternalServerError)
-            }
-        }
+        self.responder = HTTPResponder(respond: responder.respond)
     }
 
     public init(port: Int, respond: HTTPRequest throws -> HTTPResponse) {
         self.server = TCPServer(port: port)
-        self.responder = HTTPResponder { request in
-            do {
-                return try respond(request)
-            } catch {
-                return HTTPResponse(status: .InternalServerError)
-            }
-        }
+        self.responder = HTTPResponder(respond: respond)
     }
 
     public init(port: Int, respond: HTTPRequest -> HTTPResponse) {
