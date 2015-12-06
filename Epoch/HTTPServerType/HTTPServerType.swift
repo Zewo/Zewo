@@ -55,13 +55,14 @@ extension HTTPServerType {
                         }
                         let upgrade: (HTTPResponse, (Void throws -> StreamType) -> Void) -> Void = { response, completion in
                             let pipedStream = stream.pipe()
-                            self.serializer.serializeResponse(stream, response: response) { serializeResult in
+                            self.serializer.serializeResponse(pipedStream, response: response) { serializeResult in
                                 do {
                                     try serializeResult()
                                     completion({ pipedStream })
                                 } catch {
                                     completion({ throw error })
                                     failure(error)
+                                    pipedStream.close()
                                     stream.close()
                                 }
                             }
