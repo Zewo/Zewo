@@ -1,8 +1,0 @@
-[submodule "Venice"]
-	path = Venice
-	url = https://github.com/Zewo/Venice.git
-	branch = master
-[submodule "HTTPParser"]
-	path = HTTPParser
-	url = https://github.com/Zewo/HTTPParser.git
-	branch = master
