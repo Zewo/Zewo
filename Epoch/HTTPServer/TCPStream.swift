@@ -76,3 +76,40 @@ final class TCPStream: StreamType {
         return TCPStream(socket: socket)
     }
 }
+
+extension TCPClientSocket {
+    private func receive(closeChannel closeChannel: Channel<Void>, lowWaterMark: Int = 256, highWaterMark: Int = 256, completion: (Void throws -> [Int8]) -> Void) {
+        var sequentialErrorsCount = 0
+        var data: [Int8] = []
+        var done = false
+
+        co {
+            closeChannel.receive()
+            done = true
+        }
+
+        while !closed {
+            do {
+                data += try self.receiveLowWaterMark(lowWaterMark, highWaterMark: highWaterMark, deadline: now + 1 * second)
+                sequentialErrorsCount = 0
+                co(completion({ data }))
+                data = []
+            } catch TCPError.OperationTimedOut(_, let d) {
+                data += d
+                if done {
+                    co(completion({ data }))
+                    data = []
+                    closeChannel.send()
+                    break
+                }
+            } catch TCPError.ClosedSocket {
+                break
+            } catch {
+                ++sequentialErrorsCount
+                if sequentialErrorsCount >= 10 {
+                    completion({ throw error })
+                }
+            }
+        }
+    }
+}
