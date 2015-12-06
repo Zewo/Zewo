@@ -1,17 +1,12 @@
 Epoch
 =====
 
-[![Swift 2.1](https://img.shields.io/badge/Swift-2.1-orange.svg?style=flat)](https://developer.apple.com/swift/)
-[![Platforms OS X | iOS](https://img.shields.io/badge/Platforms-OS%20X%20%7C%20iOS-lightgray.svg?style=flat)](https://developer.apple.com/swift/)
-[![Cocoapods Compatible](https://img.shields.io/badge/Cocoapods-Compatible-4BC51D.svg?style=flat)](https://cocoapods.org/pods/Epoch)
+[![Swift 2.2](https://img.shields.io/badge/Swift-2.1-orange.svg?style=flat)](https://developer.apple.com/swift/)
+[![Platforms Linux](https://img.shields.io/badge/Platforms-Linux-lightgray.svg?style=flat)](https://developer.apple.com/swift/)
 [![License MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](https://tldrlegal.com/license/mit-license)
 [![Slack Status](https://zewo-slackin.herokuapp.com/badge.svg)](https://zewo-slackin.herokuapp.com)
 
-**Epoch** is a Venice based HTTP server for **Swift 2**.
-
-## Features
-
-- [x] No `Foundation` dependency (**Linux ready**)
+**Epoch** is a Venice based HTTP server for **Swift 2.2**.
 
 ## Dependencies
 
@@ -39,9 +34,7 @@ import Epoch
 
 struct HTTPServerResponder: HTTPResponderType {
     func respond(request: HTTPRequest) -> HTTPResponse {
-    
         // do something based on the HTTPRequest
-
         return HTTPResponse(status: .OK)
     }
 }
@@ -79,39 +72,44 @@ server.start()
 
 ## Installation
 
-### CocoaPods
-
-[CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects. You can install it with the following command:
+- Install [`uri_parser`](https://github.com/Zewo/uri_parser)
 
 ```bash
-$ gem install cocoapods
+$ git clone https://github.com/Zewo/uri_parser.git
+$ cd uri_parser
+$ make
+$ dpkg -i uri_parser.deb
 ```
 
-> CocoaPods 0.39.0+ is required to build Epoch.
-
-To integrate **Epoch** into your Xcode project using CocoaPods, specify it in your `Podfile`:
-
-```ruby
-source 'https://github.com/Zewo/Specs.git'
-source 'https://github.com/CocoaPods/Specs.git'
-use_frameworks!
-
-pod 'Epoch', '0.4'
-```
-> Don't forget  `source 'https://github.com/Zewo/Specs.git'`. This is very important. It should always come before the official CocoaPods repo.
-
-Then, run the following command:
+- Install [`http_parser`](https://github.com/Zewo/http_parser)
 
 ```bash
-$ pod install
+$ git clone https://github.com/Zewo/http_parser.git
+$ cd http_parser
+$ make
+$ dpkg -i http_parser.deb
 ```
 
-### Command Line Application
+- Install [`libvenice`](https://github.com/Zewo/libvenice)
 
-To use **Epoch** in a command line application:
+```bash
+$ git clone https://github.com/Zewo/libvenice.git
+$ cd libvenice
+$ make
+$ dpkg -i libvenice.deb
+```
 
-- Install the [Swift Command Line Application](https://github.com/Zewo/Swift-Command-Line-Application-Template) Xcode template
-- Follow [Cocoa Pods](#cocoapods) instructions.
+- Add `Epoch` to your `Package.swift`
+
+```swift
+import PackageDescription
+
+let package = Package(
+	dependencies: [
+		.Package(url: "https://github.com/Zewo/Epoch.git", majorVersion: 0, minor: 1)
+	]
+)
+```
 
 ## Community
 
