@@ -53,7 +53,7 @@ struct TCPServer: TCPServerType {
                     }
                 }
             }
-            
+
             closeChannel.send()
         } catch {
             completion({ throw error })
