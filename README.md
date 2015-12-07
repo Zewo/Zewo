@@ -29,6 +29,7 @@ Epoch
 You can use **Epoch** without any extra dependencies if you wish.
 
 ```swift
+import Glibc
 import HTTP
 import Epoch
 
@@ -49,6 +50,7 @@ server.start()
 You'll probably need an HTTP router to make thinks easier. **Epoch** and [HTTPRouter](https://www.github.com/Zewo/HTTPRouter) were designed to work with each other seamlessly.
 
 ```swift
+import Glibc
 import HTTP
 import HTTPRouter
 import Epoch
