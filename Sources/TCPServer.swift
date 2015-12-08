@@ -24,9 +24,13 @@
 
 import Venice
 import Stream
+import SSL
 
 struct TCPServer: TCPServerType {
     let port: Int
+    let SSLStream: SSLStreamType.Type?
+    let SSLContext: SSLContextType?
+
     let closeChannel = Channel<Void>()
 
     func acceptClient(completion: (Void throws -> StreamType) -> Void) {
@@ -42,7 +46,13 @@ struct TCPServer: TCPServerType {
                         let clientSocket = try socket.accept()
                         errorCount = 0
                         let socketStream = TCPStream(socket: clientSocket)
-                        completion({ socketStream })
+
+                        if let SSLStream = self.SSLStream, SSLContext = self.SSLContext {
+                            let stream = try SSLStream.init(context: SSLContext, rawStream: socketStream)
+                            completion({ stream })
+                        } else {
+                            completion({ socketStream })
+                        }
                     } catch {
                         completion({ throw error })
                         ++errorCount

@@ -23,6 +23,7 @@
 // SOFTWARE.
 
 import HTTP
+import SSL
 
 public struct Server: ServerType {
     public let server: TCPServerType
@@ -30,7 +31,7 @@ public struct Server: ServerType {
     public let responder: ContextResponderType
     public let serializer: ResponseSerializerType = Serializer()
 
-    struct Responder: ContextResponderType {
+    struct ContextResponder: ContextResponderType {
         let respond: Request throws -> Response
         func respond(context: Context) {
             let response: Response
@@ -43,23 +44,34 @@ public struct Server: ServerType {
         }
     }
 
-    public init(port: Int, responder: ContextResponderType) {
-        self.server = TCPServer(port: port)
+    public final class ServerOptions {
+        var SSLStream: SSLStreamType.Type? = nil
+        var SSLContext: SSLContextType? = nil
+
+        public func setSSL(type: SSLStreamType.Type, context: SSLContextType) {
+            SSLStream = type
+            SSLContext = context
+        }
+    }
+
+    public init(port: Int, responder: ContextResponderType, options: (ServerOptions -> Void)? = nil) {
+        let serverOptions = ServerOptions()
+        options?(serverOptions)
+        self.server = TCPServer(
+            port: port,
+            SSLStream: serverOptions.SSLStream,
+            SSLContext: serverOptions.SSLContext
+        )
         self.responder = responder
     }
 
-    public init(port: Int, responder: ResponderType) {
-        self.server = TCPServer(port: port)
-        self.responder = Responder(respond: responder.respond)
+    public init(port: Int, responder: ResponderType, options: (ServerOptions -> Void)? = nil) {
+        let contextResponder = ContextResponder(respond: responder.respond)
+        self.init(port: port, responder: contextResponder, options: options)
     }
 
-    public init(port: Int, respond: Request throws -> Response) {
-        self.server = TCPServer(port: port)
-        self.responder = Responder(respond: respond)
-    }
-
-    public init(port: Int, respond: Request -> Response) {
-        self.server = TCPServer(port: port)
-        self.responder = Responder(respond: respond)
+    public init(port: Int, respond: Request throws -> Response, options: (ServerOptions -> Void)? = nil) {
+        let contextResponder = ContextResponder(respond: respond)
+        self.init(port: port, responder: contextResponder, options: options)
     }
 }
