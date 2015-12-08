@@ -45,13 +45,7 @@ public struct Server: ServerType {
     }
 
     public final class Options {
-        var SSLStream: SSLStreamType.Type? = nil
-        var SSLContext: SSLContextType? = nil
-
-        public func setSSL(type: SSLStreamType.Type, context: SSLContextType) {
-            SSLStream = type
-            SSLContext = context
-        }
+        public var SSL: SSLServerContextType? = nil
     }
 
     public init(port: Int, responder: ContextResponderType, options: (Options -> Void)? = nil) {
@@ -59,8 +53,7 @@ public struct Server: ServerType {
         options?(serverOptions)
         self.server = TCPServer(
             port: port,
-            SSLStream: serverOptions.SSLStream,
-            SSLContext: serverOptions.SSLContext
+            SSL: serverOptions.SSL
         )
         self.responder = responder
     }

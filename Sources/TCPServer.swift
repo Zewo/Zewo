@@ -28,8 +28,7 @@ import SSL
 
 struct TCPServer: TCPServerType {
     let port: Int
-    let SSLStream: SSLStreamType.Type?
-    let SSLContext: SSLContextType?
+    let SSL: SSLServerContextType?
 
     let closeChannel = Channel<Void>()
 
@@ -47,8 +46,8 @@ struct TCPServer: TCPServerType {
                         errorCount = 0
                         let socketStream = TCPStream(socket: clientSocket)
 
-                        if let SSLStream = self.SSLStream, SSLContext = self.SSLContext {
-                            let stream = try SSLStream.init(context: SSLContext, rawStream: socketStream)
+                        if let SSL = self.SSL {
+                            let stream = try SSL.streamType.init(context: SSL, rawStream: socketStream)
                             completion({ stream })
                         } else {
                             completion({ socketStream })
