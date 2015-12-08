@@ -44,7 +44,7 @@ public struct Server: ServerType {
         }
     }
 
-    public final class ServerOptions {
+    public final class Options {
         var SSLStream: SSLStreamType.Type? = nil
         var SSLContext: SSLContextType? = nil
 
@@ -54,8 +54,8 @@ public struct Server: ServerType {
         }
     }
 
-    public init(port: Int, responder: ContextResponderType, options: (ServerOptions -> Void)? = nil) {
-        let serverOptions = ServerOptions()
+    public init(port: Int, responder: ContextResponderType, options: (Options -> Void)? = nil) {
+        let serverOptions = Options()
         options?(serverOptions)
         self.server = TCPServer(
             port: port,
@@ -65,12 +65,12 @@ public struct Server: ServerType {
         self.responder = responder
     }
 
-    public init(port: Int, responder: ResponderType, options: (ServerOptions -> Void)? = nil) {
+    public init(port: Int, responder: ResponderType, options: (Options -> Void)? = nil) {
         let contextResponder = ContextResponder(respond: responder.respond)
         self.init(port: port, responder: contextResponder, options: options)
     }
 
-    public init(port: Int, respond: Request throws -> Response, options: (ServerOptions -> Void)? = nil) {
+    public init(port: Int, respond: Request throws -> Response, options: (Options -> Void)? = nil) {
         let contextResponder = ContextResponder(respond: respond)
         self.init(port: port, responder: contextResponder, options: options)
     }
