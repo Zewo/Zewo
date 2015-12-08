@@ -22,6 +22,10 @@ Epoch
 - [HTTPRouter](https://github.com/Zewo/HTTPRouter) - HTTP router
 - [HTTPMiddleware](https://github.com/Zewo/HTTPMiddleware) - HTTP middleware framework
 
+## Examples
+
+Check what Epoch along other Zewo's modules can do in the [Examples](https://github.com/Zewo/Examples) repo.
+
 ## Usage
 
 ### Solo
@@ -32,16 +36,18 @@ You can use **Epoch** without any extra dependencies if you wish.
 import Glibc
 import HTTP
 import Epoch
+import CHTTPParser
+import CLibvenice
 
-struct HTTPServerResponder: HTTPResponderType {
-    func respond(request: HTTPRequest) -> HTTPResponse {
-        // do something based on the HTTPRequest
-        return HTTPResponse(status: .OK)
+struct ServerResponder: ResponderType {
+    func respond(request: Request) -> Response {
+        // do something based on the Request
+        return Response(status: .OK)
     }
 }
 
-let responder = HTTPServerResponder()
-let server = HTTPServer(port: 8080, responder: responder)
+let responder = ServerResponder()
+let server = Server(port: 8080, responder: responder)
 server.start()
 ```
 
@@ -54,21 +60,23 @@ import Glibc
 import HTTP
 import HTTPRouter
 import Epoch
+import CHTTPParser
+import CLibvenice
 
-let router = HTTPRouter { router in
+let router = Router { router in
     router.post("/users") { request in
-        // do something based on the HTTPRequest
-        return HTTPResponse(status: .Created)
+        // do something based on the Request
+        return Response(status: .Created)
     }
 
     router.get("/users/:id") { request in
         let id = request.parameters["id"]
-        // do something based on the HTTPRequest and id
-        return HTTPResponse(status: .OK)
+        // do something based on the Request and id
+        return Response(status: .OK)
     } 
 }
 
-let server = HTTPServer(port: 8080, responder: router)
+let server = Server(port: 8080, responder: router)
 server.start()
 ```
 
