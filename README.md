@@ -121,6 +121,8 @@ $ make
 $ (sudo) make install
 ```
 
+> You only have to install the C libs once.
+
 Then add `Epoch` to your `Package.swift`
 
 ```swift
