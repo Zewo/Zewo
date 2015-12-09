@@ -82,34 +82,46 @@ server.start()
 
 ## Installation
 
-- Install [`uri_parser`](https://github.com/Zewo/uri_parser)
+**Epoch** depends on the C libs [libvenice](https://github.com/Zewo/libvenice), [http_parser](https://github.com/Zewo/http_parser) and [uri_parser](https://github.com/Zewo/uri_parser). Install them through:
 
+### Homebrew 
 ```bash
-$ git clone https://github.com/Zewo/uri_parser.git
-$ cd uri_parser
+$ brew tap zewo/tap
+$ brew install libvenice
+$ brew install http_parser
+$ brew install uri_parser
+```
+
+### Ubuntu/Debian
+```bash
+$ git clone https://github.com/Zewo/libvenice.git && cd libvenice
 $ make
+$ make package
+$ dpkg -i libvenice.deb
+$ git clone https://github.com/Zewo/http_parser.git && cd http_parser
+$ make
+$ make package
+$ dpkg -i http_parser.deb
+$ git clone https://github.com/Zewo/uri_parser.git && cd uri_parser
+$ make
+$ make package
 $ dpkg -i uri_parser.deb
 ```
 
-- Install [`http_parser`](https://github.com/Zewo/http_parser)
-
+### Source
 ```bash
-$ git clone https://github.com/Zewo/http_parser.git
-$ cd http_parser
+$ git clone https://github.com/Zewo/libvenice.git && cd libvenice
 $ make
-$ dpkg -i http_parser.deb
+$ (sudo) make install
+$ git clone https://github.com/Zewo/http_parser.git && cd http_parser
+$ make
+$ (sudo) make install
+$ git clone https://github.com/Zewo/uri_parser.git && cd uri_parser
+$ make
+$ (sudo) make install
 ```
 
-- Install [`libvenice`](https://github.com/Zewo/libvenice)
-
-```bash
-$ git clone https://github.com/Zewo/libvenice.git
-$ cd libvenice
-$ make
-$ dpkg -i libvenice.deb
-```
-
-- Add `Epoch` to your `Package.swift`
+Then add `Epoch` to your `Package.swift`
 
 ```swift
 import PackageDescription
