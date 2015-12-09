@@ -33,7 +33,11 @@ Check what Epoch along other Zewo's modules can do in the [Examples](https://git
 You can use **Epoch** without any extra dependencies if you wish.
 
 ```swift
-import Glibc
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin.C
+#endif
 import HTTP
 import Epoch
 import CHTTPParser
@@ -56,7 +60,11 @@ server.start()
 You'll probably need an HTTP router to make thinks easier. **Epoch** and [HTTPRouter](https://www.github.com/Zewo/HTTPRouter) were designed to work with each other seamlessly.
 
 ```swift
-import Glibc
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin.C
+#endif
 import HTTP
 import HTTPRouter
 import Epoch
