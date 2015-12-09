@@ -87,9 +87,7 @@ server.start()
 ### Homebrew 
 ```bash
 $ brew tap zewo/tap
-$ brew install libvenice
-$ brew install http_parser
-$ brew install uri_parser
+$ brew install libvenice http_parser uri_parser
 ```
 
 ### Ubuntu/Debian
