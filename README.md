@@ -33,7 +33,11 @@ Check what Epoch along other Zewo's modules can do in the [Examples](https://git
 You can use **Epoch** without any extra dependencies if you wish.
 
 ```swift
-import Glibc
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin.C
+#endif
 import HTTP
 import Epoch
 import CHTTPParser
@@ -56,7 +60,11 @@ server.start()
 You'll probably need an HTTP router to make thinks easier. **Epoch** and [HTTPRouter](https://www.github.com/Zewo/HTTPRouter) were designed to work with each other seamlessly.
 
 ```swift
-import Glibc
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin.C
+#endif
 import HTTP
 import HTTPRouter
 import Epoch
@@ -82,34 +90,46 @@ server.start()
 
 ## Installation
 
-- Install [`uri_parser`](https://github.com/Zewo/uri_parser)
+**Epoch** depends on the C libs [libvenice](https://github.com/Zewo/libvenice), [http_parser](https://github.com/Zewo/http_parser) and [uri_parser](https://github.com/Zewo/uri_parser). Install them through:
 
+### Homebrew 
 ```bash
-$ git clone https://github.com/Zewo/uri_parser.git
-$ cd uri_parser
+$ brew tap zewo/tap
+$ brew install libvenice http_parser uri_parser
+```
+
+### Ubuntu/Debian
+```bash
+$ git clone https://github.com/Zewo/libvenice.git && cd libvenice
 $ make
+$ make package
+$ dpkg -i libvenice.deb
+$ git clone https://github.com/Zewo/http_parser.git && cd http_parser
+$ make
+$ make package
+$ dpkg -i http_parser.deb
+$ git clone https://github.com/Zewo/uri_parser.git && cd uri_parser
+$ make
+$ make package
 $ dpkg -i uri_parser.deb
 ```
 
-- Install [`http_parser`](https://github.com/Zewo/http_parser)
-
+### Source
 ```bash
-$ git clone https://github.com/Zewo/http_parser.git
-$ cd http_parser
+$ git clone https://github.com/Zewo/libvenice.git && cd libvenice
 $ make
-$ dpkg -i http_parser.deb
+$ (sudo) make install
+$ git clone https://github.com/Zewo/http_parser.git && cd http_parser
+$ make
+$ (sudo) make install
+$ git clone https://github.com/Zewo/uri_parser.git && cd uri_parser
+$ make
+$ (sudo) make install
 ```
 
-- Install [`libvenice`](https://github.com/Zewo/libvenice)
+> You only have to install the C libs once.
 
-```bash
-$ git clone https://github.com/Zewo/libvenice.git
-$ cd libvenice
-$ make
-$ dpkg -i libvenice.deb
-```
-
-- Add `Epoch` to your `Package.swift`
+Then add `Epoch` to your `Package.swift`
 
 ```swift
 import PackageDescription
