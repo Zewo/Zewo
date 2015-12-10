@@ -24,6 +24,7 @@
 
 import HTTP
 import Stream
+import URI
 
 struct Serializer: ResponseSerializerType {
     func serializeResponse(client: StreamType, response: Response, completion: (Void throws -> Void) -> Void) {

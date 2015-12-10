@@ -27,7 +27,7 @@ import Stream
 
 final class TCPStream: StreamType {
     let socket: TCPClientSocket
-    let closeChannel = Channel<Void>()
+    var done = false
 
     init(socket: TCPClientSocket) {
         self.socket = socket
@@ -35,7 +35,7 @@ final class TCPStream: StreamType {
 
     func receive(completion: (Void throws -> [Int8]) -> Void) {
         co {
-            self.socket.receive(closeChannel: self.closeChannel, lowWaterMark: 1) { result in
+            self.receive(self.socket, lowWaterMark: 1) { result in
                 do {
                     let data = try result()
                     completion({ data })
@@ -52,17 +52,15 @@ final class TCPStream: StreamType {
     }
 
     func send(data: [Int8], completion: (Void throws -> Void) -> Void) {
-        co {
-            do {
-                try self.socket.send(data)
-                try self.socket.flush()
-                completion({})
-            } catch TCPError.ConnectionResetByPeer {
-                completion({})
-                self.close()
-            } catch {
-                completion({ throw error })
-            }
+        do {
+            try self.socket.send(data)
+            try self.socket.flush()
+            completion({})
+        } catch TCPError.ConnectionResetByPeer {
+            completion({})
+            self.close()
+        } catch {
+            completion({ throw error })
         }
     }
 
@@ -71,35 +69,25 @@ final class TCPStream: StreamType {
     }
 
     func pipe() -> StreamType {
-        closeChannel.send()
-        closeChannel.receive()
+        done = true
         return TCPStream(socket: socket)
     }
-}
 
-extension TCPClientSocket {
-    private func receive(closeChannel closeChannel: Channel<Void>, lowWaterMark: Int = 256, highWaterMark: Int = 256, completion: (Void throws -> [Int8]) -> Void) {
+    func receive(socket: TCPClientSocket, lowWaterMark: Int = 256, highWaterMark: Int = 256, completion: (Void throws -> [Int8]) -> Void) {
         var sequentialErrorsCount = 0
         var data: [Int8] = []
-        var done = false
 
-        co {
-            closeChannel.receive()
-            done = true
-        }
-
-        while !closed {
+        while !socket.closed && !done {
             do {
-                data += try self.receiveLowWaterMark(lowWaterMark, highWaterMark: highWaterMark, deadline: now + 1 * second)
+                data += try socket.receiveLowWaterMark(lowWaterMark, highWaterMark: highWaterMark, deadline: now + 1 * second)
                 sequentialErrorsCount = 0
-                co(completion({ data }))
+                completion({ data })
                 data = []
             } catch TCPError.OperationTimedOut(_, let d) {
                 data += d
                 if done {
-                    co(completion({ data }))
+                    completion({ data })
                     data = []
-                    closeChannel.send()
                     break
                 }
             } catch TCPError.ClosedSocket {
