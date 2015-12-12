@@ -22,10 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+import Core
 import HTTP
 import HTTPParser
-import Stream
-
 struct Parser: RequestParserType {
     func parseRequest(client: StreamType, completion: (Void throws -> Request) -> Void) {
         let parser = RequestParser { request in

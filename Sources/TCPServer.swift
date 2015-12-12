@@ -22,9 +22,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+import Core
 import Venice
-import Stream
-import SSL
 
 struct TCPServer: TCPServerType {
     let port: Int

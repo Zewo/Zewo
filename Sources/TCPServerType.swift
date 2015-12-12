@@ -22,7 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Stream
+import Core
 
 public protocol TCPServerType {
     func acceptClient(completion: (Void throws -> StreamType) -> Void)

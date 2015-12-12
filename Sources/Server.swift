@@ -22,8 +22,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+import Core
 import HTTP
-import SSL
 
 public struct Server: ServerType {
     public let server: TCPServerType
