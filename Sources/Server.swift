@@ -24,6 +24,7 @@
 
 import Core
 import HTTP
+import Venice
 
 public struct Server: ServerType {
     public let server: TCPServerType
@@ -66,5 +67,9 @@ public struct Server: ServerType {
     public init(port: Int, respond: Request throws -> Response, options: (Options -> Void)? = nil) {
         let contextResponder = ContextResponder(respond: respond)
         self.init(port: port, responder: contextResponder, options: options)
+    }
+
+    public func startInBackground(failure failure: ErrorType -> Void = Server.defaultFailureHandler) {
+        co(self.start(failure: failure))
     }
 }

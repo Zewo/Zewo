@@ -84,7 +84,7 @@ extension ServerType {
         server.stop()
     }
 
-    private static func defaultFailureHandler(error: ErrorType) -> Void {
+    static func defaultFailureHandler(error: ErrorType) -> Void {
         print("An error has occured! We can't print the error due to a Swift 2.2 bug. A bug report has been filed. We're trying to find a way to circumvent this.")
     }
 }
