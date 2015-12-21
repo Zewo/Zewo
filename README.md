@@ -4,7 +4,7 @@ Epoch
 [![Swift 2.2](https://img.shields.io/badge/Swift-2.1-orange.svg?style=flat)](https://swift.org)
 [![Platforms Linux](https://img.shields.io/badge/Platforms-Linux-lightgray.svg?style=flat)](https://swift.org)
 [![License MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](https://tldrlegal.com/license/mit-license)
-[![Slack Status](https://slack.zewo.io/badge.svg)](https://slack.zewo.io)
+[![Slack Status](http://slack.zewo.io/badge.svg)](http://slack.zewo.io)
 
 **Epoch** is a Venice based HTTP server for **Swift 2.2**.
 
@@ -123,7 +123,7 @@ let package = Package(
 
 [![Slack](http://s13.postimg.org/ybwy92ktf/Slack.png)](https://slack.zewo.io)
 
-Join us on [Slack](https://slack.zewo.io).
+Join us on [Slack](http://slack.zewo.io).
 
 License
 -------
