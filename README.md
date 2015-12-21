@@ -1,10 +1,10 @@
 Epoch
 =====
 
-[![Swift 2.2](https://img.shields.io/badge/Swift-2.1-orange.svg?style=flat)](https://developer.apple.com/swift/)
-[![Platforms Linux](https://img.shields.io/badge/Platforms-Linux-lightgray.svg?style=flat)](https://developer.apple.com/swift/)
+[![Swift 2.2](https://img.shields.io/badge/Swift-2.1-orange.svg?style=flat)](https://swift.org)
+[![Platforms Linux](https://img.shields.io/badge/Platforms-Linux-lightgray.svg?style=flat)](https://swift.org)
 [![License MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](https://tldrlegal.com/license/mit-license)
-[![Slack Status](https://zewo-slackin.herokuapp.com/badge.svg)](https://zewo-slackin.herokuapp.com)
+[![Slack Status](https://slack.zewo.io/badge.svg)](https://slack.zewo.io)
 
 **Epoch** is a Venice based HTTP server for **Swift 2.2**.
 
@@ -13,14 +13,14 @@ Epoch
 **Epoch** is made of:
 
 - [Venice](https://github.com/Zewo/Venice) - CSP and TCP/IP
-- [URI](https://github.com/Zewo/URI) - URI
+- [Core](https://github.com/Zewo/Core) - Core
 - [HTTP](https://github.com/Zewo/HTTP) - HTTP request/response
 - [HTTPParser](https://github.com/Zewo/HTTPParser) - HTTP parser
 
 ## Related Projects
 
 - [Router](https://github.com/Zewo/Router) - HTTP router
-- [HTTPMiddleware](https://github.com/Zewo/HTTPMiddleware) - HTTP middleware framework
+- [Middleware](https://github.com/Zewo/Middleware) - HTTP middleware framework
 
 ## Examples
 
@@ -90,41 +90,19 @@ server.start()
 
 ## Installation
 
-**Epoch** depends on the C libs [libvenice](https://github.com/Zewo/libvenice), [http_parser](https://github.com/Zewo/http_parser) and [uri_parser](https://github.com/Zewo/uri_parser). Install them through:
+**Epoch** depends on the C libs [libvenice](https://github.com/Zewo/libvenice), [http_parser](https://github.com/Zewo/http_parser) and [uri_parser](https://github.com/Zewo/uri_parser).
 
-### Homebrew 
+### OSX 
 ```bash
 $ brew tap zewo/tap
 $ brew install libvenice http_parser uri_parser
 ```
 
-### Ubuntu/Debian
+### Linux
 ```bash
-$ git clone https://github.com/Zewo/libvenice.git && cd libvenice
-$ make
-$ make package
-$ dpkg -i libvenice.deb
-$ git clone https://github.com/Zewo/http_parser.git && cd http_parser
-$ make
-$ make package
-$ dpkg -i http_parser.deb
-$ git clone https://github.com/Zewo/uri_parser.git && cd uri_parser
-$ make
-$ make package
-$ dpkg -i uri_parser.deb
-```
-
-### Source
-```bash
-$ git clone https://github.com/Zewo/libvenice.git && cd libvenice
-$ make
-$ (sudo) make install
-$ git clone https://github.com/Zewo/http_parser.git && cd http_parser
-$ make
-$ (sudo) make install
-$ git clone https://github.com/Zewo/uri_parser.git && cd uri_parser
-$ make
-$ (sudo) make install
+$ sudo add-apt-repository 'deb [trusted=yes] http://apt.zewo.io/deb ./'
+$ sudo apt-get update
+$ sudo apt-get install uri-parser http-parser libvenice
 ```
 
 > You only have to install the C libs once.
@@ -135,17 +113,17 @@ Then add `Epoch` to your `Package.swift`
 import PackageDescription
 
 let package = Package(
-	dependencies: [
-		.Package(url: "https://github.com/Zewo/Epoch.git", majorVersion: 0, minor: 1)
-	]
+    dependencies: [
+        .Package(url: "https://github.com/Zewo/Epoch.git", majorVersion: 0, minor: 1)
+    ]
 )
 ```
 
 ## Community
 
-[![Slack](http://s13.postimg.org/ybwy92ktf/Slack.png)](https://zewo-slackin.herokuapp.com)
+[![Slack](http://s13.postimg.org/ybwy92ktf/Slack.png)](https://slack.zewo.io)
 
-Join us on [Slack](https://zewo-slackin.herokuapp.com).
+Join us on [Slack](https://slack.zewo.io).
 
 License
 -------
