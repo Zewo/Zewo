@@ -19,7 +19,7 @@ Epoch
 
 ## Related Projects
 
-- [HTTPRouter](https://github.com/Zewo/HTTPRouter) - HTTP router
+- [Router](https://github.com/Zewo/Router) - HTTP router
 - [HTTPMiddleware](https://github.com/Zewo/HTTPMiddleware) - HTTP middleware framework
 
 ## Examples
@@ -55,9 +55,9 @@ let server = Server(port: 8080, responder: responder)
 server.start()
 ```
 
-### Epoch + HTTPRouter
+### Epoch + Router
 
-You'll probably need an HTTP router to make thinks easier. **Epoch** and [HTTPRouter](https://www.github.com/Zewo/HTTPRouter) were designed to work with each other seamlessly.
+You'll probably need an HTTP router to make thinks easier. **Epoch** and [Router](https://www.github.com/Zewo/Router) were designed to work with each other seamlessly.
 
 ```swift
 #if os(Linux)
@@ -66,7 +66,7 @@ You'll probably need an HTTP router to make thinks easier. **Epoch** and [HTTPRo
     import Darwin.C
 #endif
 import HTTP
-import HTTPRouter
+import Router
 import Epoch
 import CHTTPParser
 import CLibvenice
