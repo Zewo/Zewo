@@ -22,7 +22,7 @@ Epoch
 - [Router](https://github.com/Zewo/Router) - HTTP router
 - [Middleware](https://github.com/Zewo/Middleware) - HTTP middleware framework
 - [SQL](https://github.com/Zewo/SQL) - SQL protocols
-- [PostgreSQL](https://github.com/Zewo/PotgreSQL) - PostgreSQL client
+- [PostgreSQL](https://github.com/Zewo/PostgreSQL) - PostgreSQL client
 - [MySQL](https://github.com/Zewo/MySQL) - MySQL client
 - [Sideburns](https://github.com/Zewo/Sideburns) - Mustache templates
 
