@@ -25,6 +25,7 @@ Epoch
 - [PostgreSQL](https://github.com/Zewo/PostgreSQL) - PostgreSQL client
 - [MySQL](https://github.com/Zewo/MySQL) - MySQL client
 - [Sideburns](https://github.com/Zewo/Sideburns) - Mustache templates
+- [Websocket](https://github.com/Zewo/Websocket) - Websocket server
 
 ## Examples
 
