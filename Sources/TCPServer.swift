@@ -36,6 +36,18 @@ struct TCPServer: TCPServerType {
             let ip = try IP(port: port)
             let socket = try TCPServerSocket(ip: ip, backlog: 128)
 
+            for _ in 0 ..< CPUCoreCount - 1 {
+                let pid = fork()
+
+                if pid < 0 {
+                   fatalError("Can't create new process")
+                }
+
+                if pid > 0 {
+                    break
+                }
+            }
+
             co {
                 var errorCount = 0
                 let maxErrors = 10
