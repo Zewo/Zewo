@@ -105,7 +105,7 @@ $ brew install libvenice http_parser uri_parser
 
 ### Linux
 ```bash
-$ sudo add-apt-repository 'deb [trusted=yes] http://apt.zewo.io/deb ./'
+$ echo "deb [trusted=yes] http://apt.zewo.io/deb ./" | sudo tee --append /etc/apt/sources.list
 $ sudo apt-get update
 $ sudo apt-get install uri-parser http-parser libvenice
 ```
