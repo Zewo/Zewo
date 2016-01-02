@@ -1,7 +1,7 @@
 Epoch
 =====
 
-[![Swift 2.2](https://img.shields.io/badge/Swift-2.1-orange.svg?style=flat)](https://swift.org)
+[![Swift 2.2](https://img.shields.io/badge/Swift-2.2-orange.svg?style=flat)](https://swift.org)
 [![Platforms Linux](https://img.shields.io/badge/Platforms-Linux-lightgray.svg?style=flat)](https://swift.org)
 [![License MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](https://tldrlegal.com/license/mit-license)
 [![Slack Status](http://slack.zewo.io/badge.svg)](http://slack.zewo.io)
