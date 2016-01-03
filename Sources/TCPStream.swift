@@ -93,7 +93,7 @@ final class TCPStream: StreamType {
             } catch TCPError.ClosedSocket {
                 break
             } catch {
-                ++sequentialErrorsCount
+                sequentialErrorsCount += 1
                 if sequentialErrorsCount >= 10 {
                     completion({ throw error })
                 }

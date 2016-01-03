@@ -65,7 +65,7 @@ struct TCPServer: TCPServerType {
                         }
                     } catch {
                         completion({ throw error })
-                        ++errorCount
+                        errorCount += 1
                         if errorCount == maxErrors {
                             self.stop()
                             break
