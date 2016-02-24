@@ -40,7 +40,7 @@ let package = Package(
 )
 ```
 
-One of our core values is modularity. The `Zewo` package is convenience a *superpackage* that imports most of Zewo's packages. If you don't want to bring everything you can cherry pick desired packages at our [Zewo](https://github.com/Zewo) organization.
+One of our core values is modularity. The `Zewo` package is a convenience *superpackage* that imports most of Zewo's packages. If you don't want to bring everything you can cherry pick desired packages at our [Zewo](https://github.com/Zewo) organization.
 
 ## Setting up the development environment (optional)
 
