@@ -1,15 +1,14 @@
 # Zewo
-​
+
 [![Swift][swift-badge]][swift-url]
 [![Platform][platform-badge]][platform-url]
 [![License][mit-badge]][mit-url]
 [![Slack][slack-badge]][slack-url]
 
-
 **Zewo** is a set of libraries aimed at server side development. With Zewo you can write your web app, REST API, command line tool, database driver, etc. Our goal is to create an ecosystem around the modules and tools we provide so you can focus on developing your application or library, instead of doing everything from scratch.
 
 For a more detailed guide than this README provides, check out our great [documentation](http://docs.zewo.io/)
-​
+
 ## Installation
 
 Zewo has a few dependencies which the Swift Package cannot set up for you. Nevertheless, it is very simple to install those by yourself.
@@ -87,18 +86,18 @@ With your app's Xcode project opened, drag and drop the required Xcode projects 
 Go to your app's target `Build Phases > Target Dependencies` and select `HTTPServer` and `Router` frameworks.
 
 Now build and run as usual. After this you can open your favorite browser and go to `localhost:8080/hello`. You should see `hello world` again, but now running from Xcode 😎.
-​
+
 ## Community
-​
+
 [![Slack][slack-image]][slack-url]
-​
+
 Join us on [Slack](http://slack.zewo.io)!
-​
+
 License
 -------
-​
+
 **Zewo** is released under the MIT license. See LICENSE for details.
-​
+
 [swift-badge]: https://img.shields.io/badge/Swift-2.2-orange.svg?style=flat
 [swift-url]: https://swift.org
 [platform-badge]: https://img.shields.io/badge/Platform-Linux-lightgray.svg?style=flat
