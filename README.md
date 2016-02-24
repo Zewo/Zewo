@@ -15,21 +15,21 @@ Zewo has a few dependencies which the Swift Package cannot set up for you. Never
 
 OSX:
 ```shell
-> brew tap zewo/tap
-> brew install zewo
+brew tap zewo/tap
+brew install zewo
 ```
 Debian-based Linux:
 ```shell
-> echo "deb [trusted=yes] http://apt.zewo.io/deb ./" | sudo tee --append /etc/apt/sources.list
-> sudo apt-get update
-> sudo apt-get install zewo
+echo "deb [trusted=yes] http://apt.zewo.io/deb ./" | sudo tee --append /etc/apt/sources.list
+sudo apt-get update
+sudo apt-get install zewo
 ```
 
 Now that you've done that, you can simply add Zewo to your `Package.swift`
 
 ```swift
 import PackageDescription
-​
+
 let package = Package(
     dependencies: [
         .Package(url: "https://github.com/Zewo/Zewo.git", majorVersion: 0, minor: 2)
