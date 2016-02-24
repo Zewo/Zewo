@@ -13,12 +13,15 @@ For a more detailed guide than this README provides, check out our great [docume
 
 Zewo has a few dependencies which the Swift Package cannot set up for you. Nevertheless, it is very simple to install those by yourself.
 
-OSX:
+OS X:
+
 ```shell
 brew tap zewo/tap
 brew install zewo
 ```
-Debian-based Linux:
+
+Linux:
+
 ```shell
 echo "deb [trusted=yes] http://apt.zewo.io/deb ./" | sudo tee --append /etc/apt/sources.list
 sudo apt-get update
@@ -36,6 +39,8 @@ let package = Package(
     ]
 )
 ```
+
+One of our core values is modularity. The `Zewo` package is convenience a *superpackage* that imports most of Zewo's packages. If you don't want to bring everything you can cherry pick desired packages at our [Zewo](https://github.com/Zewo) organization.
 
 ## Setting up the development environment (optional)
 
