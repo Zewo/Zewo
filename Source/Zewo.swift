@@ -32,6 +32,7 @@
 @_exported import Router
 @_exported import SQL
 @_exported import JSON
+@_exported import JSONMediaType
 @_exported import URLEncodedForm
 @_exported import Base64
 @_exported import LogMiddleware
