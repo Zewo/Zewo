@@ -18,7 +18,7 @@ let package = Package(
         .Package(url: "https://github.com/Zewo/OpenSSL.git", majorVersion: 0, minor: 2),
         .Package(url: "https://github.com/Zewo/Router.git", majorVersion: 0, minor: 2),
         .Package(url: "https://github.com/Zewo/JSON.git", majorVersion: 0, minor: 2),
-        .Package(url: "https://github.com/Zewo/JSONMediaType.git", majorVersion: 0, minor: 1),
+        .Package(url: "https://github.com/Zewo/JSONMediaType.git", majorVersion: 0, minor: 3),
         .Package(url: "https://github.com/Zewo/URLEncodedForm.git", majorVersion: 0, minor: 2),
         .Package(url: "https://github.com/Zewo/Base64.git", majorVersion: 0, minor: 2),
         .Package(url: "https://github.com/Zewo/ChannelStream.git", majorVersion: 0, minor: 2),
