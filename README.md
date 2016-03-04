@@ -5,64 +5,232 @@
 [![License][mit-badge]][mit-url]
 [![Slack][slack-badge]][slack-url]
 
-**Zewo** is a set of libraries aimed at server side development. With Zewo you can write your web app, REST API, command line tool, database driver, etc. Our goal is to create an ecosystem around the modules and tools we provide so you can focus on developing your application or library, instead of doing everything from scratch.
+# Getting started
 
-For a more detailed guide than this README provides, check out our great [documentation](http://docs.zewo.io/)
+**Zewo** is a set of libraries aimed at server side development. With **Zewo** you can write your web app, REST API, command line tool, database driver, etc. Our goal is to create an ecosystem around the modules and tools we provide so you can focus on developing your application or library, instead of doing everything from scratch. Currently, we have around 60+ packages, just check our [organization](https://github.com/Zewo).
 
 ## Installation
 
-Zewo has a few dependencies which the Swift Package cannot set up for you. Nevertheless, it is very simple to install those by yourself.
+Before we start we need to install the appropriate **Swift** binaries and **Zewo** dependencies.
 
-OS X:
+### OS X
 
-```shell
-brew tap zewo/tap
-brew install zewo
+#### Install Xcode
+
+Download and install **Xcode 7.3** or greater.
+
+- [Xcode Download](https://developer.apple.com/xcode/download/)
+
+#### Install Swift
+
+**Zewo 0.3** requires February 8, 2016 **Swift Development Snapshot**.
+
+- [Swift Development Snapshot](https://swift.org/builds/development/xcode/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a-osx.pkg)
+- [Debugging Symbols (Optional)](https://swift.org/builds/development/xcode/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a-osx-symbols.pkg)
+
+After installing add the swift toolchain to your path, so you can build swift from the command line.
+
+```sh
+export PATH=/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a.xctoolchain//usr/bin:"${PATH}"
 ```
 
-Linux:
+On **Xcode** you can choose the appropriate toolchain from `Preferences > Componentes > Toolchains`.
 
-```shell
+#### Install Zewo
+
+After installing Swift we need to install Zewo's dependencies.
+
+```sh
+brew install zewo/tap/zewo
+```
+
+
+This will install our current dependencies:
+
+- [libvenice](https://github.com/Zewo/libvenice)
+- [http_parser](https://github.com/Zewo/http_parser)
+- [uri_parser](https://github.com/Zewo/uri_parser)
+- [openssl](https://www.openssl.org/)
+
+
+### Linux
+
+On **Linux** we provide a shell script that automates the whole installation process.
+
+#### Ubuntu 15.10
+
+```sh
+wget https://raw.github.com/Zewo/Zewo/master/Scripts/install-zewo0.2.3-ubuntu15.10.sh -O - | sh
+```
+
+#### Ubuntu 14.04
+
+```sh
+wget https://raw.github.com/Zewo/Zewo/master/Scripts/install-zewo0.2.3-ubuntu14.04.sh -O - | sh
+```
+
+You can also install everything manually.
+
+### Install Swift
+
+Install swift dependencies.
+
+```sh
+sudo apt-get install clang libicu-dev
+```
+
+Download the Swift Development Snapshot
+
+#### Ubuntu 15.10
+
+- [Swift Development Snapshot](https://swift.org/builds/development/ubuntu1510/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a-ubuntu15.10.tar.gz)
+
+#### Ubuntu 14.04
+
+ - [Swift Development Snapshot](https://swift.org/builds/development/ubuntu1404/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a-ubuntu14.04.tar.gz)
+
+Extract the archive. This creates a `usr` directory in the location of the archive.
+
+```sh
+tar xzf swift-<VERSION>-<PLATFORM>.tar.gz
+```
+
+Add the Swift toolchain to your path.
+
+```sh
+export PATH=/path/to/usr/bin:"${PATH}"
+```
+
+#### Install Zewo
+
+```sh
 echo "deb [trusted=yes] http://apt.zewo.io/deb ./" | sudo tee --append /etc/apt/sources.list
 sudo apt-get update
 sudo apt-get install zewo
 ```
 
-Now that you've done that, you can simply add Zewo to your `Package.swift`
+This will install our current dependencies:
+
+- [libvenice](https://github.com/Zewo/libvenice)
+- [http_parser](https://github.com/Zewo/http_parser)
+- [uri_parser](https://github.com/Zewo/uri_parser)
+- [openssl](https://www.openssl.org/)
+
+## Hello World Web App
+
+To showcase what **Zewo** can do we'll create a hello world web app.
+
+### Configure your project
+
+First we need to create a directory for our app.
+
+```sh
+mkdir hello && cd hello
+```
+
+Then we initialize the project with Swift Package Manager (SPM).
+
+```sh
+swift build --init
+```
+
+This command will create the basic structure for our app.
+
+```
+.
+├── Package.swift
+├── Sources
+│   └── main.swift
+└── Tests
+```
+
+Open `Package.swift` with your favorite editor and add `HTTPServer`, `Router` and `LogMiddleware` as dependencies.
 
 ```swift
 import PackageDescription
 
 let package = Package(
+    name: "hello",
     dependencies: [
-        .Package(url: "https://github.com/Zewo/Zewo.git", majorVersion: 0, minor: 2)
+        .Package(url: "https://github.com/Zewo/HTTPServer.git", majorVersion: 0, minor: 3),
+        .Package(url: "https://github.com/Zewo/Router.git", majorVersion: 0, minor: 3),
+        .Package(url: "https://github.com/Zewo/LogMiddleware.git", majorVersion: 0, minor: 3)
     ]
 )
 ```
 
-One of our core values is modularity. The `Zewo` package is a convenience *umbrella package* that imports most of Zewo's packages. If you don't want to bring everything you can cherry pick desired packages at our [Zewo](https://github.com/Zewo) organization.
+### Do your magic
 
-## Setting up the development environment (optional)
+Open `main.swift` and make it look like this:
 
-Xcode is Swift's main IDE that provides excellent support for autocomplete, jump-to-definition, and much more. Unfortunately, the Swift Package Manager does not yet have built-in support to generate Xcode projects. As such, we have made a tool called [zewo-dev](https://github.com/Zewo/zewo-dev) to help us do that.
+```swift
+import HTTPServer
+import Router
+import LogMiddleware
 
-### Create Xcode project
+let log = Log()
+let logger = LogMiddleware(log: log)
+
+let router = Router { route in
+    route.get("/hello") { _ in
+        return Response(body: "hello world")
+    }
+}
+
+try Server(middleware: logger, responder: router).start()
+```
+
+This code:
+
+- Creates an HTTP server that listens on port `8080` by default.
+- Configures a router which will route `/hello` to a responder that responds with `"hello world"`.
+- Mounts a logger middleware on the server that will log every request/response pair to the standard error stream (stderr) by default.
+
+### Build and run
+
+Now let's build the app.
+
+```sh
+swift build
+```
+
+After it compiles, run it.
+
+```sh
+.build/debug/hello
+```
+
+Now open your favorite browser and go to `localhost:8080/hello`. You should see `hello world` in your browser's window. 😊
+
+## Developing with Xcode
+
+Using Xcode for development can dramatically improve your productivity. For this reason we developed a tool called [zewo-dev](https://github.com/Zewo/zewo-dev) to helps us.
+
+### Create App's Xcode project
 
 First, let's configure an Xcode project for you app. Create a directory for Xcode in your app's root directory.
 
 ```sh
 mkdir Xcode && cd Xcode
 ```
- 
+
 Install [Alcatraz](https://github.com/supermarin/Alcatraz) if you haven't already.
 
 ```sh
 curl -fsSL https://raw.github.com/alcatraz/Alcatraz/master/Scripts/install.sh | sh
 ```
 
-Look for **Swift Command Line Application** under Templates in Alcatraz and install it. Restart Xcode and go to `File > New > Projects` and choose **Swift Command Line Application**. Save it on the `Xcode` directory you just created.
+Look for **Swift Command Line Application** under Templates in Alcatraz and install it.
+
+![New Project](https://raw.githubusercontent.com/Zewo/Docs/master/Images/SwiftCommandLineApplicationAlcatraz.png)
+
+Restart Xcode and go to `File > New > Projects` and choose **Swift Command Line Application**. Save the project on the `Xcode` directory you just created.
+
+![New Project](https://raw.githubusercontent.com/Zewo/Docs/master/Images/SwiftCommandLineApplicationProject.png)
 
 Remove the `main.swift` file that was generated and add the `Sources` directory from your app's root directory.
+
+![New Project](https://raw.githubusercontent.com/Zewo/Docs/master/Images/HelloMainXcode.png)
 
 ### Install zewo-dev
 
@@ -71,6 +239,7 @@ This tool will clone all repos from Zewo and generate Xcode projects for them.
 ```sh
 gem install zewo-dev
 ```
+
 
 Inside the Xcode directory create a directory for Zewo's Xcode projects.
 
@@ -86,11 +255,31 @@ zewodev init && zewodev make_projects
 
 ### Add Zewo subprojects
 
-With your app's Xcode project opened, drag and drop the required Xcode projects from Zewo to your project. In our example we should bring `HTTPServer.xcodeproj` and `Router.xcodeproj`.
+With your app's Xcode project opened, drag and drop the required Xcode projects from Zewo to your project. In our example we should bring `HTTPServer.xcodeproj`, `Router.xcodeproj` and `LogMiddleware.xcodeproj`.
 
-Go to your app's target `Build Phases > Target Dependencies` and select `HTTPServer` and `Router` frameworks.
+![New Project](https://raw.githubusercontent.com/Zewo/Docs/master/Images/AddXcodeSubprojects.gif)
 
-Now build and run as usual. After this you can open your favorite browser and go to `localhost:8080/hello`. You should see `hello world` again, but now running from Xcode 😎.
+Go to your app's target `Build Phases > Target Dependencies` and add `HTTPServer`, `Router` and `LogMiddleware` frameworks.
+
+![New Project](https://raw.githubusercontent.com/Zewo/Docs/master/Images/AddBuildPhaseDependencies.gif)
+
+Now build and run as usual. After this you can open your favorite browser and go to `localhost:8080/hello`. You should see `hello world` again, but now running from Xcode. 😎
+
+## What's next?
+
+Zewo has a **lot** of modules, check out our [organization](https://github.com/Zewo) for more. You can also take a look at our [documentation](http://docs.zewo.io/index.html) which is growing everyday. If you have any doubts you can reach us at our [slack](http://slack.zewo.io). We're very active and always ready to help.
+
+To make your life easier we provide the **Zewo** umbrella package which resides in this repository. This package provides the most important packages so you don't have to add all of them one by one.
+
+```swift
+import PackageDescription
+
+let package = Package(
+    dependencies: [
+        .Package(url: "https://github.com/Zewo/Zewo.git", majorVersion: 0, minor: 3)
+    ]
+)
+```
 
 ## Community
 
