@@ -5,8 +5,6 @@
 [![License][mit-badge]][mit-url]
 [![Slack][slack-badge]][slack-url]
 
-# Getting started
-
 **Zewo** is a set of libraries aimed at server side development. With **Zewo** you can write your web app, REST API, command line tool, database driver, etc. Our goal is to create an ecosystem around the modules and tools we provide so you can focus on developing your application or library, instead of doing everything from scratch.
 
 Currently, we have around 50+ packages. This list grows very fast so it might be outdated. To be sure just check our [organization](https://github.com/Zewo).
@@ -64,6 +62,12 @@ Currently, we have around 50+ packages. This list grows very fast so it might be
 - [Venice](https://github.com/Zewo/Venice)
 - [WebSocket](https://github.com/Zewo/WebSocket)
 - [Zewo](https://github.com/Zewo/Zewo)
+
+# Documentation
+
+Below we provide a getting started guide. This guide can also be found in our official [documentation](docs.zewo.io). The documentation contains more info than this guide and we're adding even more every day.
+
+# Getting started
 
 ## Installation
 
