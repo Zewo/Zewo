@@ -327,7 +327,7 @@ Now build and run as usual. After this you can open your favorite browser and go
 
 ## What's next?
 
-Zewo has a **lot** of modules, check out our [organization](https://github.com/Zewo) for more. You can also take a look at our [documentation](http://docs.zewo.io/index.html) which is growing everyday. If you have any doubts you can reach us at our [slack](http://slack.zewo.io). We're very active and always ready to help.
+Zewo has a **lot** of modules, check out our [organization](https://github.com/Zewo) for more. You can also take a look at our [documentation](http://docs.zewo.io/index.html) which is growing every day. If you have any doubts you can reach us at our [slack](http://slack.zewo.io). We're very active and always ready to help.
 
 To make your life easier we provide the **Zewo** umbrella package which resides in this repository. This package provides the most important packages so you don't have to add all of them one by one.
 
