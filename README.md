@@ -9,6 +9,8 @@
 
 Currently, we have around 50+ packages. This list grows very fast so it might be outdated. To be sure just check our [organization](https://github.com/Zewo).
 
+## Zewo Packages
+
 - [Base64](https://github.com/Zewo/Base64)
 - [BasicAuthMiddleware](https://github.com/Zewo/BasicAuthMiddleware)
 - [ChannelStream](https://github.com/Zewo/ChannelStream)
@@ -62,6 +64,11 @@ Currently, we have around 50+ packages. This list grows very fast so it might be
 - [Venice](https://github.com/Zewo/Venice)
 - [WebSocket](https://github.com/Zewo/WebSocket)
 - [Zewo](https://github.com/Zewo/Zewo)
+
+## External Packages
+
+- [Swift-Redis](https://github.com/rabc/Swift-Redis/)
+- [MiniRouter](https://github.com/paulofaria/MiniRouter)
 
 # Documentation
 
