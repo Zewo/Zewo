@@ -269,74 +269,19 @@ After it compiles, run it.
 
 Now open your favorite browser and go to `localhost:8080/hello`. You should see `hello world` in your browser's window. 😊
 
-## Developing with Xcode
-
-Using Xcode for development can dramatically improve your productivity. For this reason we developed a tool called [zewo-dev](https://github.com/Zewo/zewo-dev) to helps us.
-
-### Create App's Xcode project
-
-First, let's configure an Xcode project for you app. Create a directory for Xcode in your app's root directory.
-
-```sh
-mkdir Xcode && cd Xcode
-```
-
-Install [Alcatraz](https://github.com/supermarin/Alcatraz) if you haven't already.
-
-```sh
-curl -fsSL https://raw.github.com/alcatraz/Alcatraz/master/Scripts/install.sh | sh
-```
-
-Look for **Swift Command Line Application** under Templates in Alcatraz and install it.
-
-![New Project](https://raw.githubusercontent.com/Zewo/Docs/master/Images/SwiftCommandLineApplicationAlcatraz.png)
-
-Restart Xcode and go to `File > New > Projects` and choose **Swift Command Line Application**. Save the project on the `Xcode` directory you just created.
-
-![New Project](https://raw.githubusercontent.com/Zewo/Docs/master/Images/SwiftCommandLineApplicationProject.png)
-
-Remove the `main.swift` file that was generated and add the `Sources` directory from your app's root directory.
-
-![New Project](https://raw.githubusercontent.com/Zewo/Docs/master/Images/HelloMainXcode.png)
-
-### Install zewo-dev
-
-This tool will clone all repos from Zewo and generate Xcode projects for them.
-
-```sh
-gem install zewo-dev
-```
-
-
-Inside the Xcode directory create a directory for Zewo's Xcode projects.
-
-```sh
-mkdir Zewo && cd Zewo
-```
-
-Pull the repos and generate Xcode projects.
-
-```sh
-zewodev init && zewodev make_projects
-```
-
-### Add Zewo subprojects
-
-With your app's Xcode project opened, drag and drop the required Xcode projects from Zewo to your project. In our example we should bring `HTTPServer.xcodeproj`, `Router.xcodeproj` and `LogMiddleware.xcodeproj`.
-
-![New Project](https://raw.githubusercontent.com/Zewo/Docs/master/Images/AddXcodeSubprojects.gif)
-
-Go to your app's target `Build Phases > Target Dependencies` and add `HTTPServer`, `Router` and `LogMiddleware` frameworks.
-
-![New Project](https://raw.githubusercontent.com/Zewo/Docs/master/Images/AddBuildPhaseDependencies.gif)
-
-Now build and run as usual. After this you can open your favorite browser and go to `localhost:8080/hello`. You should see `hello world` again, but now running from Xcode. 😎
-
 ## What's next?
 
 Zewo has a **lot** of modules, check out our [organization](https://github.com/Zewo) for more. You can also take a look at our [documentation](http://docs.zewo.io/index.html) which is growing every day. If you have any doubts you can reach us at our [slack](http://slack.zewo.io). We're very active and always ready to help.
 
-To make your life easier we provide the **Zewo** umbrella package which resides in this repository. This package provides the most important packages so you don't have to add all of them one by one.
+See also:
+
+- [Developing with Xcode](http://docs.zewo.io/Xcode.html)
+- [Developing with Docker](http://docs.zewo.io/Docker.html)
+
+## Umbrella Package
+
+To make your life easier we provide the **Zewo** umbrella package which resides in this repository. This package provides the most important modules so you don't have to add all of them one by one.
+
 
 ```swift
 import PackageDescription
@@ -348,11 +293,33 @@ let package = Package(
 )
 ```
 
+## Contributing
+
+Hey! Like Zewo? Awesome! We could actually really use your help!
+
+Open source isn't just writing code. Zewo could use your help with any of the
+following:
+
+- Finding (and reporting!) bugs.
+- New feature suggestions.
+- Answering questions on issues.
+- Documentation improvements.
+- Reviewing pull requests.
+- Helping to manage issue priorities.
+- Fixing bugs/new features.
+
+If any of that sounds cool to you, send a pull request! After a few
+contributions, we'll add you to the organization team so you can merge pull requests and help steer the ship :ship:
+
+Because we have lots of modules we use the [main repo](https://github.com/Zewo/Zewo) (this one) to track all our tasks, bugs, features, etc. using [Github issues](https://github.com/Zewo/Zewo/issues/new).
+
+Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by [its terms](CODEOFDONDUCT.md).
+
 ## Community
 
 [![Slack][slack-image]][slack-url]
 
-Join us on [Slack](http://slack.zewo.io)!
+The entire Zewo code base is licensed under MIT. By contributing to Zewo you are contributing to an open and engaged community of brilliant Swift programmers. Join us on [Slack](http://slack.zewo.io) to get to know us!
 
 License
 -------
