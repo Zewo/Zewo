@@ -321,9 +321,17 @@ following:
 If any of that sounds cool to you, send a pull request! After a few
 contributions, we'll add you to the organization team so you can merge pull requests and help steer the ship :ship:
 
+Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by [its terms](CODEOFDONDUCT.md).
+
+### Issues
+
 Because we have lots of modules we use the [main repo](https://github.com/Zewo/Zewo) (this one) to track all our tasks, bugs, features, etc. using [Github issues](https://github.com/Zewo/Zewo/issues/new).
 
-Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by [its terms](CODEOFDONDUCT.md).
+Some of us use [ZenHub](https://www.zenhub.io/) to manage the issues. Unfortunately ZenHub only supports Google Chrome and Firefox, but looks like they're working on [Safari support](https://github.com/ZenHubIO/support/issues/53).
+
+### Code
+
+If you want to contribute with code you should use our development tool [zewo-dev](https://github.com/Zewo/zewo-dev). It makes it much easier to deal with the multitude of packages we maintain.
 
 ## Community
 
