@@ -101,7 +101,7 @@ Before we start we need to install some tools and dependencies. If you already i
 [Swiftenv](https://github.com/kylef/swiftenv) is a version manager for Swift.
 
 ```sh
-brew install kylef/formulae/swiftenv
+git clone https://github.com/kylef/swiftenv.git ~/.swiftenv
 ```
 
 After installing you need to configure your shell.
@@ -109,21 +109,29 @@ After installing you need to configure your shell.
 **Bash**
 
 ```sh
-echo 'if which swiftenv > /dev/null; then eval "$(swiftenv init -)"; fi' >> ~/.bash_profile
+echo 'export SWIFTENV_ROOT="$HOME/.swiftenv"' >> ~/.bash_profile 
+echo 'export PATH="$SWIFTENV_ROOT/bin:$PATH"' >> ~/.bash_profile
+echo 'eval "$(swiftenv init -)"' >> ~/.bash_profile
 ```
 > On some platforms, you may need to modify ~/.bashrc instead of ~/.bash_profile.
 
 **ZSH**
 
 ```sh
-echo 'if which swiftenv > /dev/null; then eval "$(swiftenv init -)"; fi' >> ~/.zshrc
+echo 'export SWIFTENV_ROOT="$HOME/.swiftenv"' >> ~/.zshenv
+echo 'export PATH="$SWIFTENV_ROOT/bin:$PATH"' >> ~/.zshenv
+echo 'eval "$(swiftenv init -)"' >> ~/.zshenv
 ```
 
 **Fish**
 
 ```sh
+echo 'setenv SWIFTENV_ROOT "$HOME/.swiftenv"' >> ~/.config/fish/config.fish
+echo 'setenv PATH "$SWIFTENV_ROOT/bin" $PATH' >> ~/.config/fish/config.fish
 echo 'status --is-interactive; and . (swiftenv init -|psub)' >> ~/.config/fish/config.fish
 ```
+
+Restart your shell so the changes take effect.
 
 ### Install Zewo
 
