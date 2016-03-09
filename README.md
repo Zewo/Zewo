@@ -78,110 +78,113 @@ Below we provide a getting started guide. This guide can also be found in our of
 
 ## Installation
 
-Before we start we need to install the appropriate **Swift** binaries and **Zewo** dependencies.
+Before we start we need to install some tools and dependencies. If you already installed just skip them.
 
-### OS X
+## OS X
 
-#### Install Xcode
+### Install Xcode 7.3+
 
-Download and install **Xcode 7.3** or greater.
+[Xcode](https://developer.apple.com/xcode/) is apple's software development IDE.
 
 - [Xcode Download](https://developer.apple.com/xcode/download/)
 
-#### Install Swift
+### Install Homebrew
 
-**Zewo 0.3** requires February 8, 2016 **Swift Development Snapshot**.
-
-- [Swift Development Snapshot](https://swift.org/builds/development/xcode/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a-osx.pkg)
-- [Debugging Symbols (Optional)](https://swift.org/builds/development/xcode/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a-osx-symbols.pkg)
-
-After installing add the swift toolchain to your path, so you can build swift from the command line.
+[Homebrew](http://brew.sh/) is a package manager for OS X.
 
 ```sh
-export PATH=/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a.xctoolchain//usr/bin:"${PATH}"
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
 
-On **Xcode** you can choose the appropriate toolchain from `Preferences > Componentes > Toolchains`.
+### Install Swiftenv
 
-#### Install Zewo
+[Swiftenv](https://github.com/kylef/swiftenv) is a version manager for Swift.
 
-After installing Swift we need to install Zewo's dependencies.
+```sh
+brew install kylef/formulae/swiftenv
+```
+
+After installing you need to configure your shell.
+
+**Bash**
+
+```sh
+echo 'if which swiftenv > /dev/null; then eval "$(swiftenv init -)"; fi' >> ~/.bash_profile
+```
+> On some platforms, you may need to modify ~/.bashrc instead of ~/.bash_profile.
+
+**ZSH**
+
+```sh
+echo 'if which swiftenv > /dev/null; then eval "$(swiftenv init -)"; fi' >> ~/.zshrc
+```
+
+**Fish**
+
+```sh
+echo 'status --is-interactive; and . (swiftenv init -|psub)' >> ~/.config/fish/config.fish
+```
+
+### Install Zewo
+
+This brew formula installs all **Zewo** dependencies.
 
 ```sh
 brew install zewo/tap/zewo
 ```
 
+## Linux
 
-This will install our current dependencies:
-
-- [libvenice](https://github.com/Zewo/libvenice)
-- [http_parser](https://github.com/Zewo/http_parser)
-- [uri_parser](https://github.com/Zewo/uri_parser)
-- [openssl](https://www.openssl.org/)
-
-
-### Linux
-
-On **Linux** we provide a shell script that automates the whole installation process.
-
-#### Ubuntu 15.10
-
-```sh
-wget https://raw.github.com/Zewo/Zewo/master/Scripts/install-zewo0.2.3-ubuntu15.10.sh -O - | sh
-```
-
-#### Ubuntu 14.04
-
-```sh
-wget https://raw.github.com/Zewo/Zewo/master/Scripts/install-zewo0.2.3-ubuntu14.04.sh -O - | sh
-```
-
-You can also install everything manually.
-
-### Install Swift
-
-Install swift dependencies.
+### Install Clang and ICU
 
 ```sh
 sudo apt-get install clang libicu-dev
 ```
 
-Download the Swift Development Snapshot
+### Install Swiftenv
 
-#### Ubuntu 15.10
-
-- [Swift Development Snapshot](https://swift.org/builds/development/ubuntu1510/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a-ubuntu15.10.tar.gz)
-
-#### Ubuntu 14.04
-
- - [Swift Development Snapshot](https://swift.org/builds/development/ubuntu1404/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a/swift-DEVELOPMENT-SNAPSHOT-2016-02-08-a-ubuntu14.04.tar.gz)
-
-Extract the archive. This creates a `usr` directory in the location of the archive.
+[Swiftenv](https://github.com/kylef/swiftenv) is a version manager for Swift.
 
 ```sh
-tar xzf swift-<VERSION>-<PLATFORM>.tar.gz
+git clone https://github.com/kylef/swiftenv.git ~/.swiftenv
 ```
 
-Add the Swift toolchain to your path.
+After installing you need to configure your shell.
+
+**Bash**
 
 ```sh
-export PATH=/path/to/usr/bin:"${PATH}"
+echo 'export SWIFTENV_ROOT="$HOME/.swiftenv"' >> ~/.bashrc
+echo 'export PATH="$SWIFTENV_ROOT/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(swiftenv init -)"' >> ~/.bashrc
+```
+> On some platforms, you may need to modify ~/.bash_profile instead of ~/.bashrc.
+
+**ZSH**
+
+```sh
+echo 'export SWIFTENV_ROOT="$HOME/.swiftenv"' >> ~/.zshenv
+echo 'export PATH="$SWIFTENV_ROOT/bin:$PATH"' >> ~/.zshenv
+echo 'eval "$(swiftenv init -)"' >> ~/.zshenv
 ```
 
-#### Install Zewo
+**Fish**
+
+```sh
+echo 'setenv SWIFTENV_ROOT "$HOME/.swiftenv"' >> ~/.config/fish/config.fish
+echo 'setenv PATH "$SWIFTENV_ROOT/bin" $PATH' >> ~/.config/fish/config.fish
+echo 'status --is-interactive; and . (swiftenv init -|psub)' >> ~/.config/fish/config.fish
+```
+
+Restart your shell so the changes take effect.
+
+### Install Zewo
 
 ```sh
 echo "deb [trusted=yes] http://apt.zewo.io/deb ./" | sudo tee --append /etc/apt/sources.list
 sudo apt-get update
 sudo apt-get install zewo
 ```
-
-This will install our current dependencies:
-
-- [libvenice](https://github.com/Zewo/libvenice)
-- [http_parser](https://github.com/Zewo/http_parser)
-- [uri_parser](https://github.com/Zewo/uri_parser)
-- [openssl](https://www.openssl.org/)
 
 ## Hello World Web App
 
@@ -195,7 +198,14 @@ First we need to create a directory for our app.
 mkdir hello && cd hello
 ```
 
-Then we initialize the project with Swift Package Manager (SPM).
+Then we install Swift Development Snapshot from **February 8, 2016**.
+
+```sh
+swiftenv install DEVELOPMENT-SNAPSHOT-2016-02-08-a
+swiftenv local DEVELOPMENT-SNAPSHOT-2016-02-08-a
+```
+
+Now we initialize the project with Swift Package Manager (**SPM**).
 
 ```sh
 swift build --init
