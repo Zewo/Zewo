@@ -72,7 +72,7 @@ Currently, we have around 50+ packages. This list grows very fast so it might be
 
 # Documentation
 
-Below we provide a getting started guide. This guide can also be found in our official [documentation](docs.zewo.io). The documentation contains more info than this guide and we're adding even more every day.
+Below we provide a getting started guide. This guide can also be found in our official [documentation](http://docs.zewo.io). The documentation contains more info than this guide and we're adding even more every day.
 
 # Getting started
 
