@@ -20,4 +20,4 @@ mv $(basename "$SWIFT_URL" ".tar.gz") .swift
 export PATH="${HOME}/.swift/usr/bin:${PATH}"
 
 echo "Zewo ${ZEWO_VERSION} successfully installed!"
-echo 'You may wish to add "${HOME}/swift/usr/bin" to your PATH in your profile'
+echo 'You may wish to add "${HOME}/.swift/usr/bin" to your PATH in your profile'
