@@ -9,6 +9,202 @@
 
 Currently, we have around 50+ packages. This list grows very fast so it might be outdated. To be sure just check our [organization](https://github.com/Zewo).
 
+# Quick Links
+
+- [Documentation](#whats-next)
+- [Getting started](#getting-started)
+- [Umbrella Package](#umbrella-package)
+- [Contributing](#contributing)
+- [Packages](#zewo-packages)
+- [Community](#community)
+
+# Getting started
+
+## Installation
+
+Before we start we need to install some tools and dependencies.
+
+>You can skip swiftenv step and some swiftenv instructions below if you already have `DEVELOPMENT-SNAPSHOT-2016-02-08-a` in your `PATH`, but we highly recommend look at it.
+
+## Swiftenv
+
+[Swiftenv](https://github.com/kylef/swiftenv) allows you to easily install, and switch between multiple versions of Swift.
+You can install swiftenv following official [instructions](https://github.com/kylef/swiftenv#installation)
+>note: if you use homebrew add `--HEAD` option as the stable version has some issues.
+
+## OS X
+
+### Install Xcode 7.3+
+
+[Xcode](https://developer.apple.com/xcode/) is apple's software development IDE.
+
+- [Xcode Download](https://developer.apple.com/xcode/download/)
+
+### Install Homebrew
+
+[Homebrew](http://brew.sh/) is a package manager for OS X.
+
+```sh
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+
+### Install Zewo
+
+This brew formula installs all **Zewo** dependencies.
+
+```sh
+brew install zewo/tap/zewo
+```
+
+## Linux
+
+### Install Clang and ICU
+
+```sh
+sudo apt-get install clang libicu-dev
+```
+
+### Install Zewo
+
+```sh
+echo "deb [trusted=yes] http://apt.zewo.io/deb ./" | sudo tee --append /etc/apt/sources.list
+sudo apt-get update
+sudo apt-get install zewo
+```
+
+## Create your first Zewo web application
+
+First we need to create a directory for our app.
+
+```sh
+mkdir hello && cd hello
+```
+
+Then we install Swift Development Snapshot from **February 8, 2016**.
+
+```sh
+swiftenv install DEVELOPMENT-SNAPSHOT-2016-02-08-a
+swiftenv local DEVELOPMENT-SNAPSHOT-2016-02-08-a
+```
+
+Now we initialize the project with Swift Package Manager (**SPM**).
+
+```sh
+swift build --init
+```
+
+This command will create the basic structure for our app.
+
+```
+.
+├── Package.swift
+├── Sources
+│   └── main.swift
+└── Tests
+```
+
+Open `Package.swift` with your favorite editor and add `HTTPServer`, `Router` as dependencies.
+
+```swift
+import PackageDescription
+
+let package = Package(
+    name: "hello",
+    dependencies: [
+        .Package(url: "https://github.com/Zewo/HTTPServer.git", majorVersion: 0, minor: 3),
+        .Package(url: "https://github.com/Zewo/Router.git", majorVersion: 0, minor: 3),
+    ]
+)
+```
+
+### Do your magic
+
+Open `main.swift` and make it look like this:
+
+```swift
+import HTTPServer
+import Router
+
+let router = Router { route in
+    route.get("/hello") { _ in
+        return Response(body: "hello world")
+    }
+}
+
+try Server(responder: router).start()
+```
+
+This code:
+
+- Creates an HTTP server that listens on port `8080` by default.
+- Configures a router which will route `/hello` to a responder that responds with `"hello world"`.
+- Mounts a logger middleware on the server that will log every request/response pair to the standard error stream (stderr) by default.
+
+### Build and run
+
+Now let's build the app.
+
+```sh
+swift build
+```
+
+After it compiles, run it.
+
+```sh
+.build/debug/hello
+```
+
+Now open your favorite browser and go to http://localhost:8080/hello. You should see `hello world` in your browser's window. 😊
+
+## What's next?
+
+Zewo has a **lot** of [modules](#zewo-packages), check out our [organization](https://github.com/Zewo) for more. You can also take a look at our [documentation](http://docs.zewo.io/index.html) which is growing every day. If you have any doubts you can reach us at our [slack](http://slack.zewo.io). We're very active and always ready to help.
+
+See also:
+
+- [Developing with Xcode](http://docs.zewo.io/Xcode.html)
+- [Developing with Docker](http://docs.zewo.io/Docker.html)
+
+## Umbrella Package
+
+To make your life easier we provide the **Zewo** umbrella package which resides in this repository. This package provides the most important modules so you don't have to add all of them one by one.
+
+```swift
+import PackageDescription
+
+let package = Package(
+    dependencies: [
+        .Package(url: "https://github.com/Zewo/Zewo.git", majorVersion: 0, minor: 3)
+    ]
+)
+```
+
+## Contributing
+
+Hey! Like Zewo? Awesome! We could actually really use your help!
+
+Open source isn't just writing code. Zewo could use your help with any of the
+following:
+
+- Finding (and reporting!) bugs.
+- New feature suggestions.
+- Answering questions on issues.
+- Documentation improvements.
+- Reviewing pull requests.
+- Helping to manage issue priorities.
+- Fixing bugs/new features.
+
+If any of that sounds cool to you, send a pull request! After a few
+contributions, we'll add you to the organization team so you can merge pull requests and help steer the ship :ship:
+
+Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by [its terms](CODEOFCONDUCT.md).
+
+### Issues
+
+Because we have lots of modules we use the [main repo](https://github.com/Zewo/Zewo) (this one) to track all our tasks, bugs, features, etc. using [Github issues](https://github.com/Zewo/Zewo/issues/new).
+
+Some of us use [ZenHub](https://www.zenhub.io/) to manage the issues. Unfortunately ZenHub only supports Google Chrome and Firefox, but looks like they're working on [Safari support](https://github.com/ZenHubIO/support/issues/53).
+
 ## Zewo Packages
 
 - [Base64](https://github.com/Zewo/Base64)
@@ -71,273 +267,6 @@ Currently, we have around 50+ packages. This list grows very fast so it might be
 - [Redis](https://github.com/rabc/swift-redis/)
 - [MiniRouter](https://github.com/paulofaria/MiniRouter)
 
-# Documentation
-
-Below we provide a getting started guide. This guide can also be found in our official [documentation](http://docs.zewo.io). The documentation contains more info than this guide and we're adding even more every day.
-
-# Getting started
-
-## Installation
-
-Before we start we need to install some tools and dependencies. If you already installed just skip them.
-
-## OS X
-
-### Install Xcode 7.3+
-
-[Xcode](https://developer.apple.com/xcode/) is apple's software development IDE.
-
-- [Xcode Download](https://developer.apple.com/xcode/download/)
-
-### Install Homebrew
-
-[Homebrew](http://brew.sh/) is a package manager for OS X.
-
-```sh
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-```
-
-### Install Swiftenv
-
-[Swiftenv](https://github.com/kylef/swiftenv) is a version manager for Swift.
-
-```sh
-git clone https://github.com/kylef/swiftenv.git ~/.swiftenv
-```
-
-After installing you need to configure your shell.
-
-**Bash**
-
-```sh
-echo 'export SWIFTENV_ROOT="$HOME/.swiftenv"' >> ~/.bash_profile 
-echo 'export PATH="$SWIFTENV_ROOT/bin:$PATH"' >> ~/.bash_profile
-echo 'eval "$(swiftenv init -)"' >> ~/.bash_profile
-```
-> On some platforms, you may need to modify ~/.bashrc instead of ~/.bash_profile.
-
-**ZSH**
-
-```sh
-echo 'export SWIFTENV_ROOT="$HOME/.swiftenv"' >> ~/.zshenv
-echo 'export PATH="$SWIFTENV_ROOT/bin:$PATH"' >> ~/.zshenv
-echo 'eval "$(swiftenv init -)"' >> ~/.zshenv
-```
-
-**Fish**
-
-```sh
-echo 'setenv SWIFTENV_ROOT "$HOME/.swiftenv"' >> ~/.config/fish/config.fish
-echo 'setenv PATH "$SWIFTENV_ROOT/bin" $PATH' >> ~/.config/fish/config.fish
-echo 'status --is-interactive; and . (swiftenv init -|psub)' >> ~/.config/fish/config.fish
-```
-
-Restart your shell so the changes take effect.
-
-### Install Zewo
-
-This brew formula installs all **Zewo** dependencies.
-
-```sh
-brew install zewo/tap/zewo
-```
-
-## Linux
-
-### Install Clang and ICU
-
-```sh
-sudo apt-get install clang libicu-dev
-```
-
-### Install Swiftenv
-
-[Swiftenv](https://github.com/kylef/swiftenv) is a version manager for Swift.
-
-```sh
-git clone https://github.com/kylef/swiftenv.git ~/.swiftenv
-```
-
-After installing you need to configure your shell.
-
-**Bash**
-
-```sh
-echo 'export SWIFTENV_ROOT="$HOME/.swiftenv"' >> ~/.bashrc
-echo 'export PATH="$SWIFTENV_ROOT/bin:$PATH"' >> ~/.bashrc
-echo 'eval "$(swiftenv init -)"' >> ~/.bashrc
-```
-> On some platforms, you may need to modify ~/.bash_profile instead of ~/.bashrc.
-
-**ZSH**
-
-```sh
-echo 'export SWIFTENV_ROOT="$HOME/.swiftenv"' >> ~/.zshenv
-echo 'export PATH="$SWIFTENV_ROOT/bin:$PATH"' >> ~/.zshenv
-echo 'eval "$(swiftenv init -)"' >> ~/.zshenv
-```
-
-**Fish**
-
-```sh
-echo 'setenv SWIFTENV_ROOT "$HOME/.swiftenv"' >> ~/.config/fish/config.fish
-echo 'setenv PATH "$SWIFTENV_ROOT/bin" $PATH' >> ~/.config/fish/config.fish
-echo 'status --is-interactive; and . (swiftenv init -|psub)' >> ~/.config/fish/config.fish
-```
-
-Restart your shell so the changes take effect.
-
-### Install Zewo
-
-```sh
-echo "deb [trusted=yes] http://apt.zewo.io/deb ./" | sudo tee --append /etc/apt/sources.list
-sudo apt-get update
-sudo apt-get install zewo
-```
-
-## Hello World Web App
-
-To showcase what **Zewo** can do we'll create a hello world web app.
-
-### Configure your project
-
-First we need to create a directory for our app.
-
-```sh
-mkdir hello && cd hello
-```
-
-Then we install Swift Development Snapshot from **February 8, 2016**.
-
-```sh
-swiftenv install DEVELOPMENT-SNAPSHOT-2016-02-08-a
-swiftenv local DEVELOPMENT-SNAPSHOT-2016-02-08-a
-```
-
-Now we initialize the project with Swift Package Manager (**SPM**).
-
-```sh
-swift build --init
-```
-
-This command will create the basic structure for our app.
-
-```
-.
-├── Package.swift
-├── Sources
-│   └── main.swift
-└── Tests
-```
-
-Open `Package.swift` with your favorite editor and add `HTTPServer`, `Router` and `LogMiddleware` as dependencies.
-
-```swift
-import PackageDescription
-
-let package = Package(
-    name: "hello",
-    dependencies: [
-        .Package(url: "https://github.com/Zewo/HTTPServer.git", majorVersion: 0, minor: 3),
-        .Package(url: "https://github.com/Zewo/Router.git", majorVersion: 0, minor: 3),
-        .Package(url: "https://github.com/Zewo/LogMiddleware.git", majorVersion: 0, minor: 3)
-    ]
-)
-```
-
-### Do your magic
-
-Open `main.swift` and make it look like this:
-
-```swift
-import HTTPServer
-import Router
-import LogMiddleware
-
-let log = Log()
-let logger = LogMiddleware(log: log)
-
-let router = Router { route in
-    route.get("/hello") { _ in
-        return Response(body: "hello world")
-    }
-}
-
-try Server(middleware: logger, responder: router).start()
-```
-
-This code:
-
-- Creates an HTTP server that listens on port `8080` by default.
-- Configures a router which will route `/hello` to a responder that responds with `"hello world"`.
-- Mounts a logger middleware on the server that will log every request/response pair to the standard error stream (stderr) by default.
-
-### Build and run
-
-Now let's build the app.
-
-```sh
-swift build
-```
-
-After it compiles, run it.
-
-```sh
-.build/debug/hello
-```
-
-Now open your favorite browser and go to `localhost:8080/hello`. You should see `hello world` in your browser's window. 😊
-
-## What's next?
-
-Zewo has a **lot** of modules, check out our [organization](https://github.com/Zewo) for more. You can also take a look at our [documentation](http://docs.zewo.io/index.html) which is growing every day. If you have any doubts you can reach us at our [slack](http://slack.zewo.io). We're very active and always ready to help.
-
-See also:
-
-- [Developing with Xcode](http://docs.zewo.io/Xcode.html)
-- [Developing with Docker](http://docs.zewo.io/Docker.html)
-
-## Umbrella Package
-
-To make your life easier we provide the **Zewo** umbrella package which resides in this repository. This package provides the most important modules so you don't have to add all of them one by one.
-
-
-```swift
-import PackageDescription
-
-let package = Package(
-    dependencies: [
-        .Package(url: "https://github.com/Zewo/Zewo.git", majorVersion: 0, minor: 3)
-    ]
-)
-```
-
-## Contributing
-
-Hey! Like Zewo? Awesome! We could actually really use your help!
-
-Open source isn't just writing code. Zewo could use your help with any of the
-following:
-
-- Finding (and reporting!) bugs.
-- New feature suggestions.
-- Answering questions on issues.
-- Documentation improvements.
-- Reviewing pull requests.
-- Helping to manage issue priorities.
-- Fixing bugs/new features.
-
-If any of that sounds cool to you, send a pull request! After a few
-contributions, we'll add you to the organization team so you can merge pull requests and help steer the ship :ship:
-
-Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by [its terms](CODEOFCONDUCT.md).
-
-### Issues
-
-Because we have lots of modules we use the [main repo](https://github.com/Zewo/Zewo) (this one) to track all our tasks, bugs, features, etc. using [Github issues](https://github.com/Zewo/Zewo/issues/new).
-
-Some of us use [ZenHub](https://www.zenhub.io/) to manage the issues. Unfortunately ZenHub only supports Google Chrome and Firefox, but looks like they're working on [Safari support](https://github.com/ZenHubIO/support/issues/53).
-
 ### Code
 
 If you want to contribute with code you should use our development tool [zewo-dev](https://github.com/Zewo/zewo-dev). It makes it much easier to deal with the multitude of packages we maintain.
@@ -353,9 +282,9 @@ License
 
 **Zewo** is released under the MIT license. See LICENSE for details.
 
-[swift-badge]: https://img.shields.io/badge/Swift-2.2-orange.svg?style=flat
+[swift-badge]: https://img.shields.io/badge/Swift-3.0-orange.svg?style=flat
 [swift-url]: https://swift.org
-[platform-badge]: https://img.shields.io/badge/Platform-Linux-lightgray.svg?style=flat
+[platform-badge]: https://img.shields.io/badge/Platform-Mac%20%26%20Linux-lightgray.svg?style=flat
 [platform-url]: https://swift.org
 [mit-badge]: https://img.shields.io/badge/License-MIT-blue.svg?style=flat
 [mit-url]: https://tldrlegal.com/license/mit-license
