@@ -30,7 +30,6 @@
 @_exported import UDP
 @_exported import OpenSSL
 @_exported import Router
-@_exported import SQL
 @_exported import JSON
 @_exported import JSONMediaType
 @_exported import URLEncodedForm
