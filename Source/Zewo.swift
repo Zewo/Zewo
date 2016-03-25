@@ -23,12 +23,8 @@
 // SOFTWARE.
 
 @_exported import HTTPServer
-@_exported import HTTPClient
-@_exported import HTTPSServer
-@_exported import HTTPSClient
+// @_exported import HTTPClient
 @_exported import HTTPFile
-@_exported import UDP
-@_exported import OpenSSL
 @_exported import Router
 @_exported import JSON
 @_exported import JSONMediaType
