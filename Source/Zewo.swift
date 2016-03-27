@@ -23,7 +23,7 @@
 // SOFTWARE.
 
 @_exported import HTTPServer
-// @_exported import HTTPClient
+@_exported import HTTPClient
 @_exported import HTTPFile
 @_exported import Router
 @_exported import JSON
