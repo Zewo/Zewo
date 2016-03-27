@@ -4,9 +4,9 @@ let package = Package(
     name: "Zewo",
     dependencies: [
         // HTTP
-        .Package(url: "https://github.com/Zewo/HTTPServer.git", majorVersion: 0, minor: 4),
-        .Package(url: "https://github.com/Zewo/HTTPClient.git", majorVersion: 0, minor: 4),
-        .Package(url: "https://github.com/Zewo/HTTPFile.git", majorVersion: 0, minor: 4),
+        .Package(url: "https://github.com/VeniceX/HTTPServer.git", majorVersion: 0, minor: 4),
+        .Package(url: "https://github.com/VeniceX/HTTPClient.git", majorVersion: 0, minor: 4),
+        .Package(url: "https://github.com/VeniceX/HTTPFile.git", majorVersion: 0, minor: 4),
         .Package(url: "https://github.com/Zewo/Router.git", majorVersion: 0, minor: 4),
         // Middleware
         .Package(url: "https://github.com/Zewo/LogMiddleware.git", majorVersion: 0, minor: 4),
@@ -18,6 +18,6 @@ let package = Package(
         .Package(url: "https://github.com/Zewo/URLEncodedForm.git", majorVersion: 0, minor: 4),
         // Base
         .Package(url: "https://github.com/Zewo/Base64.git", majorVersion: 0, minor: 4),
-        .Package(url: "https://github.com/Zewo/ChannelStream.git", majorVersion: 0, minor: 4),
+        .Package(url: "https://github.com/VeniceX/ChannelStream.git", majorVersion: 0, minor: 4),
     ]
 )
