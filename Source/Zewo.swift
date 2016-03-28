@@ -22,14 +22,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// HTTP
 @_exported import HTTPServer
 @_exported import HTTPClient
 @_exported import HTTPFile
 @_exported import Router
+// Middleware
+@_exported import RecoveryMiddleware
+@_exported import LogMiddleware
+@_exported import BasicAuthMiddleware
+@_exported import ContentNegotiationMiddleware
+// Media Types
 @_exported import JSON
 @_exported import JSONMediaType
 @_exported import URLEncodedForm
-@_exported import Base64
-@_exported import LogMiddleware
-@_exported import ContentNegotiationMiddleware
+@_exported import URLEncodedFormMediaType
+// Other
 @_exported import ChannelStream
