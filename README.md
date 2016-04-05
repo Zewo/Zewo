@@ -248,6 +248,7 @@ Some of us use [ZenHub](https://www.zenhub.io/) to manage the issues. Unfortunat
 - [Router](https://github.com/Zewo/Router)
 - [Sideburns](https://github.com/Zewo/Sideburns)
 - [SQL](https://github.com/Zewo/SQL)
+- [StandardOutputAppender](https://github.com/Zewo/StandardOutputAppender)
 - [Stream](https://github.com/Zewo/Stream)
 - [String](https://github.com/Zewo/String)
 - [System](https://github.com/Zewo/System)
