@@ -244,6 +244,7 @@ Some of us use [ZenHub](https://www.zenhub.io/) to manage the issues. Unfortunat
 - [OpenSSL](https://github.com/Zewo/OpenSSL)
 - [POSIXRegex](https://github.com/Zewo/POSIXRegex)
 - [PostgreSQL](https://github.com/Zewo/PostgreSQL)
+- [Redis](https://github.com/Zewo/swift-redis/)
 - [RegexRouteMatcher](https://github.com/Zewo/RegexRouteMatcher)
 - [Router](https://github.com/Zewo/Router)
 - [Sideburns](https://github.com/Zewo/Sideburns)
@@ -265,7 +266,6 @@ Some of us use [ZenHub](https://www.zenhub.io/) to manage the issues. Unfortunat
 
 ## External Packages
 
-- [Redis](https://github.com/rabc/swift-redis/)
 - [MiniRouter](https://github.com/paulofaria/MiniRouter)
 
 ### Code
