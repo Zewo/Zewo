@@ -4,6 +4,7 @@
 [![Platform][platform-badge]][platform-url]
 [![License][mit-badge]][mit-url]
 [![Slack][slack-badge]][slack-url]
+[![Travis][travis-badge]][travis-url]
 
 **Zewo** is a set of libraries for server side development. With **Zewo** you can write your web app, REST API, command line tool, database driver, etc. Our goal is to create an ecosystem around the modules and tools we provide so you can focus on developing your application or library, instead of doing everything from scratch.
 
@@ -292,3 +293,5 @@ License
 [slack-image]: http://s13.postimg.org/ybwy92ktf/Slack.png
 [slack-badge]: https://zewo-slackin.herokuapp.com/badge.svg
 [slack-url]: http://slack.zewo.io
+[travis-badge]: https://travis-ci.org/Zewo/Zewo.svg?branch=master
+[travis-url]: https://travis-ci.org/Zewo/Zewo
