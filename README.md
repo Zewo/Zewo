@@ -217,6 +217,7 @@ Some of us use [ZenHub](https://www.zenhub.io/) to manage the issues. Unfortunat
 - [CLibvenice](https://github.com/Zewo/CLibvenice)
 - [CMySQL](https://github.com/Zewo/CMySQL)
 - [CMySQL-OSX](https://github.com/Zewo/CMySQL-OSX)
+- [ConnectionPool](https://github.com/Zewo/ConnectionPool)
 - [ContentNegotiationMiddleware](https://github.com/Zewo/ContentNegotiationMiddleware)
 - [COpenSSL](https://github.com/Zewo/COpenSSL)
 - [COpenSSL-OSX](https://github.com/Zewo/COpenSSL-OSX)
