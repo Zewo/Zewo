@@ -27,53 +27,7 @@ import XCTest
 
 class ZewoTests: XCTestCase {
     func testBufferStream() {
-        let stream = ChannelStream { stream in
-            try stream.send("y")
-            try stream.send("o")
-            try stream.send(" ")
-            try stream.send("m")
-            try stream.send("a")
-            try stream.send("n")
-            try stream.send("!")
-        }
-
-        var request = Request()
-        request.body = stream
-        var count = 0
-        for _ in StreamSequence(request.body) {
-            count += 1
-        }
-        XCTAssertEqual(count, 7)
-        for _ in StreamSequence(request.body) {
-            XCTFail()
-        }
-        XCTAssert(request.buffer.isEmpty)
-        for _ in StreamSequence(request.body) {
-            XCTFail()
-        }
-        XCTAssert(request.buffer.isEmpty)
-        for _ in StreamSequence(request.body) {
-            XCTFail()
-        }
-        request.buffer = "yeah man"
-        count = 0
-        for data in StreamSequence(request.body) {
-            count += 1
-            XCTAssertEqual(data, "yeah man")
-        }
-        XCTAssertEqual(count, 1)
-        XCTAssert(request.buffer.isEmpty)
-        request.buffer = "hey"
-        XCTAssertEqual(request.buffer, "hey")
-        XCTAssertEqual(request.buffer, "hey")
-        request.buffer += " babe"
-        XCTAssertEqual(request.buffer, "hey babe")
-        count = 0
-        for data in StreamSequence(request.body) {
-            count += 1
-            XCTAssertEqual(data, "hey babe")
-        }
-        XCTAssertEqual(count, 1)
+        
     }
 }
 
