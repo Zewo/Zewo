@@ -196,7 +196,7 @@ following:
 - Fixing bugs/new features.
 
 If any of that sounds cool to you, send a pull request! After a few
-contributions, we'll add you to the organization team so you can merge pull requests and help steer the ship :ship:
+[contributions](CONTRIBUTING.md), we'll add you to the organization team so you can merge pull requests and help steer the ship :ship:
 
 Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by [its terms](CODEOFCONDUCT.md).
 
