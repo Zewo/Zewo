@@ -25,7 +25,7 @@ Currently, we have around 50+ packages. This list grows very fast so it might be
 
 Before we start we need to install some tools and dependencies.
 
->You can skip swiftenv step and some swiftenv instructions below if you already have `DEVELOPMENT-SNAPSHOT-2016-02-08-a` in your `PATH`, but we highly recommend look at it.
+>You can skip swiftenv step and some swiftenv instructions below if you already have `DEVELOPMENT-SNAPSHOT-2016-04-12-a` in your `PATH`, but we highly recommend look at it.
 
 ## Swiftenv
 
@@ -84,8 +84,8 @@ mkdir hello && cd hello
 Then we install Swift Development Snapshot from **February 8, 2016**.
 
 ```sh
-swiftenv install DEVELOPMENT-SNAPSHOT-2016-02-08-a
-swiftenv local DEVELOPMENT-SNAPSHOT-2016-02-08-a
+swiftenv install DEVELOPMENT-SNAPSHOT-2016-04-12-a
+swiftenv local DEVELOPMENT-SNAPSHOT-2016-04-12-a
 ```
 
 Now we initialize the project with Swift Package Manager (**SPM**).
