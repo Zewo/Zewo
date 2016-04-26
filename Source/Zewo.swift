@@ -39,3 +39,5 @@
 @_exported import URLEncodedFormMediaType
 // Other
 @_exported import ChannelStream
+
+private struct Zewo {}
