@@ -1,33 +1,36 @@
-# Zewo
+<p align="center">
+    <img src="https://raw.githubusercontent.com/Zewo/Zewo/master/Images/zewo-round-small.png" alt="Zewo"/>
+</p>
 
-[![Swift][swift-badge]][swift-url]
-[![Platform][platform-badge]][platform-url]
-[![License][mit-badge]][mit-url]
-[![Slack][slack-badge]][slack-url]
-[![Travis][travis-badge]][travis-url]
+<p align="center">
+    <a href="https://swift.org"><img src="https://img.shields.io/badge/Swift-3.0-orange.svg?style=flat" alt="Swift" /></a>
+    <a href="https://swift.org"><img src="https://img.shields.io/badge/Platforms-OS%20X%20--%20Linux-lightgray.svg?style=flat" alt="Platform" /></a>
+    <a href="https://tldrlegal.com/license/mit-license"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat" alt="License" /></a>
+    <a href="http://slack.zewo.io"><img src="https://zewo-slackin.herokuapp.com/badge.svg" alt="Slack" /></a>
+    <a href="https://travis-ci.org/Zewo/Zewo"><img src="https://travis-ci.org/Zewo/Zewo.svg?branch=master" alt="Travis" /></a>
+</p>
+
+<p align="center">
+    <a href="#getting-started">Getting started</a>
+  • <a href="#contributing">Contributing</a>
+  • <a href="#umbrella-package">Umbrella Package</a>
+  • <a href="#zewo-packages">Packages</a>
+</p>
+
+# Zewo
 
 **Zewo** is a set of libraries for server side development. With **Zewo** you can write your web app, REST API, command line tool, database driver, etc. Our goal is to create an ecosystem around the modules and tools we provide so you can focus on developing your application or library, instead of doing everything from scratch.
 
 Currently, we have around 50+ packages. This list grows very fast so it might be outdated. To be sure just check our [organization](https://github.com/Zewo).
 
-# Quick Links
-
-- [Documentation](#whats-next)
-- [Getting started](#getting-started)
-- [Umbrella Package](#umbrella-package)
-- [Contributing](#contributing)
-- [Packages](#zewo-packages)
-- [Community](#community)
-
 # Getting started
-
->You can skip swiftenv step and some swiftenv instructions below if you already have `DEVELOPMENT-SNAPSHOT-2016-04-12-a` in your `PATH`, but we highly recommend look at it.
 
 ## Swiftenv
 
 [Swiftenv](https://github.com/kylef/swiftenv) allows you to easily install, and switch between multiple versions of Swift.
-You can install swiftenv following official [instructions](https://github.com/kylef/swiftenv#installation)
->note: if you use homebrew add `--HEAD` option as the stable version has some issues.
+You can install swiftenv following official [instructions](https://github.com/kylef/swiftenv#installation).
+
+> ⚠️ With homebrew use `brew install kylef/formulae/swiftenv --HEAD`.
 
 Once you have it, install the Swift Development Snapshot from **April 12, 2016**.
 
