@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/Zewo/Zewo/master/Images/zewo-round-small.png" alt="Zewo"/>
+    <img src="https://raw.githubusercontent.com/Zewo/Zewo/master/Images/zewo.png" alt="Zewo"/>
 </p>
 
 <p align="center">
