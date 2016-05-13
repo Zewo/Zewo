@@ -11,10 +11,10 @@
 </p>
 
 <p align="center">
-    <a href="#getting-started">Getting started</a>
+    <a href="#getting-started">Getting Started</a>
   • <a href="#contributing">Contributing</a>
   • <a href="#umbrella-package">Umbrella Package</a>
-  • <a href="#zewo-packages">Packages</a>
+  • <a href="#zewo-packages">Zewo Packages</a>
 </p>
 
 # Zewo
