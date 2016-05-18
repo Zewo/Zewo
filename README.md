@@ -85,13 +85,13 @@ Open `main.swift` and make it look like this:
 import HTTPServer
 import Router
 
-let router = Router { route in
+let app = Router { route in
     route.get("/hello") { _ in
         return Response(body: "hello world")
     }
 }
 
-try Server(router).start()
+try Server(app).start()
 ```
 
 This code:
