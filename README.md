@@ -91,7 +91,7 @@ let router = Router { route in
     }
 }
 
-try Server(responder: router).start()
+try Server(router).start()
 ```
 
 This code:
