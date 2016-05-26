@@ -212,7 +212,23 @@ Some of us use [ZenHub](https://www.zenhub.io/) to manage the issues. Unfortunat
 - [XML](https://github.com/Zewo/XML)
 - [ZeroMQ](https://github.com/Zewo/ZeroMQ)
 
-## External Packages
+## VeniceX Packages
+
+- [ChannelStream](https://github.com/VeniceX/ChannelStream)
+- [CLibvenice](https://github.com/VeniceX/CLibvenice)
+- [File](https://github.com/VeniceX/File)
+- [HTTPClient](https://github.com/VeniceX/HTTPClient)
+- [HTTPFile](https://github.com/VeniceX/HTTPFile)
+- [HTTPSClient](https://github.com/VeniceX/HTTPSClient)
+- [HTTPServer](https://github.com/VeniceX/HTTPServer)
+- [HTTPSServer](https://github.com/VeniceX/HTTPSServer)
+- [IP](https://github.com/VeniceX/IP)
+- [TCP](https://github.com/VeniceX/TCP)
+- [TCPSSL](https://github.com/VeniceX/TCPSSL)
+- [UDP](https://github.com/VeniceX/UDP)
+- [Venice](https://github.com/VeniceX/Venice)
+
+## Other Packages
 
 - [MiniRouter](https://github.com/paulofaria/MiniRouter)
 
