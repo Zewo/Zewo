@@ -26,15 +26,15 @@
 import XCTest
 
 class ZewoTests: XCTestCase {
-    func testBufferStream() {
-        
+    func testReality() {
+        XCTAssert(2 + 2 == 4, "Something is severely wrong here.")
     }
 }
 
 extension ZewoTests {
-    static var allTests: [(String, ZewoTests -> () throws -> Void)] {
+    static var allTests: [(String, (ZewoTests) -> () throws -> Void)] {
         return [
-            ("testBufferStream", testBufferStream),
+            ("testReality", testReality),
         ]
     }
 }
