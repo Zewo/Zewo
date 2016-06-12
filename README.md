@@ -20,39 +20,34 @@
 </p>
 
 # Zewo
-
 **Zewo** is a set of libraries for server side development. With **Zewo** you can write your web app, REST API, command line tool, database driver, etc. Our goal is to create an ecosystem around the modules and tools we provide so you can focus on developing your application or library, instead of doing everything from scratch.
 
 Currently, we have around 50+ packages. This list grows very fast so it might be outdated. To be sure just check our [organization](https://github.com/Zewo).
 
 # Getting started
-
 ## Swiftenv
-
-[Swiftenv](https://github.com/kylef/swiftenv) allows you to easily install, and switch between multiple versions of Swift.
-You can install swiftenv following official [instructions](https://github.com/kylef/swiftenv#installation).
+[Swiftenv](https://github.com/kylef/swiftenv) allows you to easily install, and switch between multiple versions of Swift. You can install swiftenv following official [instructions](https://github.com/kylef/swiftenv#installation).
 
 > ⚠️ With homebrew use `brew install kylef/formulae/swiftenv --HEAD`.
 
-Once you have it, install the Swift Development Snapshot from **April 12, 2016**.
+Once you have it, install the Swift Development Snapshot from **May 9, 2016**.
 
 ```sh
-swiftenv install DEVELOPMENT-SNAPSHOT-2016-04-12-a
+swiftenv install DEVELOPMENT-SNAPSHOT-2016-05-09-a
 ```
 
 ## Create your first Zewo web application
-
 First we need to create a directory for our app.
 
 ```sh
 mkdir hello && cd hello
 ```
 
-Now we initialize the project with Swift Package Manager (**SPM**) and select the 04-12 toolchain with Swiftenv.
+Now we initialize the project with Swift Package Manager (**SPM**) and select the 05-09 toolchain with Swiftenv.
 
 ```sh
 swift build --init
-swiftenv local DEVELOPMENT-SNAPSHOT-2016-04-12-a
+swiftenv local DEVELOPMENT-SNAPSHOT-2016-05-09-a
 ```
 
 This command will create the basic structure for our app.
@@ -73,14 +68,13 @@ import PackageDescription
 let package = Package(
     name: "hello",
     dependencies: [
-        .Package(url: "https://github.com/VeniceX/HTTPServer.git", majorVersion: 0, minor: 5),
-        .Package(url: "https://github.com/Zewo/Router.git", majorVersion: 0, minor: 5),
+        .Package(url: "https://github.com/VeniceX/HTTPServer.git", majorVersion: 0, minor: 7),
+        .Package(url: "https://github.com/Zewo/Router.git", majorVersion: 0, minor: 7),
     ]
 )
 ```
 
 ### Do your magic
-
 Open `main.swift` and make it look like this:
 
 ```swift
@@ -88,8 +82,8 @@ import HTTPServer
 import Router
 
 let app = Router { route in
-    route.get("/hello") { _ in
-        return Response(body: "hello world")
+    route.get("/hello") { request in
+        return Response(body: "Hello, world!")
     }
 }
 
@@ -97,12 +91,10 @@ try Server(app).start()
 ```
 
 This code:
-
 - Creates an HTTP server that listens on port `8080` by default.
 - Configures a router which will route `/hello` to a responder that responds with `"hello world"`.
 
 ### Build and run
-
 Now let's build the app.
 
 ```sh
@@ -115,18 +107,23 @@ After it compiles, run it.
 .build/debug/hello
 ```
 
-Now open your favorite browser and go to http://localhost:8080/hello. You should see `hello world` in your browser's window. 😊
+Now open your favorite browser and go to [http://localhost:8080/hello](http://localhost:8080/hello). You should see `hello world` in your browser's window. 😊
+
+### Xcode
+Using can IDE can be a huge boost to productivity. Luckily, **SPM** has Xcode project generation support built in!
+
+To generate your Zewo xcode project simply run:
+```sh
+swift build -X
+```
 
 ## What's next?
-
 Zewo has a **lot** of [modules](#zewo-packages), check out our [organization](https://github.com/Zewo) for more. You can also take a look at our [documentation](http://docs.zewo.io/index.html) which is growing every day. If you have any doubts you can reach us at our [slack](http://slack.zewo.io). We're very active and always ready to help.
 
 See also:
-
 - [Deploying with Docker](http://docs.zewo.io/Docker.html)
 
 ## Umbrella Package
-
 To make your life easier we provide the **Zewo** umbrella package which resides in this repository. This package provides the most important modules so you don't have to add all of them one by one.
 
 ```swift
@@ -134,18 +131,15 @@ import PackageDescription
 
 let package = Package(
     dependencies: [
-        .Package(url: "https://github.com/Zewo/Zewo.git", majorVersion: 0, minor: 5)
+        .Package(url: "https://github.com/Zewo/Zewo.git", majorVersion: 0, minor: 7)
     ]
 )
 ```
 
 ## Contributing
-
 Hey! Like Zewo? Awesome! We could actually really use your help!
 
-Open source isn't just writing code. Zewo could use your help with any of the
-following:
-
+Open source isn't just writing code. Zewo could use your help with any of the following:
 - Finding (and reporting!) bugs.
 - New feature suggestions.
 - Answering questions on issues.
@@ -154,19 +148,16 @@ following:
 - Helping to manage issue priorities.
 - Fixing bugs/new features.
 
-If any of that sounds cool to you, send a pull request! After a few
-[contributions](CONTRIBUTING.md), we'll add you to the organization team so you can merge pull requests and help steer the ship :ship:
+If any of that sounds cool to you, send a pull request! After a few [contributions](CONTRIBUTING.md), we'll add you to the organization team so you can merge pull requests and help steer the ship :ship:
 
 Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by [its terms](CODEOFCONDUCT.md).
 
 ### Issues
-
 Because we have lots of modules we use the [main repo](https://github.com/Zewo/Zewo) (this one) to track all our tasks, bugs, features, etc. using [Github issues](https://github.com/Zewo/Zewo/issues/new).
 
 Some of us use [ZenHub](https://www.zenhub.io/) to manage the issues. Unfortunately ZenHub only supports Google Chrome and Firefox, but looks like they're working on [Safari support](https://github.com/ZenHubIO/support/issues/53).
 
 ## Zewo Packages
-
 - [Base64](https://github.com/Zewo/Base64)
 - [BasicAuthMiddleware](https://github.com/Zewo/BasicAuthMiddleware)
 - [CHTTPParser](https://github.com/Zewo/CHTTPParser)
@@ -215,7 +206,6 @@ Some of us use [ZenHub](https://www.zenhub.io/) to manage the issues. Unfortunat
 - [ZeroMQ](https://github.com/Zewo/ZeroMQ)
 
 ## VeniceX Packages
-
 - [ChannelStream](https://github.com/VeniceX/ChannelStream)
 - [CLibvenice](https://github.com/VeniceX/CLibvenice)
 - [File](https://github.com/VeniceX/File)
@@ -231,21 +221,14 @@ Some of us use [ZenHub](https://www.zenhub.io/) to manage the issues. Unfortunat
 - [Venice](https://github.com/VeniceX/Venice)
 
 ## Other Packages
-
 - [MiniRouter](https://github.com/paulofaria/MiniRouter)
 
-### Code
-
-If you want to contribute with code you should use our development tool [zewo-dev](https://github.com/Zewo/zewo-dev). It makes it much easier to deal with the multitude of packages we maintain.
-
 ## Community
-
 [![Slack][slack-image]][slack-url]
 
 The entire Zewo code base is licensed under MIT. By contributing to Zewo you are contributing to an open and engaged community of brilliant Swift programmers. Join us on [Slack](http://slack.zewo.io) to get to know us!
 
 ## Backers
-
 Support us with a monthly donation and help us continue our activities. [[Become a backer](https://opencollective.com/zewo#backer)]
 
 <a href="https://opencollective.com/zewo/backer/0/website" target="_blank"><img src="https://opencollective.com/zewo/backer/0/avatar.svg"></a>
@@ -280,7 +263,6 @@ Support us with a monthly donation and help us continue our activities. [[Become
 <a href="https://opencollective.com/zewo/backer/29/website" target="_blank"><img src="https://opencollective.com/zewo/backer/29/avatar.svg"></a>
 
 ## Sponsors
-
 Become a sponsor and get your logo on our website Zewo.io and on our README on Github with a link to your site. [[Become a sponsor](https://opencollective.com/zewo#sponsor)]
 
 <a href="https://opencollective.com/zewo/sponsor/0/website" target="_blank"><img src="https://opencollective.com/zewo/sponsor/0/avatar.svg"></a>
@@ -318,6 +300,7 @@ Become a sponsor and get your logo on our website Zewo.io and on our README on G
 License
 -------
 
+## License
 **Zewo** is released under the MIT license. See [LICENSE](https://raw.githubusercontent.com/Zewo/Zewo/master/LICENSE) for details.
 
 [swift-badge]: https://img.shields.io/badge/Swift-3.0-orange.svg?style=flat
