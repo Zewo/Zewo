@@ -7,6 +7,12 @@ if [[ "$(uname)" == "Linux" ]]; then
     # Install Swift
     cd ${HOME}
     wget $SWIFT_URL -O - | tar xz
+    # Move to .swift, set PATH
+    mv $(basename "$SWIFT_URL" ".tar.gz") .swift
+    export PATH="${HOME}/.swift/usr/bin:${PATH}"
+else
+    BASE_DIR=$(pwd)
+    cd ${HOME}
 fi
 
 # Make sure Swift is not already installed
@@ -14,9 +20,6 @@ if [ -d .swift ]; then
     rm -rf .swift
 fi
 
-# Move to .swift, set PATH
-mv $(basename "$SWIFT_URL" ".tar.gz") .swift
-export PATH="${HOME}/.swift/usr/bin:${PATH}"
 
 # Move back to where we started
 cd $BASE_DIR
