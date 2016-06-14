@@ -1,6 +1,7 @@
 #!/bin/bash
 
 SWIFT_URL=https://swift.org/builds/swift-3.0-preview-1/ubuntu1404/swift-3.0-preview-1/swift-3.0-preview-1-ubuntu14.04.tar.gz
+BASE_DIR=$(pwd)
 
 # Install Swift
 cd ${HOME}
@@ -14,3 +15,6 @@ fi
 # Move to .swift, set PATH
 mv $(basename "$SWIFT_URL" ".tar.gz") .swift
 export PATH="${HOME}/.swift/usr/bin:${PATH}"
+
+# Move back to where we started
+cd $BASE_DIR
