@@ -1,11 +1,13 @@
 #!/bin/bash
 
-SWIFT_URL=https://swift.org/builds/swift-3.0-preview-1/ubuntu1404/swift-3.0-preview-1/swift-3.0-preview-1-ubuntu14.04.tar.gz
-BASE_DIR=$(pwd)
+if [[ "$(uname)" == "Linux" ]]; then
+    SWIFT_URL=https://swift.org/builds/swift-3.0-preview-1/ubuntu1404/swift-3.0-preview-1/swift-3.0-preview-1-ubuntu14.04.tar.gz
+    BASE_DIR=$(pwd)
 
-# Install Swift
-cd ${HOME}
-wget $SWIFT_URL -O - | tar xz
+    # Install Swift
+    cd ${HOME}
+    wget $SWIFT_URL -O - | tar xz
+fi
 
 # Make sure Swift is not already installed
 if [ -d .swift ]; then
