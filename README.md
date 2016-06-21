@@ -296,10 +296,6 @@ Become a sponsor and get your logo on our website Zewo.io and on our README on G
 <a href="https://opencollective.com/zewo/sponsor/28/website" target="_blank"><img src="https://opencollective.com/zewo/sponsor/28/avatar.svg"></a>
 <a href="https://opencollective.com/zewo/sponsor/29/website" target="_blank"><img src="https://opencollective.com/zewo/sponsor/29/avatar.svg"></a>
 
-
-License
--------
-
 ## License
 **Zewo** is released under the MIT license. See [LICENSE](https://raw.githubusercontent.com/Zewo/Zewo/master/LICENSE) for details.
 
