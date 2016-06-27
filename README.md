@@ -112,9 +112,15 @@ Now open your favorite browser and go to [http://localhost:8080/hello](http://lo
 ### Xcode
 Using can IDE can be a huge boost to productivity. Luckily, **SPM** has Xcode project generation support built in!
 
-To generate your Zewo xcode project simply run:
+To generate your Zewo Xcode project simply run:
 ```sh
 swift build -X
+```
+
+In some cases, the generated Xcode project produces linking errors during the build process. If that happens to be the case, run the following commands instead:
+```sh
+swift build
+swift build -Xlinker -L$(pwd)/.build/debug -X
 ```
 
 ## What's next?
