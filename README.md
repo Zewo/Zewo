@@ -46,8 +46,8 @@ mkdir hello && cd hello
 Now we initialize the project with Swift Package Manager (**SPM**) and select the 05-09 toolchain with Swiftenv.
 
 ```sh
-swift build --init
 swiftenv local DEVELOPMENT-SNAPSHOT-2016-05-09-a
+swift build --init
 ```
 
 This command will create the basic structure for our app.
