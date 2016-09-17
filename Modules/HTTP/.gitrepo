@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/Zewo/HTTP
+	branch = master
+	commit = 6f143ef7ac2aa40cb67f7e1a193625dbf18e5386
+	parent = d8e87e9172bb3205782f23bc7b51695fa0162f9b
+	cmdver = 0.3.0

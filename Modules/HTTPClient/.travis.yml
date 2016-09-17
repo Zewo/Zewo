@@ -1,0 +1,15 @@
+os:
+  - osx
+  - linux
+language: generic
+sudo: required
+dist: trusty
+osx_image: xcode8
+install:
+  - source ./.ci/install.sh
+  - rvm install 2.2.3
+  - gem install xcpretty
+script:
+  - ./.ci/test.sh
+after_success:
+  - ./.ci/success.sh

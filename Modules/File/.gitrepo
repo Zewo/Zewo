@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/VeniceX/File
+	branch = master
+	commit = abe2e6d4847fdf3ba47738e9188dd8ee4ba19c9a
+	parent = a4da70062b2b1c7ce9e7d4dfb256a82a52c0eed6
+	cmdver = 0.3.0

@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/Zewo/Mapper
+	branch = master
+	commit = aa69cbb4b310dfd93a9a3670d7ea28af51cff52b
+	parent = d82ef195a5a32c677307c8f8e23fc8c407564546
+	cmdver = 0.3.0

@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/Zewo/Reflection
+	branch = master
+	commit = 8316994ea284ebec6d7e35dc95e6f1cc9450a349
+	parent = 1292d941b7223a4fe3fc927247b718cb844ecf43
+	cmdver = 0.3.0

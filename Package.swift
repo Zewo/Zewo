@@ -2,23 +2,25 @@ import PackageDescription
 
 let package = Package(
     name: "Zewo",
+    targets: [
+        Target(name: "POSIX"),
+        Target(name: "Reflection"),
+        Target(name: "Core", dependencies: ["Reflection", "POSIX"]),
+        Target(name: "OpenSSL", dependencies: ["Core"]),
+        Target(name: "HTTP", dependencies: ["Core"]),
+
+        Target(name: "Venice", dependencies: ["Core"]),
+        Target(name: "IP", dependencies: ["Core"]),
+        Target(name: "TCP", dependencies: ["IP", "OpenSSL"]),
+        Target(name: "File", dependencies: ["Core"]),
+        Target(name: "HTTPFile", dependencies: ["HTTP", "File"]),
+        Target(name: "HTTPServer", dependencies: ["HTTPFile", "TCP", "Venice"]),
+        Target(name: "HTTPClient", dependencies: ["HTTPFile", "TCP", "Venice"]),
+    ],
     dependencies: [
-        // HTTP
-        .Package(url: "https://github.com/VeniceX/HTTPServer.git", majorVersion: 0, minor: 7),
-        .Package(url: "https://github.com/VeniceX/HTTPClient.git", majorVersion: 0, minor: 7),
-        .Package(url: "https://github.com/VeniceX/HTTPFile.git", majorVersion: 0, minor: 7),
-        .Package(url: "https://github.com/Zewo/Router.git", majorVersion: 0, minor: 7),
-        // Middleware
-        .Package(url: "https://github.com/Zewo/RecoveryMiddleware.git", majorVersion: 0, minor: 7),
-        .Package(url: "https://github.com/Zewo/LogMiddleware.git", majorVersion: 0, minor: 7),
-        .Package(url: "https://github.com/Zewo/BasicAuthMiddleware.git", majorVersion: 0, minor: 7),
-        .Package(url: "https://github.com/Zewo/ContentNegotiationMiddleware.git", majorVersion: 0, minor: 7),
-        // Media Types
-        .Package(url: "https://github.com/Zewo/JSON.git", majorVersion: 0, minor: 9),
-        .Package(url: "https://github.com/Zewo/JSONMediaType.git", majorVersion: 0, minor: 7),
-        .Package(url: "https://github.com/Zewo/URLEncodedForm.git", majorVersion: 0, minor: 7),
-        .Package(url: "https://github.com/Zewo/URLEncodedFormMediaType.git", majorVersion: 0, minor: 7),
-        // Other
-        .Package(url: "https://github.com/VeniceX/ChannelStream.git", majorVersion: 0, minor: 7),
+        .Package(url: "https://github.com/VeniceX/CLibvenice.git", majorVersion: 0, minor: 13),
+        .Package(url: "https://github.com/Zewo/COpenSSL", majorVersion: 0, minor: 13),
+        .Package(url: "https://github.com/Zewo/CPOSIX.git", majorVersion: 0, minor: 13),
+        .Package(url: "https://github.com/Zewo/CHTTPParser.git", majorVersion: 0, minor: 13),
     ]
 )

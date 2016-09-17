@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/Zewo/OpenSSL
+	branch = master
+	commit = cba398268e847d7e6f7946c370925edd0734b3bd
+	parent = 28acc690113d525a65ed61a7c997e0898b3568d2
+	cmdver = 0.3.0
