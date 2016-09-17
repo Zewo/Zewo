@@ -15,7 +15,7 @@
 <p align="center">
       <a href="#getting-started">Getting Started</a>
     • <a href="#support">Support</a>
-    • <a href="#support">Community</a>
+    • <a href="#community">Community</a>
     • <a href="#contribution">Contribution</a>
 </p>
 
