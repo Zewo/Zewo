@@ -31,7 +31,7 @@ Check out our [organization](https://github.com/Zewo) for the modules.
 
 The inner-most circle is the entire project, moving away from the center are folders then, finally, a single file. The size and color of each slice is represented by the number of statements and the coverage, respectively.
 
-## Getting started
+## Getting Started
 
 ### Install Swiftenv
 
