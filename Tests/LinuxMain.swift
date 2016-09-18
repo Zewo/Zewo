@@ -12,16 +12,13 @@ import ReflectionTests
 import TCPTests
 import VeniceTests
 
-XCTMain([
+var testCases = [
     // POSIX
     testCase(POSIXTests.allTests),
     testCase(EnvironmentTests.allTests),
 
     // Venice
     testCase(ChannelTests.allTests),
-    #if os(macOS)
-    testCase(CoroutineTests.allTests),
-    #endif
     testCase(FallibleChannelTests.allTests),
     testCase(FileTests.allTests),
     testCase(IPTests.allTests),
@@ -65,4 +62,12 @@ XCTMain([
     testCase(TrieRouteMatcherTests.allTests),
     testCase(HTTPSerializerTests.allTests),
     testCase(ServerTests.allTests),
-])
+]
+
+#if os(macOS)
+testCases += [
+    testCase(CoroutineTests.allTests),
+]
+#endif
+
+XCTMain(testCases)
