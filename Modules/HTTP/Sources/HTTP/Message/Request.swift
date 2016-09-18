@@ -252,7 +252,7 @@ extension Request {
 
 extension Request : CustomStringConvertible {
     public var requestLineDescription: String {
-        return String(describing: method) + " " + String(describing: url) + " HTTP/" + String(describing: version.major) + "." + String(describing: version.minor) + "\n"
+        return String(describing: method) + " " + url.absoluteString + " HTTP/" + String(describing: version.major) + "." + String(describing: version.minor) + "\n"
     }
 
     public var description: String {
