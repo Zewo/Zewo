@@ -62,12 +62,19 @@ public final class ResponseParser {
     }
 
     public func parse(deadline: Double = .never) throws -> Response {
+        var read = 0
+
         while true {
             if let response = responses.popLast() {
                 return response
             }
 
-            let read = try stream.read(into: &buffer, deadline: deadline)
+            do {
+                read = try stream.read(into: &buffer, deadline: deadline)
+            } catch StreamError.closedStream {
+                read = 0
+            }
+
             let bytesParsed = buffer.withUnsafeBytes {
                 http_parser_execute(&parser, &responseSettings, $0, read)
             }

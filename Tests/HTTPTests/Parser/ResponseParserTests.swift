@@ -94,6 +94,19 @@ public class ResponseParserTests : XCTestCase {
         }
     }
 
+    func testResponseWithNoContentLength() throws {
+        let stream = Drain(buffer: "HTTP/1.1 200 OK\r\nDate: Fri, 16 Sep 2016 16:23:17 GMT\r\nConnection: close\r\n\r\ntest")
+        let parser = ResponseParser(stream: stream, bufferSize: 2048)
+        let response = try parser.parse()
+        XCTAssert(response.status == .ok)
+        XCTAssert(response.version.major == 1)
+        XCTAssert(response.version.minor == 1)
+        XCTAssert(response.headers.count == 2)
+        XCTAssert(response.headers["Date"] == "Fri, 16 Sep 2016 16:23:17 GMT")
+        XCTAssert(response.headers["Connection"] == "close")
+        XCTAssert(response.body == .buffer(Data("test")))
+    }
+
     func testShortResponses() throws {
         for bufferSize in bufferSizes {
             for count in responseCount {
