@@ -17,16 +17,6 @@ var testCases = [
     testCase(POSIXTests.allTests),
     testCase(EnvironmentTests.allTests),
 
-    // Venice
-    testCase(ChannelTests.allTests),
-    testCase(FallibleChannelTests.allTests),
-    testCase(FileTests.allTests),
-    testCase(IPTests.allTests),
-    testCase(SelectTests.allTests),
-    testCase(TCPTests.allTests),
-    testCase(TickerTests.allTests),
-    testCase(TimerTests.allTests),
-
     // Core
     testCase(JSONTests.allTests),
     testCase(LoggerTests.allTests),
@@ -67,6 +57,14 @@ var testCases = [
 #if os(macOS)
 testCases += [
     testCase(CoroutineTests.allTests),
+    testCase(ChannelTests.allTests),
+    testCase(FallibleChannelTests.allTests),
+    testCase(FileTests.allTests),
+    testCase(IPTests.allTests),
+    testCase(SelectTests.allTests),
+    testCase(TCPTests.allTests),
+    testCase(TickerTests.allTests),
+    testCase(TimerTests.allTests),
 ]
 #endif
 
