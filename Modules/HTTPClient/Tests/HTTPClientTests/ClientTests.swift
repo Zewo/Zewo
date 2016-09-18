@@ -1,5 +1,5 @@
 import XCTest
-@testable import HTTPServer
+@testable import HTTPClient
 
 public class ClientTests : XCTestCase {}
 

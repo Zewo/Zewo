@@ -1,15 +1,15 @@
+notifications:
+  slack: zewo:VjyVCCQvTOw9yrbzQysZezD1
 os:
-  - osx
   - linux
+  - osx
 language: generic
 sudo: required
 dist: trusty
 osx_image: xcode8
 install:
-  - source ./.ci/install.sh
-  - rvm install 2.2.3
-  - gem install xcpretty
+  - eval "$(curl -sL https://raw.githubusercontent.com/Zewo/Zewo/5254525d9da56df29346fd76e99529c22034d61d/Scripts/install-swiftenv.sh)"
 script:
-  - ./.ci/test.sh
-after_success:
-  - ./.ci/success.sh
+  - swift build
+  - swift build --configuration release
+  - swift test
