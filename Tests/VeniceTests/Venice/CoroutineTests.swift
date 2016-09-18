@@ -7,6 +7,8 @@
 import XCTest
 @testable import Venice
 
+#if os(macOS)
+
 public class CoroutineTests : XCTestCase {
     var sum: Int = 0
 
@@ -244,3 +246,5 @@ extension CoroutineTests {
         ]
     }
 }
+
+#endif
