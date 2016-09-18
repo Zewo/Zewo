@@ -36,7 +36,7 @@ var testCases = [
     testCase(BodyTests.allTests),
     testCase(CookieTests.allTests),
     testCase(MessageTests.allTests),
-
+    testCase(RequestTests.allTests),
     testCase(ResponseTests.allTests),
     testCase(BasicAuthMiddlewareTests.allTests),
     testCase(ContentNegotiationMiddlewareTests.allTests),
@@ -65,8 +65,6 @@ testCases += [
     testCase(TCPTests.allTests),
     testCase(TickerTests.allTests),
     testCase(TimerTests.allTests),
-
-    testCase(RequestTests.allTests),
 ]
 #endif
 
