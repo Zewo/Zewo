@@ -1,3 +1,9 @@
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin.C
+#endif
+
 @_exported import Core
 import CLibvenice
 
