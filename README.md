@@ -33,15 +33,19 @@ The inner-most circle is the entire project, moving away from the center are fol
 
 ## Getting Started
 
-### Install Swiftenv
+### Install swiftenv
 
-[Swiftenv](https://github.com/kylef/swiftenv) allows you to easily install, and switch between multiple versions of Swift. You can install swiftenv following official [instructions](https://github.com/kylef/swiftenv#installation).
+The [swiftenv](https://github.com/kylef/swiftenv) tool allows you to easily install, and switch between multiple versions of Swift. You can install **swiftenv** following official [instructions](https://github.com/kylef/swiftenv#installation).
 
-⚠️ With **homebrew** use `brew install kylef/formulae/swiftenv --HEAD`.
+⚠️ With **homebrew** use:
+
+```sh
+brew install kylef/formulae/swiftenv --HEAD
+```
 
 ### Install Swift 3.0 Release
 
-Once you have it, install the Swift 3.0 Release
+Once you have **swiftenv** installed, install the Swift 3.0 Release.
 
 ```sh
 swiftenv install 3.0
@@ -55,10 +59,16 @@ First we need to create a directory for our app.
 mkdir hello && cd hello
 ```
 
-Now we select Swift 3.0 Release with Swiftenv and initialize the project with the Swift Package Manager (**SwiftPM**).
+Now we select Swift 3.0 Release with **swiftenv**.
 
 ```sh
 swiftenv local 3.0
+```
+
+This command will create a file called `.swift-version` containing `3.0`. **swiftenv** uses this file to select the correct `swift` binary. Now we initialize the project with the Swift Package Manager (**SwiftPM**).
+
+
+```
 swift package init --type executable
 ```
 
@@ -74,7 +84,7 @@ This command will create the basic structure for our app.
 └── Tests
 ```
 
-Open `Package.swift` with your favorite editor and add `HTTPServer` as a dependency.
+`Package.swift` is the manifest file used by **SwiftPM** to configure your Swift package. Open `Package.swift` with your favorite editor and add `HTTPServer` as a dependency.
 
 ```swift
 import PackageDescription
@@ -89,7 +99,7 @@ let package = Package(
 
 ### Do your magic
 
-Open `main.swift` and make it look like this:
+`main.swift` is the entry file of your application. Open `main.swift` and make it look like this:
 
 ```swift
 import HTTPServer
@@ -114,13 +124,13 @@ This code:
 - Starts the server.
 
 ### Build and run
-Now let's build the app.
+Now let's build the app using **SwiftPM**.
 
 ```sh
 swift build
 ```
 
-After it compiles, run it.
+After it compiles, let's run it.
 
 ```sh
 .build/debug/hello
@@ -132,33 +142,33 @@ Now open your favorite browser and go to [http://localhost:8080/hello](http://lo
 
 ![Safari Hello](Images/Safari-hello.png)
 
-By default the server will log the requests/responses.
+By default the server will log the requests/responses which are receiveid/sent by the server.
 
 ![Terminal Log](Images/Terminal-log.png)
 
-Press `control + c` to stop the server.
+Press `⌃C` (`Control-C`) to stop the server.
 
 ### Xcode
 
-Using an IDE can be a huge boost to productivity. Luckily, **SwiftPM** has Xcode project generation support built in.
+Using an IDE can be a huge boost to productivity. Luckily, **SwiftPM** has **Xcode** project generation support built in.
 
-To generate your Zewo Xcode project simply run:
+To generate your **Xcode** project simply run:
 
 ```sh
 swift package generate-xcodeproj
 ```
 
-Open your Xcode project by double clicking it on Finder or with:
+Open your **Xcode** project by double clicking it on Finder or with:
 
 ```sh
 open hello.xcodeproj
 ```
 
-To run the application select the command line application scheme `hello` on Xcode.
+To run the application select the command line application scheme `hello` on **Xcode**.
 
 ![Xcode Scheme](Images/Xcode-scheme.png)
 
-Now click the run button ► or use the shortcut `⌘R`. You should see the server running directly from your Xcode.
+Now click the run button ► or use the shortcut `⌘R`. You should see the server running directly from your **Xcode**.
 
 ![Xcode Console](Images/Xcode-console.png)
 
