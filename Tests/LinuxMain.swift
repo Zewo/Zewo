@@ -19,7 +19,9 @@ XCTMain([
 
     // Venice
     testCase(ChannelTests.allTests),
+    #if os(macOS)
     testCase(CoroutineTests.allTests),
+    #endif
     testCase(FallibleChannelTests.allTests),
     testCase(FileTests.allTests),
     testCase(IPTests.allTests),
