@@ -66,6 +66,8 @@ This command will create the basic structure for our app.
 
 ```
 .
+├── .gitignore
+├── .swift-version
 ├── Package.swift
 ├── Sources
 │   └── main.swift
