@@ -136,13 +136,12 @@ func onRequestHeadersComplete(_ parser: Parser?) -> Int32 {
 }
 
 func onRequestBody(_ parser: Parser?, data: UnsafePointer<Int8>?, length: Int) -> Int32 {
-    parser!.pointee.data.assumingMemoryBound(to: RequestParserContext.self).withPointee {
-        let buffer = UnsafeBufferPointer(start: data, count: length)
-        $0.body.append(buffer)
-        return
+    return parser!.pointee.data.assumingMemoryBound(to: RequestParserContext.self).withPointee { context in
+        data!.withMemoryRebound(to: UInt8.self, capacity: length) { bytes in
+            context.body.append(bytes, count: length)
+        }
+        return 0
     }
-
-    return 0
 }
 
 func onRequestMessageComplete(_ parser: Parser?) -> Int32 {
