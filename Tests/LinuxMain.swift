@@ -36,7 +36,7 @@ var testCases = [
     testCase(BodyTests.allTests),
     testCase(CookieTests.allTests),
     testCase(MessageTests.allTests),
-    testCase(RequestTests.allTests),
+
     testCase(ResponseTests.allTests),
     testCase(BasicAuthMiddlewareTests.allTests),
     testCase(ContentNegotiationMiddlewareTests.allTests),
@@ -52,10 +52,8 @@ var testCases = [
     testCase(TrieRouteMatcherTests.allTests),
     testCase(HTTPSerializerTests.allTests),
     testCase(ServerTests.allTests),
-]
 
-#if os(macOS)
-testCases += [
+    // Venice
     testCase(CoroutineTests.allTests),
     testCase(ChannelTests.allTests),
     testCase(FallibleChannelTests.allTests),
@@ -65,6 +63,11 @@ testCases += [
     testCase(TCPTests.allTests),
     testCase(TickerTests.allTests),
     testCase(TimerTests.allTests),
+]
+
+#if os(macOS)
+testCases += [
+    testCase(RequestTests.allTests),
 ]
 #endif
 
