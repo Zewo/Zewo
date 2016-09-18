@@ -6,6 +6,6 @@
 [subrepo]
 	remote = https://github.com/VeniceX/File
 	branch = master
-	commit = abe2e6d4847fdf3ba47738e9188dd8ee4ba19c9a
-	parent = a4da70062b2b1c7ce9e7d4dfb256a82a52c0eed6
+	commit = b2ac3d09aa93db5e66b331756a93d26b297c0a2c
+	parent = 603ae02caa56f2e9370d3921443c004119ef438f
 	cmdver = 0.3.0
