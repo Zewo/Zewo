@@ -110,7 +110,7 @@ let router = BasicRouter { route in
     }
 }
 
-let server = try Server(configuration: ["port": 8080], responder: router)
+let server = try Server(port: 8080, responder: router)
 try server.start()
 ```
 
