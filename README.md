@@ -21,9 +21,38 @@
 
 # Zewo
 
-**Zewo** is a set of libraries for server side development. With **Zewo** you can write your web app, REST API, command line tool, database driver, etc. Our goal is to create an ecosystem around the modules and tools we provide so you can focus on developing your application or library, instead of doing everything from scratch.
+**Zewo** is a set of libraries for server-side development. With **Zewo** you can write your web app, REST API, command line tool, database driver, etc. Our goal is to create an ecosystem around the modules and tools we provide so you can focus on developing your application or library, instead of doing everything from scratch.
 
 Check out our [organization](https://github.com/Zewo) for the modules.
+
+## What sets Zewo apart?
+
+Zewo is **not** a web framework. Zewo is a set of **modular** libraries for server-side Swift. It is designed so you can pick and choose the modules you want/need for the task you have at hand. Most server-side Swift projects use Grand Central Dispatch (**GCD**) as the concurrency library of choice. The drawback of using GCD is that its APIs are **asynchronous**. With async code comes **callback hell** and we all know it, it's no fun.
+
+Node.js is the best example of how callbacks can be frustrating. Express.js creator **TJ Holowaychuk** wrote a blog post about [Callback vs Coroutines](https://medium.com/@tjholowaychuk/callbacks-vs-coroutines-174f1fe66127#.3l3pf1xqf) in 2013 and one year later [left the Node.js community](https://medium.com/@tjholowaychuk/farewell-node-js-4ba9e7f3e52b#.okwqsltyx) in favor of Go. There were many reasons for that but one of the main reasons was the concurrency model. Sure we have futures and promises and functional reactive programming. They all mitigate the problem, but the async nature of the code will always be there.
+
+At **Zewo** we use **coroutines**. Coroutines allow concurrency while maintaining **synchronous** APIs. We all learn how to program with synchronous code. We're used to reason about our code synchronously. Being able to use synchronous APIs makes the code much more readable and understandable. Coroutines are also **faster** than threads, because they're much lighter.
+
+Our implementation of **coroutines** (which is based on [libmill](https://github.com/sustrik/libmill)) is **single-threaded**. This means that you don't have to worry about **locks** or **race conditions**. So your code is **safer** by default. To use use all the CPU power available all you have to do is to replicate the work according to the number of logical CPUs available. As an example, this could mean running as many processes of your server as cores in your machine. **Rob Pike**, one of the creators of Go had a talk called [Concurrency is not Parallelism](https://www.youtube.com/watch?v=cN_DpYBzKso) that explains this concept **very** well. Go also has the philosophy:
+
+```
+Don't communicate by sharing memory. Share memory by communicating. 
+``` 
+
+Like Go, instead of sharing memory and handling state we promote the use of [CSP](https://en.wikipedia.org/wiki/Communicating_sequential_processes)-style concurrency using channels. This pattern brings the abstractions used on the development of distributed systems closer to the way we're used to think about communication. It also aligns well with Swift's mindset of immutability and value types. All of these things contributes to a distinct experince on the server-side Swift.
+
+With **Zewo** you get:
+
+* Modular Frameworks
+* Go-style Concurrency
+* Synchronous APIs
+* Amazing Performance
+* Safer Applications
+* Scalable Systems
+* Cleaner Code
+* Proper Error Handling
+* No Callback Hell
+* No Race Conditions
 
 ## Test Coverage
 
