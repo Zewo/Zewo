@@ -12,7 +12,7 @@ import PackageDescription
 
 let package = Package(
     dependencies: [
-        .Package(url: "https://github.com/VeniceX/HTTPFile.git", majorVersion: 0, minor: 13)
+        .Package(url: "https://github.com/Zewo/HTTPFile.git", majorVersion: 0, minor: 13)
     ]
 )
 ```
@@ -38,5 +38,5 @@ This project is released under the MIT license. See [LICENSE](LICENSE) for detai
 [slack-image]: http://s13.postimg.org/ybwy92ktf/Slack.png
 [slack-badge]: https://zewo-slackin.herokuapp.com/badge.svg
 [slack-url]: http://slack.zewo.io
-[travis-badge]: https://travis-ci.org/VeniceX/HTTPFile.svg?branch=master
-[travis-url]: https://travis-ci.org/VeniceX/HTTPFile
+[travis-badge]: https://travis-ci.org/Zewo/HTTPFile.svg?branch=master
+[travis-url]: https://travis-ci.org/Zewo/HTTPFile

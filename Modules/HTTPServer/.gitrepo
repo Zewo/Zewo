@@ -4,7 +4,7 @@
 ; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
 ;
 [subrepo]
-	remote = https://github.com/VeniceX/HTTPServer
+	remote = https://github.com/Zewo/HTTPServer
 	branch = master
 	commit = 2aad95ea4bb463756505266c5e7ecb733cb57772
 	parent = 5033168f5959ce8e1a8b546345b9426be94de2eb
