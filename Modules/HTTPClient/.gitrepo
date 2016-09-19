@@ -1,0 +1,11 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/Zewo/HTTPClient
+	branch = master
+	commit = e144298af1c9ffd061103dffd9a188e03e7285eb
+	parent = 668090422086f14dfcb50d5ad10d90b3eae4a1d4
+	cmdver = 0.3.0
