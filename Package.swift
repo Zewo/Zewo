@@ -18,7 +18,7 @@ let package = Package(
         Target(name: "HTTPClient", dependencies: ["HTTPFile", "TCP", "Venice"]),
     ],
     dependencies: [
-        .Package(url: "https://github.com/VeniceX/CLibvenice.git", majorVersion: 0, minor: 13),
+        .Package(url: "https://github.com/Zewo/CLibvenice.git", majorVersion: 0, minor: 13),
         .Package(url: "https://github.com/Zewo/COpenSSL", majorVersion: 0, minor: 13),
         .Package(url: "https://github.com/Zewo/CPOSIX.git", majorVersion: 0, minor: 13),
         .Package(url: "https://github.com/Zewo/CHTTPParser.git", majorVersion: 0, minor: 13),
