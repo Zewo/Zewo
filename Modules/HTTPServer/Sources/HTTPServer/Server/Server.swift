@@ -8,6 +8,48 @@ public struct Server {
     public let port: Int
     public let bufferSize: Int
 
+    public init(host: String = "0.0.0.0", port: Int = 8080, middleware: [Middleware] = [], responder: Responder, failure: @escaping (Error) -> Void =  Server.log(error:)) throws {
+        let backlog = 128
+        let reusePort = false
+
+        let bufferSize = 2048
+        let enableLog = true
+        let enableSession = true
+        let enableContentNegotiation = true
+
+        self.tcpHost = try TCPHost(
+            configuration: [
+                "host": Map(host),
+                "port": Map(port),
+                "backlog": Map(backlog),
+                "reusePort": Map(reusePort),
+                ]
+        )
+
+        var chain: [Middleware] = []
+
+        if enableLog {
+            chain.append(LogMiddleware())
+        }
+
+        if enableSession {
+            chain.append(SessionMiddleware())
+        }
+
+        if enableContentNegotiation {
+            chain.append(ContentNegotiationMiddleware(mediaTypes: [JSON.self, URLEncodedForm.self]))
+        }
+
+        chain.append(contentsOf: middleware)
+
+        self.host = host
+        self.port = port
+        self.bufferSize = bufferSize
+        self.middleware = chain
+        self.responder = responder
+        self.failure = failure
+    }
+
     public init(configuration: Map, middleware: [Middleware], responder: Responder, failure: @escaping (Error) -> Void =  Server.log(error:)) throws {
         let host = configuration["tcp", "host"].string ?? "0.0.0.0"
         let port = configuration["tcp", "port"].int ?? 8080
