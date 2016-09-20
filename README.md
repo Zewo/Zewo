@@ -208,6 +208,84 @@ You can set breakpoints in your code and debug it as usual.
 
 To stop the server just click the stop button ■ or use the shortcut `⌘.`.
 
+### Deploying to Heroku
+
+Now the most fun part. Deploying your app to production. For this we'll use [Heroku](https://www.heroku.com) which is a cloud PaaS (Platform as a Service). Heroku is great specially because it's extremely easy to use and for this example you won't have to spend a dime. So if you don't have a Heroku account [sign up for free](https://signup.heroku.com). After signing up check out the instrunctions to download and install the [heroku command line](https://devcenter.heroku.com/articles/heroku-command-line). 
+
+⚠️ You just need to go to the part where you do `heroku login`. The part where you create your app is what we'll do here. 😉
+
+Heroku works very tightly with git. So let's initialize our git repo. Go back to the command line and do:
+
+```sh
+git init
+``` 
+
+Cool, now before we commit we need to make some changes. First, create a file called `Procfile` at the root of your project.
+
+```sh
+touch Procfile
+```
+
+`Procfile` is the file used by Heroku to configure your application. For more information go [here](https://devcenter.heroku.com/articles/procfile). Now, open `Procile` in your favorite editor and make it look like this:
+
+```
+web: hello -port $PORT
+```
+
+`web` states that our application is a web application. `hello -port $PORT` is simply the executable of our application. Heroku doesn't allow you to choose the port where your web application will run. So it gives you the port through the environment variable `PORT`. `hello -port $PORT` gets the `PORT` environment variable and passes it to our application as a command line argument. So now we have to access that argument and send it to our server.
+
+Let's edit our `main.swift` to accomodate those changes. You can use Xcode or a text editor to make it look like this:
+
+```swift
+import HTTPServer
+
+let router = BasicRouter { route in
+    route.get("/hello") { request in
+        return Response(body: "Hello, world!")
+    }
+}
+
+let arguments = try Configuration.commandLineArguments()
+let port = arguments["port"].int ?? 8080
+
+let server = try Server(port: port, responder: router)
+try server.start()
+``` 
+
+We just added two lines. The first tries to parse the command line arguments passed to the application. The second tries to get the `port` argument as an integer, if it doesn't exists or if it's not an integer then it uses the default value `8080`.
+
+Now let's try it locally. Compile and run with Xcode or with SwiftPM.
+
+```swift
+swift build
+.build/debug/hello -port 8081
+```
+
+![Terminal server custom port](Images/Terminal-server-custom-port.png)
+
+Cool, let's stage our files and commit.
+
+```sh
+git add .
+git commit -am "it starts"
+```
+
+Next step is to create the Heroku app. To use Swift on Heroku we need a swift buildpack. We'll use [heroku-buildpack-swift](https://github.com/kylef/heroku-buildpack-swift), a buildpack created by @kylef, the same dude that created **swiftenv**. Now that we know which buildpack to use we just need to run:
+
+```sh
+heroku create {your-heroku-app-name} --buildpack https://github.com/kylef/heroku-buildpack-swift.git 
+```
+
+⚠️ Don't forget to swap `{your-heroku-app-name}` for a nice name. Maybe something like hello-zewo-1969?
+
+This command will create an app in your account at Heroku (don't worry it's free) and set up a git remote called `heroku`. All we have to do now it's push to this remote.
+
+```sh
+git push heroku master
+````
+
+Heroku will use the buildpack to install swiftenv then Swift and its dependencies and finally it will compile and start your app using the `Procfile`.
+
 ### What's next?
 
 Check out our [organization](https://github.com/Zewo) for more. You can also take a look at our [documentation](http://zewo.readme.io). If you have any doubts you can reach us at our [slack](http://slack.zewo.io). We're very active and always ready to help.
