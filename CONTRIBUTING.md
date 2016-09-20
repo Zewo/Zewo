@@ -2,7 +2,11 @@
 
 ## How do I start?
 
-Contributing to Open Source projects is not all about code. You can contribute by:
+There are many ways to contribute to Open Source projects, you can help by:
+
+### Writing code
+
+Check out how our [development workflow](Docs/WORKFLOW.md) works.
 
 ### Finding and reporting bugs
 

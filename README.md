@@ -36,8 +36,8 @@ At **Zewo** we use **coroutines**. Coroutines allow concurrency while maintainin
 Our implementation of **coroutines** (which is based on [libmill](https://github.com/sustrik/libmill)) is **single-threaded**. This means that you don't have to worry about **locks** or **race conditions**. So your code is **safer** by default. To use all the CPU power available all you have to do is to replicate the work according to the number of logical CPUs available. As an example, this could mean running as many processes of your server as cores in your machine. **Rob Pike**, one of the creators of Go had a talk called [Concurrency is not Parallelism](https://www.youtube.com/watch?v=cN_DpYBzKso) that explains this concept **very** well. Go also has the philosophy:
 
 ```
-Don't communicate by sharing memory. Share memory by communicating. 
-``` 
+Don't communicate by sharing memory. Share memory by communicating.
+```
 
 Like Go, instead of sharing memory and handling state we promote the use of [CSP](https://en.wikipedia.org/wiki/Communicating_sequential_processes)-style concurrency using channels. This pattern brings the abstractions used on the development of distributed systems closer to the way we're used to think about communication. It also aligns well with Swift's mindset of immutability and value types. All of these things contributes to a distinct experince on the server-side Swift.
 
@@ -46,7 +46,7 @@ With **Zewo** you get:
 * Modular Frameworks
 * Go-style Concurrency
 * Synchronous APIs
-* Amazing Performance
+* Incredible Performance
 * Safer Applications
 * Scalable Systems
 * Cleaner Code
