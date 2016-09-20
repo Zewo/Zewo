@@ -13,10 +13,11 @@
 </p>
 
 <p align="center">
-      <a href="#getting-started">Getting Started</a>
+	   <a href="#what-sets-zewo-apart">Why Zewo?</a>
+    • <a href="#getting-started">Getting Started</a>
     • <a href="#support">Support</a>
     • <a href="#community">Community</a>
-    • <a href="#contribution">Contribution</a>
+    • <a href="https://github.com/Zewo/Zewo/blob/master/CONTRIBUTING.md">Contributing</a>
 </p>
 
 # Zewo
