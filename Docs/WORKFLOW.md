@@ -14,15 +14,15 @@ For specific workflows read below.
 
 To fork Zewo just go to the [repository](https://github.com/Zewo/Zewo) and click the **Fork** button on the upper right corner of the screen.
 
-![Fork button](Images/GitHub-buttons.png)
+![Fork button](../Images/GitHub-buttons.png)
 
 GitHub is going to ask you where would you like to fork. Most probably you'll pick your own GitHub account.
 
-![Fork dialog](Images/GitHub-fork-where.png)
+![Fork dialog](../Images/GitHub-fork-where.png)
 
 After that you'll get a copy of the Zewo repository on your profile.
 
-![Fork repo](Images/GitHub-fork.png)
+![Fork repo](../Images/GitHub-fork.png)
 
 ## Cloning from your fork
 
@@ -131,32 +131,32 @@ git push origin your-branch
 
 Go to your repo and you'll see that GitHub will give you the option to create the pull request just by clicking on the **Compare & pull request** button.
 
-![Compare and pull request](Images/GitHub-compare-and-pull-request.png)
+![Compare and pull request](../Images/GitHub-compare-and-pull-request.png)
 
 If for some reason that doesn't appear anymore you can always click on the **New pull request** button which will be next to the branch selector.
 
-![New pull request](Images/GitHub-new-pull-request.png)
+![New pull request](../Images/GitHub-new-pull-request.png)
 
 When you click on **New pull request** you'll have to specify the origin and destination repos and branches manually. Make sure the base fork is Zewo/Zewo, base is master, head fork is {your-profile}/Zewo and compare is your-branch.
 
-![Comparing changes](Images/GitHub-comparing-changes.png)
+![Comparing changes](../Images/GitHub-comparing-changes.png)
 
 After clicking **Create pull request** (or if you clicked **Compare & pull request** before) you'll be able to write a title and a description for your pull request.
 
 ⚠️ Use meaningful titles and descriptions for your pull requests. This information should help people understand the changes in a global and specific level. The bigger the pull request, the bigger the description.
 
-![Create PR](Images/GitHub-create-pull-request.png)
+![Create PR](../Images/GitHub-create-pull-request.png)
 
 Once you're done click **Create pull request**. Our continous integration tools will start analyzing your pull request.
 
-![Status checks](Images/GitHub-status-checks.png)
+![Status checks](../Images/GitHub-status-checks.png)
 
 We **require** all status checks to pass and a peer review before merging. One of the checks we do is if the test coverage level dropped. We require the test coverage to always go up. Never go down.
 
-![Test coverage](Images/GitHub-codecov.png)
+![Test coverage](../Images/GitHub-codecov.png)
 
 If some test doesn't pass or the reviewer requests you to makes some changes you can just go back to your local branch. Add more commits and push then to your remote (`origin`). The commits will appear on the pull request automatically. If in the end you get to pass all steps your pull request will look like this.
 
-![Status checks](Images/GitHub-status-checks-ok.png)
+![Status checks](../Images/GitHub-status-checks-ok.png)
 
 After this all you have to do is wait for the pull request to be merged. 😊
