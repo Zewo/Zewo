@@ -210,7 +210,7 @@ To stop the server just click the stop button ■ or use the shortcut `⌘.`.
 
 ### Deploying to Heroku
 
-Now the most fun part. Deploying your app to production. For this we'll use [Heroku](https://www.heroku.com) which is a cloud PaaS (Platform as a Service). Heroku is great specially because it's extremely easy to use and for this example you won't have to spend a dime. So if you don't have a Heroku account [sign up for free](https://signup.heroku.com). After signing up check out the instrunctions to download and install the [heroku command line](https://devcenter.heroku.com/articles/heroku-command-line). 
+Now the best part, deploying your app to production. For this we'll use [Heroku](https://www.heroku.com) which is a cloud PaaS (Platform as a Service). Heroku is great specially because it's extremely easy to use and for this example you won't have to spend a dime. So if you don't have a Heroku account [sign up for free](https://signup.heroku.com). After signing up check out the instrunctions to download and install the [heroku command line](https://devcenter.heroku.com/articles/heroku-command-line). 
 
 ⚠️ You just need to go to the part where you do `heroku login`. The part where you create your app is what we'll do here. 😉
 
@@ -263,7 +263,7 @@ swift build
 
 ![Terminal server custom port](Images/Terminal-server-custom-port.png)
 
-Cool, let's stage our files and commit.
+Cool, it works. Let's stage our files and commit.
 
 ```sh
 git add .
@@ -282,9 +282,19 @@ This command will create an app in your account at Heroku (don't worry it's free
 
 ```sh
 git push heroku master
-````
+```
 
-Heroku will use the buildpack to install swiftenv then Swift and its dependencies and finally it will compile and start your app using the `Procfile`.
+Heroku will use the buildpack to install swiftenv then Swift and its dependencies and finally it will compile and start your app using the `Procfile`. In the end you'll have something like this:
+
+```
+remote: -----> Launching...
+remote:        Released v5
+remote:        https://hello-zewo-1969.herokuapp.com/ deployed to Heroku
+remote: 
+remote: Verifying deploy... done.
+```
+
+That's it. Your app is now live! 😎 You can check mine on [https://hello-zewo-1969.herokuapp.com/hello](https://hello-zewo-1969.herokuapp.com/hello).
 
 ### What's next?
 
