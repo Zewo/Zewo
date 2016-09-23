@@ -2,7 +2,7 @@ import XCTest
 import Foundation
 @testable import POSIX
 
-class ThreadTests: XCTestCase {
+public class ThreadTests: XCTestCase {
     func testExecution() throws {
         let arr = [1,2,3,4,5]
         var sum: Int?
@@ -64,7 +64,7 @@ class ThreadTests: XCTestCase {
 }
 
 extension ThreadTests {
-    static var allTests : [(String, (ThreadTests) -> () throws -> Void)] {
+    public static var allTests : [(String, (ThreadTests) -> () throws -> Void)] {
         return [
             ("testExecution", testExecution),
             ("testDone", testDone),

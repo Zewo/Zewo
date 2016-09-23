@@ -2,7 +2,7 @@ import XCTest
 import Foundation
 @testable import POSIX
 
-class LockTests: XCTestCase {
+public class LockTests: XCTestCase {
     func testWaitsForCondition() throws {
         let start = NSDate().timeIntervalSince1970
 
@@ -48,7 +48,7 @@ class LockTests: XCTestCase {
 }
 
 extension LockTests {
-    static var allTests : [(String, (LockTests) -> () throws -> Void)] {
+    public static var allTests : [(String, (LockTests) -> () throws -> Void)] {
         return [
            ("testWaitsForCondition", testWaitsForCondition),
            ("testLockEnsuresThreadSafety", testLockEnsuresThreadSafety)
