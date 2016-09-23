@@ -36,7 +36,7 @@ public final class PThread<T> {
 
         #if os(Linux)
             let pthreadPointer = UnsafeMutablePointer<pthread_t>.allocate(capacity: 1)
-            defer { pthreadPointer.deallocateCapacity(1) }
+            defer { pthreadPointer.deallocate(capacity: 1) }
         #else
             let pthreadPointer = UnsafeMutablePointer<pthread_t?>.allocate(capacity: 1)
             defer { pthreadPointer.deallocate(capacity: 1) }
