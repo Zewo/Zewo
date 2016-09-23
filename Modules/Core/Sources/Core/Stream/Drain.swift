@@ -1,75 +1,58 @@
-public final class Drain : DataRepresentable, Stream {
-    var buffer: Data
+public final class Drain : BufferRepresentable, Stream {
+    public private(set) var buffer: Buffer
     public var closed = false
 
-    public var data: Data {
-        return buffer
-    }
-
     public init(stream: InputStream, deadline: Double = .never) {
-        var inputBuffer = Data(count: 2048)
-        var outputBuffer = Data()
-
         if stream.closed {
             self.closed = true
         }
 
-        while !stream.closed {
-            if let bytesRead = try? stream.read(into: &inputBuffer, deadline: deadline) {
-                if bytesRead == 0 {
-                    break
-                }
-                inputBuffer.withUnsafeBytes {
-                    outputBuffer.append($0, count: bytesRead)
-                }
-            } else {
-                break
-            }
+        var buffer = Buffer.empty
+        while !stream.closed, let chunk = try? stream.read(upTo: 2048), chunk.count > 0 {
+            buffer.append(chunk)
         }
-
-        self.buffer = outputBuffer
-    }
-
-    public init(buffer: Data = Data()) {
         self.buffer = buffer
     }
 
-    public convenience init(buffer: DataRepresentable) {
-        self.init(buffer: buffer.data)
+    public init(buffer: Buffer = Buffer.empty) {
+        self.buffer = buffer
+    }
+
+    public convenience init(buffer: BufferRepresentable) {
+        self.init(buffer: buffer.buffer)
     }
 
     public func close() {
         closed = true
     }
-
-    public func read(into targetBuffer: inout Data, length: Int, deadline: Double = .never) throws -> Int {
+    
+    public func read(into: UnsafeMutableBufferPointer<UInt8>, deadline: Double = .never) throws -> Int {
         if closed && buffer.count == 0 {
-            throw StreamError.closedStream(data: Data())
+            throw StreamError.closedStream(buffer: Buffer.empty)
         }
-
-        if buffer.count == 0 {
+        
+        guard !buffer.isEmpty else {
             return 0
         }
-
-        if length >= buffer.count {
-            targetBuffer.replaceSubrange(0 ..< buffer.count, with: buffer)
-            let read = buffer.count
-            buffer = Data()
-            return read
+        
+        guard !into.isEmpty else {
+            return 0
         }
-
-        targetBuffer.replaceSubrange(0 ..< length, with: buffer[0 ..< length])
-        buffer.removeFirst(length)
-
-        return length
+        
+        let read = min(buffer.count, into.count)
+        buffer.copyBytes(to: into.baseAddress!, count: read)
+        
+        if buffer.count > read {
+            buffer = buffer.subdata(in: buffer.startIndex.advanced(by: read)..<buffer.endIndex)
+        } else {
+            buffer = Buffer.empty
+        }
+        
+        return read
     }
-
-    public func write(_ data: Data, length: Int, deadline: Double = .never) throws -> Int {
-        data.withUnsafeBytes {
-            buffer.append($0, count: length)
-        }
-
-        return length
+    
+    public func write(_ buffer: UnsafeBufferPointer<UInt8>, deadline: Double = .never) {
+        self.buffer.append(Buffer(bytes: buffer))
     }
 
     public func flush(deadline: Double = .never) throws {}

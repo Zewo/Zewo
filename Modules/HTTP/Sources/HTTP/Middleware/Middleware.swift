@@ -4,7 +4,7 @@ public protocol Middleware {
 
 extension Middleware {
     public func chain(to responder: Responder) -> Responder {
-        return BasicResponder { request in
+        return BasicResponder { (request: Request) throws -> Response in
             return try self.respond(to: request, chainingTo: responder)
         }
     }

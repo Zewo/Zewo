@@ -16,7 +16,7 @@ public class TCPTests : XCTestCase {
                 let connection = try TCPConnection(host: "127.0.0.1", port: 8080)
                 try connection.open()
                 connection.close()
-                XCTAssertThrowsError(try connection.write(Data(), deadline: .never))
+                XCTAssertThrowsError(try connection.write(Buffer([1,2,3]), deadline: 1.second))
             } catch {
                 XCTFail()
             }
@@ -54,8 +54,7 @@ public class TCPTests : XCTestCase {
                 let connection = try TCPConnection(host: "127.0.0.1", port: port)
                 try connection.open()
                 connection.close()
-                var buffer = Data(count: 1)
-                XCTAssertThrowsError(try connection.read(into: &buffer))
+                XCTAssertThrowsError(try connection.read(upTo: 1))
             } catch {
                 XCTFail()
             }
@@ -73,7 +72,7 @@ public class TCPTests : XCTestCase {
             do {
                 let connection = try TCPConnection(host: "127.0.0.1", port: port)
                 try connection.open()
-                try connection.write(Data([123]))
+                try connection.write(Buffer([123]))
                 try connection.flush()
             } catch {
                 XCTAssert(false)
@@ -81,10 +80,9 @@ public class TCPTests : XCTestCase {
         }
 
         let connection = try host.accept()
-        var buffer = Data(count: 1)
-        let bytesRead = try connection.read(into: &buffer)
-        XCTAssertEqual(bytesRead, 1)
-        XCTAssertEqual(buffer, Data([123]))
+        let buffer = try connection.read(upTo: 1)
+        XCTAssertEqual(buffer.count, 1)
+        XCTAssertEqual(buffer, Buffer([123]))
         connection.close()
     }
 
@@ -97,10 +95,9 @@ public class TCPTests : XCTestCase {
                 let connection = try TCPConnection(host: "127.0.0.1", port: port)
                 try connection.open()
 
-                var buffer = Data(count: 3)
-                let bytesRead = try connection.read(into: &buffer)
-                XCTAssertEqual(buffer, Data("ABC"))
-                XCTAssertEqual(bytesRead, 3)
+                let buffer = try connection.read(upTo: 3)
+                XCTAssertEqual(buffer, Buffer("ABC"))
+                XCTAssertEqual(buffer.count, 3)
 
                 try connection.write("123456789")
                 try connection.flush()
@@ -112,8 +109,7 @@ public class TCPTests : XCTestCase {
         let connection = try host.accept()
         let deadline = 30.milliseconds.fromNow()
 
-        var buffer = Data(count: 16)
-        XCTAssertThrowsError(try connection.read(into: &buffer, deadline: deadline))
+        XCTAssertThrowsError(try connection.read(upTo: 16, deadline: deadline))
 
         let diff = now() - deadline
         XCTAssert(diff > -300 && diff < 300)
@@ -121,10 +117,9 @@ public class TCPTests : XCTestCase {
         try connection.write("ABC")
         try connection.flush()
 
-        buffer = Data(count: 9)
-        let bytesRead = try connection.read(into: &buffer)
-        XCTAssertEqual(bytesRead, 9)
-        XCTAssertEqual(buffer, Data("123456789"))
+        let buffer = try connection.read(upTo: 9)
+        XCTAssertEqual(buffer.count, 9)
+        XCTAssertEqual(buffer, Buffer("123456789"))
     }
 }
 

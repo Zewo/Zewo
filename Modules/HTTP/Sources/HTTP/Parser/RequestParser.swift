@@ -1,63 +1,85 @@
 import CHTTPParser
+import Foundation
 
-typealias RequestContext = UnsafeMutablePointer<RequestParserContext>
 
 struct RequestParserContext {
     var method: Request.Method! = nil
     var url: URL! = nil
     var version: Version = Version(major: 0, minor: 0)
     var headers: Headers = Headers([:])
-    var body: Data = Data()
-
-    var currentURI = ""
-    var buildingHeaderName = ""
-    var currentHeaderName: CaseInsensitiveString = ""
-    var completion: (Request) -> Void
-
-    init(completion: @escaping (Request) -> Void) {
-        self.completion = completion
-    }
+    var body: Buffer = Buffer()
+    
+    
+    var currentHeaderField: String? = nil
 }
 
-var requestSettings: http_parser_settings = {
-    var settings = http_parser_settings()
-    http_parser_settings_init(&settings)
-
-    settings.on_url              = onRequestURL
-    settings.on_header_field     = onRequestHeaderField
-    settings.on_header_value     = onRequestHeaderValue
-    settings.on_headers_complete = onRequestHeadersComplete
-    settings.on_body             = onRequestBody
-    settings.on_message_complete = onRequestMessageComplete
-
-    return settings
-}()
+enum RequestParserState: Int {
+    case none = 1
+    case url = 2
+    case messageBegin = 3
+    case headerField = 4
+    case headerValue = 5
+    case headersComplete = 6
+    case body = 7
+    case messageComplete = 8
+}
 
 public final class RequestParser {
-    let stream: Stream
-    let context: RequestContext
+    let stream: Core.Stream
     var parser = http_parser()
+    var parserSettings: http_parser_settings
+    var parserBuffer: [UInt8] = []
+    var parserContext: RequestParserContext = RequestParserContext()
+    var parserState: RequestParserState = .none
     var requests: [Request] = []
-    var buffer: Data
-
-    public init(stream: Stream, bufferSize: Int = 2048) {
+    
+    let bufferBytes: UnsafeMutablePointer<UInt8>
+    let buffer: UnsafeMutableBufferPointer<UInt8>
+    
+    
+    public init(stream: Core.Stream, bufferSize: Int = 4096) {
         self.stream = stream
-        self.buffer = Data(count: bufferSize)
-        self.context = RequestContext.allocate(capacity: 1)
-        self.context.initialize(to: RequestParserContext { request in
-            self.requests.insert(request, at: 0)
-        })
-
+        self.bufferBytes = UnsafeMutablePointer.allocate(capacity: bufferSize)
+        self.buffer = UnsafeMutableBufferPointer(start: bufferBytes, count: bufferSize)
+        
+        var parserSettings = http_parser_settings()
+        http_parser_settings_init(&parserSettings)
+        
+        parserSettings.on_message_begin = { (parser: Parser?) -> Int32 in
+            let ref = Unmanaged<RequestParser>.fromOpaque(parser!.pointee.data).takeUnretainedValue()
+            return ref.parserOnMessageBegin()
+        }
+        parserSettings.on_url = { (parser: Parser?, data: UnsafePointer<Int8>?, length: Int) -> Int32 in
+            let ref = Unmanaged<RequestParser>.fromOpaque(parser!.pointee.data).takeUnretainedValue()
+            return ref.parserOnURL(data: data!, length: length)
+        }
+        parserSettings.on_header_field = { (parser: Parser?, data: UnsafePointer<Int8>?, length: Int) -> Int32 in
+            let ref = Unmanaged<RequestParser>.fromOpaque(parser!.pointee.data).takeUnretainedValue()
+            return ref.parserOnHeaderField(data: data!, length: length)
+        }
+        parserSettings.on_header_value = { (parser: Parser?, data: UnsafePointer<Int8>?, length: Int) -> Int32 in
+            let ref = Unmanaged<RequestParser>.fromOpaque(parser!.pointee.data).takeUnretainedValue()
+            return ref.parserOnHeaderValue(data: data!, length: length)
+        }
+        parserSettings.on_headers_complete = { (parser: Parser?) -> Int32 in
+            let ref = Unmanaged<RequestParser>.fromOpaque(parser!.pointee.data).takeUnretainedValue()
+            return ref.parserOnHeadersComplete()
+        }
+        parserSettings.on_body = { (parser: Parser?, data: UnsafePointer<Int8>?, length: Int) -> Int32 in
+            let ref = Unmanaged<RequestParser>.fromOpaque(parser!.pointee.data).takeUnretainedValue()
+            return ref.parserOnBody(data: data!, length: length)
+        }
+        parserSettings.on_message_complete = { (parser: Parser?) -> Int32 in
+            let ref = Unmanaged<RequestParser>.fromOpaque(parser!.pointee.data).takeUnretainedValue()
+            return ref.parserOnMessageComplete()
+        }
+        
+        self.parserSettings = parserSettings
+        
         resetParser()
     }
-
     deinit {
-        context.deallocate(capacity: 1)
-    }
-
-    func resetParser() {
-        http_parser_init(&parser, HTTP_REQUEST)
-        parser.data = UnsafeMutableRawPointer(context)
+        bufferBytes.deallocate(capacity: buffer.count)
     }
 
     public func parse() throws -> Request {
@@ -66,101 +88,123 @@ public final class RequestParser {
                 return request
             }
 
-            let bytesRead = try stream.read(into: &buffer)
-            let bytesParsed = buffer.withUnsafeBytes {
-                http_parser_execute(&parser, &requestSettings, $0, bytesRead)
+            let bytesRead = try stream.read(into: buffer)
+            let bytesParsed = buffer.baseAddress!.withMemoryRebound(to: Int8.self, capacity: buffer.count) {
+                http_parser_execute(&parser, &parserSettings, $0, bytesRead)
             }
-
+            
             guard bytesParsed == bytesRead else {
                 defer { resetParser() }
                 throw http_errno(parser.http_errno)
             }
         }
     }
-}
-
-func onRequestURL(_ parser: Parser?, data: UnsafePointer<Int8>?, length: Int) -> Int32 {
-    return parser!.pointee.data.assumingMemoryBound(to: RequestParserContext.self).withPointee {
-        let uri = String(cString: data!, length: length)
-        $0.currentURI += uri
+    
+    func resetParser() {
+        http_parser_init(&parser, HTTP_REQUEST)
+        parser.data = Unmanaged.passUnretained(self).toOpaque()
+        parserState = .none
+        parserContext = RequestParserContext()
+    }
+    
+    func parserOnMessageBegin() -> Int32 {
+        parserProcess(state: .messageBegin)
         return 0
     }
-}
-
-func onRequestHeaderField(_ parser: Parser?, data: UnsafePointer<Int8>?, length: Int) -> Int32 {
-    return parser!.pointee.data.assumingMemoryBound(to: RequestParserContext.self).withPointee {
-        let headerName = String(cString: data!, length: length)
-
-        if $0.currentHeaderName != "" {
-            $0.currentHeaderName = ""
-        }
-
-        $0.buildingHeaderName += headerName
+    
+    func parserOnURL(data: UnsafePointer<Int8>, length: Int) -> Int32 {
+        parserProcess(state: .url, data: UnsafeBufferPointer<Int8>(start: data, count: length))
         return 0
     }
-}
-
-func onRequestHeaderValue(_ parser: Parser?, data: UnsafePointer<Int8>?, length: Int) -> Int32 {
-    return parser!.pointee.data.assumingMemoryBound(to: RequestParserContext.self).withPointee {
-        let headerValue = String(cString: data!, length: length)
-
-        if $0.currentHeaderName == "" {
-            $0.currentHeaderName = CaseInsensitiveString($0.buildingHeaderName)
-            $0.buildingHeaderName = ""
-
-            if let previousHeaderValue = $0.headers[$0.currentHeaderName] {
-                $0.headers[$0.currentHeaderName] = previousHeaderValue + ", "
+    
+    func parserOnHeaderField(data: UnsafePointer<Int8>, length: Int) -> Int32 {
+        parserProcess(state: .headerField, data: UnsafeBufferPointer<Int8>(start: data, count: length))
+        return 0
+    }
+    
+    func parserOnHeaderValue(data: UnsafePointer<Int8>, length: Int) -> Int32 {
+        parserProcess(state: .headerValue, data: UnsafeBufferPointer<Int8>(start: data, count: length))
+        return 0
+    }
+    
+    func parserOnHeadersComplete() -> Int32 {
+        parserProcess(state: .headersComplete)
+        return 0
+    }
+    
+    func parserOnBody(data: UnsafePointer<Int8>, length: Int) -> Int32 {
+        parserProcess(state: .body, data: UnsafeBufferPointer<Int8>(start: data, count: length))
+        return 0
+    }
+    
+    func parserOnMessageComplete() -> Int32 {
+        parserProcess(state: .messageComplete)
+        return 0
+    }
+    
+    func parserProcess(state: RequestParserState, data: UnsafeBufferPointer<Int8>? = nil) {
+        if parserState != state {
+            
+            switch parserState {
+            case .none, .messageBegin, .messageComplete:
+                break
+                
+            case .url:
+                let str = String(bytes: parserBuffer, encoding: String.Encoding.utf8)!
+                parserContext.url = URL(string: str)!
+                
+            case .headerField:
+                let str = String(bytes: parserBuffer, encoding: String.Encoding.utf8)!
+                parserContext.currentHeaderField = str
+                
+            case .headerValue:
+                let field = CaseInsensitiveString(parserContext.currentHeaderField!)
+                let str = String(bytes: parserBuffer, encoding: String.Encoding.utf8)!
+                
+                if let existing = parserContext.headers[field] {
+                    parserContext.headers[field] = "\(existing), \(str)"
+                } else {
+                    parserContext.headers[field] = str
+                }
+                
+                parserContext.currentHeaderField = nil
+                
+            case .headersComplete:
+                parserContext.method = Request.Method(code: Int(parser.method))
+                parserContext.version = Version(major: Int(parser.http_major), minor: Int(parser.http_minor))
+                parserContext.currentHeaderField = nil
+                
+            case .body:
+                parserContext.body = Buffer(parserBuffer)
+            }
+            
+            parserBuffer = []
+            parserState = state
+            
+            if state == .messageComplete {
+                let request = Request(
+                    method: parserContext.method,
+                    url: parserContext.url,
+                    version: parserContext.version,
+                    headers: parserContext.headers,
+                    body: .buffer(parserContext.body)
+                )
+                requests.append(request)
+                resetParser()
+                return
             }
         }
-
-        let previousHeaderValue = $0.headers[$0.currentHeaderName] ?? ""
-        $0.headers[$0.currentHeaderName] = previousHeaderValue + headerValue
-
-        return 0
-    }
-}
-
-func onRequestHeadersComplete(_ parser: Parser?) -> Int32 {
-    return parser!.pointee.data.assumingMemoryBound(to: RequestParserContext.self).withPointee {
-        $0.method = Request.Method(code: Int(parser!.pointee.method))
-        let major = Int(parser!.pointee.http_major)
-        let minor = Int(parser!.pointee.http_minor)
-        $0.version = Version(major: major, minor: minor)
-
-        $0.url = URL(string: $0.currentURI)!
-        $0.currentURI = ""
-        $0.buildingHeaderName = ""
-        $0.currentHeaderName = ""
-        return 0
-    }
-}
-
-func onRequestBody(_ parser: Parser?, data: UnsafePointer<Int8>?, length: Int) -> Int32 {
-    return parser!.pointee.data.assumingMemoryBound(to: RequestParserContext.self).withPointee { context in
-        data!.withMemoryRebound(to: UInt8.self, capacity: length) { bytes in
-            context.body.append(bytes, count: length)
+        
+        
+        
+        guard let data = data, data.count > 0 else {
+            return
         }
-        return 0
-    }
-}
-
-func onRequestMessageComplete(_ parser: Parser?) -> Int32 {
-    return parser!.pointee.data.assumingMemoryBound(to: RequestParserContext.self).withPointee {
-        let request = Request(
-            method: $0.method,
-            url: $0.url,
-            version: $0.version,
-            headers: $0.headers,
-            body: .buffer($0.body)
-        )
-
-        $0.completion(request)
-
-        $0.method = nil
-        $0.url = nil
-        $0.version = Version(major: 0, minor: 0)
-        $0.headers = Headers([:])
-        $0.body = Data()
-        return 0
+        
+        data.baseAddress!.withMemoryRebound(to: UInt8.self, capacity: data.count) { ptr in
+            for i in 0..<data.count {
+                parserBuffer.append(ptr[i])
+            }
+        }
     }
 }

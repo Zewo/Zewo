@@ -8,7 +8,7 @@ public class RequestSerializer {
     }
 
     public func serialize(_ request: Request) throws {
-        let newLine: Data = Data([13, 10])
+        let newLine: [UInt8] = [13, 10]
 
         try stream.write("\(request.method) \(request.url.absoluteString) HTTP/\(request.version.major).\(request.version.minor)")
         try stream.write(newLine)
@@ -24,18 +24,15 @@ public class RequestSerializer {
         case .buffer(let buffer):
             try stream.write(buffer)
         case .reader(let reader):
-            var buffer = Data(count: bufferSize)
-
             while !reader.closed {
-                let bytesRead = try reader.read(into: &buffer)
-
-                if bytesRead == 0 {
+                let buffer = try reader.read(upTo: bufferSize)
+                guard !buffer.isEmpty else {
                     break
                 }
 
-                try stream.write(String(bytesRead, radix: 16))
+                try stream.write(String(buffer.count, radix: 16))
                 try stream.write(newLine)
-                try stream.write(buffer, length: bytesRead)
+                try stream.write(buffer)
                 try stream.write(newLine)
             }
 

@@ -2,7 +2,7 @@ import XCTest
 @testable import HTTP
 
 public class BodyTests : XCTestCase {
-    let testData = Data([0x00, 0x01, 0x02, 0x03])
+    let testData = Buffer([0x00, 0x01, 0x02, 0x03])
 
     func testBufferBecomeBuffer() throws {
         var body: Body = .buffer(testData)
@@ -26,10 +26,9 @@ public class BodyTests : XCTestCase {
         XCTAssertTrue(body.isReader)
         XCTAssertFalse(body.isWriter)
         XCTAssertFalse(reader.closed)
-        var buffer = Data(count: testData.count)
-        let bytesRead = try reader.read(into: &buffer)
+        let buffer = try reader.read(upTo: testData.count)
         XCTAssertFalse(reader.closed)
-        XCTAssertEqual(bytesRead, testData.count)
+        XCTAssertEqual(buffer.count, testData.count)
         XCTAssertEqual(buffer, testData)
     }
 
@@ -42,10 +41,9 @@ public class BodyTests : XCTestCase {
         XCTAssertFalse(body.isReader)
         XCTAssertTrue(body.isWriter)
         XCTAssertFalse(writerStream.closed)
-        var buffer = Data(count: testData.count)
-        let bytesRead = try writerStream.read(into: &buffer)
+        let buffer = try writerStream.read(upTo: testData.count)
         XCTAssertFalse(writerStream.closed)
-        XCTAssertEqual(bytesRead, testData.count)
+        XCTAssertEqual(buffer.count, testData.count)
         XCTAssertEqual(buffer, testData)
     }
 
@@ -73,10 +71,9 @@ public class BodyTests : XCTestCase {
         XCTAssertTrue(body.isReader)
         XCTAssertFalse(body.isWriter)
         XCTAssertFalse(reader.closed)
-        var buffer = Data(count: testData.count)
-        let bytesRead = try reader.read(into: &buffer)
+        let buffer = try reader.read(upTo: testData.count)
         XCTAssertFalse(reader.closed)
-        XCTAssertEqual(bytesRead, testData.count)
+        XCTAssertEqual(buffer.count, testData.count)
         XCTAssertEqual(buffer, testData)
     }
 
@@ -90,10 +87,9 @@ public class BodyTests : XCTestCase {
         XCTAssertFalse(body.isReader)
         XCTAssertTrue(body.isWriter)
         XCTAssertFalse(writerStream.closed)
-        var buffer = Data(count: testData.count)
-        let bytesRead = try writerStream.read(into: &buffer)
+        let buffer = try writerStream.read(upTo: testData.count)
         XCTAssertFalse(writerStream.closed)
-        XCTAssertEqual(bytesRead, testData.count)
+        XCTAssertEqual(buffer.count, testData.count)
         XCTAssertEqual(buffer, testData)
     }
 
@@ -123,10 +119,9 @@ public class BodyTests : XCTestCase {
         XCTAssertTrue(body.isReader)
         XCTAssertFalse(body.isWriter)
         XCTAssertFalse(reader.closed)
-        var buffer = Data(count: testData.count)
-        let bytesRead = try reader.read(into: &buffer)
+        let buffer = try reader.read(upTo: testData.count)
         XCTAssertFalse(reader.closed)
-        XCTAssertEqual(bytesRead, testData.count)
+        XCTAssertEqual(buffer.count, testData.count)
         XCTAssertEqual(buffer, testData)
     }
 
@@ -141,10 +136,9 @@ public class BodyTests : XCTestCase {
         XCTAssertFalse(body.isReader)
         XCTAssertTrue(body.isWriter)
         XCTAssertFalse(writerStream.closed)
-        var buffer = Data(count: testData.count)
-        let bytesRead = try writerStream.read(into: &buffer)
+        let buffer = try writerStream.read(upTo: testData.count)
         XCTAssertFalse(writerStream.closed)
-        XCTAssertEqual(bytesRead, testData.count)
+        XCTAssertEqual(buffer.count, testData.count)
         XCTAssertEqual(buffer, testData)
     }
 

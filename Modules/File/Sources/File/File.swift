@@ -99,65 +99,51 @@ public final class File : Stream {
 }
 
 extension File {
-    public func write(_ data: Data, length: Int, deadline: Double) throws -> Int {
+    
+    public func write(_ buffer: UnsafeBufferPointer<UInt8>, deadline: Double = .never) throws {
+        guard !buffer.isEmpty else {
+            return
+        }
+        
         try ensureFileIsOpen()
-
-        let bytesWritten = data.withUnsafeBytes {
-            filewrite(file, $0, length, deadline.int64milliseconds)
-        }
-
-        if bytesWritten == 0 {
+        
+        let bytesWritten = filewrite(file, buffer.baseAddress!, buffer.count, deadline.int64milliseconds)
+        guard bytesWritten == buffer.count else {
             try ensureLastOperationSucceeded()
+            throw SystemError.other(errorNumber: -1)
         }
-
-        return bytesWritten
     }
 
-    public func read(into buffer: inout Data, length: Int, deadline: Double) throws -> Int {
-        try ensureFileIsOpen()
-
-        let bytesRead = buffer.withUnsafeMutableBytes {
-            filereadlh(file, $0, 1, length, deadline.int64milliseconds)
+    public func read(into: UnsafeMutableBufferPointer<UInt8>, deadline: Double = .never) throws -> Int {
+        guard !into.isEmpty else {
+            return 0
         }
-
+        
+        try ensureFileIsOpen()
+        
+        let bytesRead = filereadlh(file, into.baseAddress!, 1, into.count, deadline.int64milliseconds)
+        
         if bytesRead == 0 {
             try ensureLastOperationSucceeded()
         }
-
+        
         return bytesRead
     }
 
-    //    public func read(_ byteCount: Int, deadline: Double = .never) throws -> Data {
-    //        try ensureFileIsOpen()
-    //
-    //        var data = Data(count: byteCount)
-    //        let received = data.withUnsafeMutableBytes {
-    //            fileread(file, $0, data.count, deadline.int64milliseconds)
-    //        }
-    //
-    //        let receivedData = Data(data.prefix(received))
-    //        try ensureLastOperationSucceeded()
-    //
-    //        return receivedData
-    //    }
-
-    public func readAll(bufferSize: Int = 2048, deadline: Double = .never) throws -> Data {
-        var inputBuffer = Data(count: bufferSize)
-        var outputBuffer = Data()
-
+    public func readAll(bufferSize: Int = 2048, deadline: Double = .never) throws -> Buffer {
+        var buffer = Buffer.empty
+        
         while true {
-            let inputRead = try read(into: &inputBuffer, deadline: deadline)
-
-            if inputRead == 0 || cursorIsAtEndOfFile {
+            let chunk = try self.read(upTo: bufferSize, deadline: deadline)
+            
+            if chunk.count == 0 || cursorIsAtEndOfFile {
                 break
             }
-
-            inputBuffer.withUnsafeBytes {
-                outputBuffer.append($0, count: inputRead)
-            }
+            
+            buffer.append(chunk)
         }
-
-        return outputBuffer
+        
+        return buffer
     }
 
     public func flush(deadline: Double) throws {
@@ -175,7 +161,7 @@ extension File {
 
     private func ensureFileIsOpen() throws {
         if closed {
-            throw StreamError.closedStream(data: Data())
+            throw StreamError.closedStream(buffer: Buffer())
         }
     }
 }
