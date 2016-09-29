@@ -24,7 +24,7 @@ public final class Client : Responder {
 
     var connection: Connection?
     var serializer: RequestSerializer?
-    var parser: ResponseParser?
+    var parser: MessageParser?
 
     public init(url: URL, configuration: Map = nil) throws {
         self.secure = try isSecure(url: url)
@@ -79,7 +79,14 @@ extension Client {
         do {
             // TODO: Add deadline to serializer
             try serializer.serialize(request)
-            let response = try parser.parse(deadline: requestDeadline)
+            
+            var response: Response!
+            while !connection.closed {
+                let chunk = try connection.read(upTo: bufferSize, deadline: requestDeadline)
+                try parser.parse(chunk) { message in
+                    response = message as! Response
+                }
+            }
 
             if let upgrade = request.upgradeConnection {
                 try upgrade(response, connection)
@@ -142,11 +149,11 @@ extension Client {
         return RequestSerializer(stream: connection)
     }
 
-    private func getParser(connection: Connection) -> ResponseParser {
+    private func getParser(connection: Connection) -> MessageParser {
         if let parser = self.parser {
             return parser
         }
-        return ResponseParser(stream: connection, bufferSize: self.bufferSize)
+        return MessageParser(mode: .response)
     }
 }
 

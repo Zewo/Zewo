@@ -42,23 +42,13 @@ extension OutputStream {
             return
         }
         
-        var rethrowError: Error? = nil
-        buffer.enumerateBytes { bufferPtr, _, stop in
-            do {
-                try write(bufferPtr, deadline: deadline)
-            } catch {
-                rethrowError = error
-                stop = true
-            }
-        }
-        
-        if let error = rethrowError {
-            throw error
+        try buffer.bytes.withUnsafeBufferPointer {
+            try write($0, deadline: deadline)
         }
     }
     
     public func write(_ converting: BufferRepresentable, deadline: Double = .never) throws {
-        try write(converting.buffer, deadline: .never)
+        try write(converting.buffer, deadline: deadline)
     }
     
     public func write(_ bytes: [UInt8], deadline: Double = .never) throws {

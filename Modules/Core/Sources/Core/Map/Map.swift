@@ -357,7 +357,7 @@ extension Map {
             return value
 
         case .null:
-            return Buffer.empty
+            return Buffer()
 
         default:
             throw MapError.incompatibleType

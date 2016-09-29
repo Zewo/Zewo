@@ -131,7 +131,7 @@ extension File {
     }
 
     public func readAll(bufferSize: Int = 2048, deadline: Double = .never) throws -> Buffer {
-        var buffer = Buffer.empty
+        var buffer = Buffer()
         
         while true {
             let chunk = try self.read(upTo: bufferSize, deadline: deadline)

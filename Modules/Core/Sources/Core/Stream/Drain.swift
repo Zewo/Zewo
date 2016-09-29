@@ -7,14 +7,14 @@ public final class Drain : BufferRepresentable, Stream {
             self.closed = true
         }
 
-        var buffer = Buffer.empty
+        var buffer = Buffer()
         while !stream.closed, let chunk = try? stream.read(upTo: 2048), chunk.count > 0 {
             buffer.append(chunk)
         }
         self.buffer = buffer
     }
 
-    public init(buffer: Buffer = Buffer.empty) {
+    public init(buffer: Buffer = Buffer()) {
         self.buffer = buffer
     }
 
@@ -28,7 +28,7 @@ public final class Drain : BufferRepresentable, Stream {
     
     public func read(into: UnsafeMutableBufferPointer<UInt8>, deadline: Double = .never) throws -> Int {
         if closed && buffer.count == 0 {
-            throw StreamError.closedStream(buffer: Buffer.empty)
+            throw StreamError.closedStream(buffer: Buffer())
         }
         
         guard !buffer.isEmpty else {
@@ -43,16 +43,16 @@ public final class Drain : BufferRepresentable, Stream {
         buffer.copyBytes(to: into.baseAddress!, count: read)
         
         if buffer.count > read {
-            buffer = buffer.subdata(in: buffer.startIndex.advanced(by: read)..<buffer.endIndex)
+            buffer = buffer.suffix(from: read)
         } else {
-            buffer = Buffer.empty
+            buffer = Buffer()
         }
         
         return read
     }
     
     public func write(_ buffer: UnsafeBufferPointer<UInt8>, deadline: Double = .never) {
-        self.buffer.append(Buffer(bytes: buffer))
+        self.buffer.append(Buffer(buffer))
     }
 
     public func flush(deadline: Double = .never) throws {}

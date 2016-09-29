@@ -157,22 +157,31 @@ extension Server {
     }
 
     public func process(stream: Stream) throws {
-        let parser = RequestParser(stream: stream, bufferSize: bufferSize)
+        let chunkBytes = UnsafeMutablePointer<UInt8>.allocate(capacity: bufferSize)
+        defer { chunkBytes.deallocate(capacity: bufferSize) }
+        let chunk = UnsafeMutableBufferPointer(start: chunkBytes, count: bufferSize)
+        
+        let parser = MessageParser(mode: .request)
         let serializer = ResponseSerializer(stream: stream, bufferSize: bufferSize)
 
         while !stream.closed {
             do {
-                let request = try parser.parse()
-                let response = try middleware.chain(to: responder).respond(to: request)
-                try serializer.serialize(response)
-
-                if let upgrade = response.upgradeConnection {
-                    try upgrade(request, stream)
-                    stream.close()
-                }
-
-                if !request.isKeepAlive {
-                    stream.close()
+                let bytesRead = try stream.read(into: chunk)
+                let chunkRead = UnsafeBufferPointer(start: chunkBytes, count: bytesRead)
+                
+                try parser.parse(chunkRead) { message in
+                    let request = message as! Request
+                    let response = try middleware.chain(to: responder).respond(to: request)
+                    try serializer.serialize(response)
+                    
+                    if let upgrade = response.upgradeConnection {
+                        try upgrade(request, stream)
+                        stream.close()
+                    }
+                    
+                    if !request.isKeepAlive {
+                        stream.close()
+                    }
                 }
             } catch SystemError.brokenPipe {
                 break
@@ -180,10 +189,10 @@ extension Server {
                 if stream.closed {
                     break
                 }
-
+                
                 let (response, unrecoveredError) = Server.recover(error: error)
                 try serializer.serialize(response)
-
+                
                 if let error = unrecoveredError {
                     throw error
                 }

@@ -17,7 +17,7 @@ public class RequestSerializer {
             try stream.write("\(name): \(value)")
             try stream.write(newLine)
         }
-
+        
         try stream.write(newLine)
 
         switch request.body {
