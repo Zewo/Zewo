@@ -3,7 +3,7 @@ import XCTest
 
 public class LogMiddlewareTests : XCTestCase {
     func testLogMiddleware() throws {
-        let stream = Drain()
+        let stream = BufferStream()
         let log = LogMiddleware(stream: stream)
         let request = Request()
 
@@ -17,7 +17,7 @@ public class LogMiddlewareTests : XCTestCase {
     }
 
     func testDebugLogMiddleware() throws {
-        let stream = Drain()
+        let stream = BufferStream()
         let log = LogMiddleware(debug: true, stream: stream)
         let request = Request()
 

@@ -6,7 +6,7 @@ public class BodyTests : XCTestCase {
 
     func testBufferBecomeBuffer() throws {
         var body: Body = .buffer(testData)
-        let buffer = try body.becomeBuffer()
+        let buffer = try body.becomeBuffer(deadline: 1.second.fromNow())
         XCTAssertTrue(body.isBuffer)
         XCTAssertFalse(body.isReader)
         XCTAssertFalse(body.isWriter)
@@ -26,7 +26,7 @@ public class BodyTests : XCTestCase {
         XCTAssertTrue(body.isReader)
         XCTAssertFalse(body.isWriter)
         XCTAssertFalse(reader.closed)
-        let buffer = try reader.read(upTo: testData.count)
+        let buffer = try reader.read(upTo: testData.count, deadline: 1.second.fromNow())
         XCTAssertFalse(reader.closed)
         XCTAssertEqual(buffer.count, testData.count)
         XCTAssertEqual(buffer, testData)
@@ -34,23 +34,23 @@ public class BodyTests : XCTestCase {
 
     func testBufferBecomeWriter() throws {
         var body: Body = .buffer(testData)
-        let writer = try body.becomeWriter()
-        let writerStream = Drain()
+        let writer = try body.becomeWriter(deadline: 1.second.fromNow())
+        let writerStream = BufferStream()
         try writer(writerStream)
         XCTAssertFalse(body.isBuffer)
         XCTAssertFalse(body.isReader)
         XCTAssertTrue(body.isWriter)
         XCTAssertFalse(writerStream.closed)
-        let buffer = try writerStream.read(upTo: testData.count)
+        let buffer = try writerStream.read(upTo: testData.count, deadline: 1.second.fromNow())
         XCTAssertFalse(writerStream.closed)
         XCTAssertEqual(buffer.count, testData.count)
         XCTAssertEqual(buffer, testData)
     }
 
     func testReaderBecomeBuffer() throws {
-        let readerSteram = Drain(buffer: testData)
+        let readerSteram = BufferStream(buffer: testData)
         var body: Body = .reader(readerSteram)
-        let buffer = try body.becomeBuffer()
+        let buffer = try body.becomeBuffer(deadline: 1.second.fromNow())
         XCTAssertTrue(body.isBuffer)
         XCTAssertFalse(body.isReader)
         XCTAssertFalse(body.isWriter)
@@ -64,30 +64,30 @@ public class BodyTests : XCTestCase {
     }
 
     func testReaderBecomeReader() throws {
-        let readerSteram = Drain(buffer: testData)
+        let readerSteram = BufferStream(buffer: testData)
         var body: Body = .reader(readerSteram)
         let reader = try body.becomeReader()
         XCTAssertFalse(body.isBuffer)
         XCTAssertTrue(body.isReader)
         XCTAssertFalse(body.isWriter)
         XCTAssertFalse(reader.closed)
-        let buffer = try reader.read(upTo: testData.count)
+        let buffer = try reader.read(upTo: testData.count, deadline: 1.second.fromNow())
         XCTAssertFalse(reader.closed)
         XCTAssertEqual(buffer.count, testData.count)
         XCTAssertEqual(buffer, testData)
     }
 
     func testReaderBecomeWriter() throws {
-        let readerSteram = Drain(buffer: testData)
+        let readerSteram = BufferStream(buffer: testData)
         var body: Body = .reader(readerSteram)
-        let writer = try body.becomeWriter()
-        let writerStream = Drain()
+        let writer = try body.becomeWriter(deadline: 1.second.fromNow())
+        let writerStream = BufferStream()
         try writer(writerStream)
         XCTAssertFalse(body.isBuffer)
         XCTAssertFalse(body.isReader)
         XCTAssertTrue(body.isWriter)
         XCTAssertFalse(writerStream.closed)
-        let buffer = try writerStream.read(upTo: testData.count)
+        let buffer = try writerStream.read(upTo: testData.count, deadline: 1.second.fromNow())
         XCTAssertFalse(writerStream.closed)
         XCTAssertEqual(buffer.count, testData.count)
         XCTAssertEqual(buffer, testData)
@@ -95,9 +95,10 @@ public class BodyTests : XCTestCase {
 
     func testWriterBecomeBuffer() throws {
         var body: Body = .writer { writerStream in
-            try writerStream.write(self.testData)
+            try writerStream.write(self.testData, deadline: 1.second.fromNow())
+            try writerStream.flush(deadline: 1.second.fromNow())
         }
-        let buffer = try body.becomeBuffer()
+        let buffer = try body.becomeBuffer(deadline: 1.second.fromNow())
         XCTAssertTrue(body.isBuffer)
         XCTAssertFalse(body.isReader)
         XCTAssertFalse(body.isWriter)
@@ -112,14 +113,15 @@ public class BodyTests : XCTestCase {
 
     func testWriterBecomeReader() throws {
         var body: Body = .writer { writerStream in
-            try writerStream.write(self.testData)
+            try writerStream.write(self.testData, deadline: 1.second.fromNow())
+            try writerStream.flush(deadline: 1.second.fromNow())
         }
         let reader = try body.becomeReader()
         XCTAssertFalse(body.isBuffer)
         XCTAssertTrue(body.isReader)
         XCTAssertFalse(body.isWriter)
         XCTAssertFalse(reader.closed)
-        let buffer = try reader.read(upTo: testData.count)
+        let buffer = try reader.read(upTo: testData.count, deadline: 1.second.fromNow())
         XCTAssertFalse(reader.closed)
         XCTAssertEqual(buffer.count, testData.count)
         XCTAssertEqual(buffer, testData)
@@ -127,16 +129,17 @@ public class BodyTests : XCTestCase {
 
     func testWriterBecomeWriter() throws {
         var body: Body = .writer { writerStream in
-            try writerStream.write(self.testData)
+            try writerStream.write(self.testData, deadline: 1.second.fromNow())
+            try writerStream.flush(deadline: 1.second.fromNow())
         }
-        let writer = try body.becomeWriter()
-        let writerStream = Drain()
+        let writer = try body.becomeWriter(deadline: 1.second.fromNow())
+        let writerStream = BufferStream()
         try writer(writerStream)
         XCTAssertFalse(body.isBuffer)
         XCTAssertFalse(body.isReader)
         XCTAssertTrue(body.isWriter)
         XCTAssertFalse(writerStream.closed)
-        let buffer = try writerStream.read(upTo: testData.count)
+        let buffer = try writerStream.read(upTo: testData.count, deadline: 1.second.fromNow())
         XCTAssertFalse(writerStream.closed)
         XCTAssertEqual(buffer.count, testData.count)
         XCTAssertEqual(buffer, testData)
@@ -145,26 +148,18 @@ public class BodyTests : XCTestCase {
     func testBodyEquality() {
         let buffer = Body.buffer(testData)
 
-        let drain = Drain(buffer: testData)
-        let reader = Body.reader(drain)
+        let bufferStream = BufferStream(buffer: testData)
+        let reader = Body.reader(bufferStream)
 
         let writer = Body.writer { stream in
-            try stream.write(self.testData)
-            try stream.flush()
+            try stream.write(self.testData, deadline: 1.second.fromNow())
+            try stream.flush(deadline: 1.second.fromNow())
         }
 
         XCTAssertEqual(buffer, buffer)
         XCTAssertNotEqual(buffer, reader)
         XCTAssertNotEqual(buffer, writer)
         XCTAssertNotEqual(reader, writer)
-    }
-}
-
-extension Body {
-    mutating func forceReopenDrain() {
-        if let drain = (try! self.becomeReader()) as? Drain {
-            drain.closed = false
-        }
     }
 }
 

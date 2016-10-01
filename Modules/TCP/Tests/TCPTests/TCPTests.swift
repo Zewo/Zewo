@@ -4,122 +4,120 @@ import XCTest
 
 public class TCPTests : XCTestCase {
     func testConnectionRefused() throws {
-        let connection = try TCPConnection(host: "127.0.0.1", port: 1111)
-        XCTAssertThrowsError(try connection.open())
+        let connection = try TCPStream(host: "127.0.0.1", port: 1111, deadline: 1.second.fromNow())
+        XCTAssertThrowsError(try connection.open(deadline: 1.second.fromNow()))
     }
 
-    func testSendClosedSocket() throws {
-        let host = try TCPHost(configuration: [])
+    func testWriteClosedSocket() throws {
+        let port = 2222
 
         co {
             do {
-                let connection = try TCPConnection(host: "127.0.0.1", port: 8080)
-                try connection.open()
-                connection.close()
-                XCTAssertThrowsError(try connection.write(Buffer([1,2,3]), deadline: 1.second))
+                let host = try TCPHost(host: "0.0.0.0", port: port)
+                _ = try host.accept(deadline: 1.second.fromNow())
             } catch {
                 XCTFail()
             }
         }
 
-        _ = try host.accept()
-        nap(for: 1.millisecond)
+        let stream = try TCPStream(host: "127.0.0.1", port: port, deadline: 1.second.fromNow())
+        try stream.open(deadline: 1.second.fromNow())
+        stream.close()
+        XCTAssertThrowsError(try stream.write([1, 2, 3], deadline: 1.second.fromNow()))
     }
 
     func testFlushClosedSocket() throws {
         let port = 3333
-        let host = try TCPHost(configuration: ["host": "127.0.0.1", "port": Map(port), "reusePort": true])
 
         co {
             do {
-                let connection = try TCPConnection(host: "127.0.0.1", port: port)
-                try connection.open()
-                connection.close()
-                XCTAssertThrowsError(try connection.flush())
+                let host = try TCPHost(host: "127.0.0.1", port: port)
+                _ = try host.accept(deadline: 1.second.fromNow())
             } catch {
                 XCTFail()
             }
         }
 
-        _ = try host.accept()
-        nap(for: 1.millisecond)
+        let connection = try TCPStream(host: "127.0.0.1", port: port, deadline: 1.second.fromNow())
+        try connection.open(deadline: 1.second.fromNow())
+        connection.close()
+        XCTAssertThrowsError(try connection.flush(deadline: 1.second.fromNow()))
     }
 
-    func testReceiveClosedSocket() throws {
+    func testReadClosedSocket() throws {
         let port = 4444
-        let host = try TCPHost(configuration: ["host": "127.0.0.1", "port": Map(port), "reusePort": true])
 
         co {
             do {
-                let connection = try TCPConnection(host: "127.0.0.1", port: port)
-                try connection.open()
-                connection.close()
-                XCTAssertThrowsError(try connection.read(upTo: 1))
+                let host = try TCPHost(host: "127.0.0.1", port: port)
+                _ = try host.accept(deadline: 1.second.fromNow())
             } catch {
                 XCTFail()
             }
         }
 
-        _ = try host.accept()
-        nap(for: 1.millisecond)
+        let connection = try TCPStream(host: "127.0.0.1", port: port, deadline: 1.second.fromNow())
+        try connection.open(deadline: 1.second.fromNow())
+        connection.close()
+        XCTAssertThrowsError(try connection.read(upTo: 1, deadline: 1.second.fromNow()))
     }
 
-    func testSendReceive() throws {
+    func testWriteRead() throws {
         let port = 5555
-        let host = try TCPHost(configuration: ["host": "127.0.0.1", "port": Map(port), "reusePort": true])
 
         co {
             do {
-                let connection = try TCPConnection(host: "127.0.0.1", port: port)
-                try connection.open()
-                try connection.write(Buffer([123]))
-                try connection.flush()
+                let host = try TCPHost(host: "127.0.0.1", port: port)
+                let connection = try host.accept(deadline: 1.second.fromNow())
+                let buffer = try connection.read(upTo: 1, deadline: 1.second.fromNow())
+                XCTAssertEqual(buffer.count, 1)
+                XCTAssertEqual(buffer, Buffer([123]))
+                connection.close()
             } catch {
                 XCTAssert(false)
             }
         }
 
-        let connection = try host.accept()
-        let buffer = try connection.read(upTo: 1)
-        XCTAssertEqual(buffer.count, 1)
-        XCTAssertEqual(buffer, Buffer([123]))
-        connection.close()
+        let connection = try TCPStream(host: "127.0.0.1", port: port, deadline: 1.second.fromNow())
+        try connection.open(deadline: 1.second.fromNow())
+        try connection.write([123], deadline: 1.second.fromNow())
+        try connection.flush(deadline: 1.second.fromNow())
     }
 
     func testClientServer() throws {
         let port = 6666
-        let host = try TCPHost(configuration: ["host": "127.0.0.1", "port": Map(port), "reusePort": true])
+        let deadline = 5.seconds.fromNow()
+        let done = FallibleChannel<Void>()
 
         co {
             do {
-                let connection = try TCPConnection(host: "127.0.0.1", port: port)
-                try connection.open()
+                let host = try TCPHost(host: "127.0.0.1", port: port)
+                let stream = try host.accept(deadline: deadline)
 
-                let buffer = try connection.read(upTo: 3)
-                XCTAssertEqual(buffer, Buffer("ABC"))
-                XCTAssertEqual(buffer.count, 3)
+                try stream.write("ABC", deadline: deadline)
+                try stream.flush(deadline: deadline)
 
-                try connection.write("123456789")
-                try connection.flush()
+                let buffer = try stream.read(upTo: 9, deadline: deadline)
+                XCTAssertEqual(buffer.count, 9)
+                XCTAssertEqual(buffer, Buffer("123456789"))
+
+                done.send()
             } catch {
-                XCTFail()
+                done.send(error)
             }
         }
 
-        let connection = try host.accept()
-        let deadline = 30.milliseconds.fromNow()
+        let stream = try TCPStream(host: "127.0.0.1", port: port, deadline: deadline)
+        try stream.open(deadline: deadline)
 
-        XCTAssertThrowsError(try connection.read(upTo: 16, deadline: deadline))
+        let buffer = try stream.read(upTo: 3, deadline: deadline)
+        XCTAssertEqual(buffer, Buffer("ABC"))
+        XCTAssertEqual(buffer.count, 3)
 
-        let diff = now() - deadline
-        XCTAssert(diff > -300 && diff < 300)
+        try stream.write("123456789", deadline: deadline)
+        try stream.flush(deadline: deadline)
 
-        try connection.write("ABC")
-        try connection.flush()
-
-        let buffer = try connection.read(upTo: 9)
-        XCTAssertEqual(buffer.count, 9)
-        XCTAssertEqual(buffer, Buffer("123456789"))
+        try done.receive()
     }
 }
 
@@ -127,10 +125,10 @@ extension TCPTests {
     public static var allTests: [(String, (TCPTests) -> () throws -> Void)] {
         return [
             ("testConnectionRefused", testConnectionRefused),
-            ("testSendClosedSocket", testSendClosedSocket),
+            ("testWriteClosedSocket", testWriteClosedSocket),
             ("testFlushClosedSocket", testFlushClosedSocket),
-            ("testReceiveClosedSocket", testReceiveClosedSocket),
-            ("testSendReceive", testSendReceive),
+            ("testReadClosedSocket", testReadClosedSocket),
+            ("testWriteRead", testWriteRead),
             ("testClientServer", testClientServer),
         ]
     }

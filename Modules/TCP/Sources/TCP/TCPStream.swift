@@ -1,8 +1,7 @@
 import CLibvenice
 import Core
 
-
-public final class TCPConnection : Connection {
+public final class TCPStream : Stream {
     public var ip: IP
     var socket: tcpsock?
     public private(set) var closed = true
@@ -15,52 +14,56 @@ public final class TCPConnection : Connection {
         self.closed = false
     }
 
-    public init(host: String, port: Int, deadline: Double = .never) throws {
+    public init(host: String, port: Int, deadline: Double) throws {
         self.ip = try IP(remoteAddress: host, port: port, deadline: deadline)
+        try ensureLastOperationSucceeded()
     }
 
-    public func open(deadline: Double = .never) throws {
-        self.socket = tcpconnect(ip.address, deadline.int64milliseconds)
+    public func open(deadline: Double) throws {
+        guard let socket = tcpconnect(ip.address, deadline.int64milliseconds) else {
+            throw TCPError.failedToCreateSocket
+        }
         try ensureLastOperationSucceeded()
+        self.socket = socket
         self.closed = false
     }
 
     public func write(_ buffer: UnsafeBufferPointer<UInt8>, deadline: Double) throws {
+        let socket = try getSocket()
+        try ensureStreamIsOpen()
+
         guard !buffer.isEmpty else {
             return
         }
         
-        let socket = try getSocket()
-        try ensureStreamIsOpen()
-        
         let bytesWritten = tcpsend(socket, buffer.baseAddress!, buffer.count, deadline.int64milliseconds)
+        try ensureLastOperationSucceeded()
         
         guard bytesWritten == buffer.count else {
-            try ensureLastOperationSucceeded()
             throw SystemError.other(errorNumber: -1)
         }
     }
     
-    public func read(into: UnsafeMutableBufferPointer<UInt8>, deadline: Double) throws -> Int {
-        guard !into.isEmpty else {
-            return 0
-        }
-        
+    public func read(into readBuffer: UnsafeMutableBufferPointer<Byte>, deadline: Double) throws -> UnsafeBufferPointer<Byte> {
         let socket = try getSocket()
         try ensureStreamIsOpen()
+
+        guard let readPointer = readBuffer.baseAddress else {
+            return UnsafeBufferPointer()
+        }
         
-        let bytesRead = tcprecvlh(socket, into.baseAddress!, 1, into.count, deadline.int64milliseconds)
+        let bytesRead = tcprecvlh(socket, readPointer, 1, readBuffer.count, deadline.int64milliseconds)
         
         if bytesRead == 0 {
             do {
                 try ensureLastOperationSucceeded()
             } catch SystemError.connectionResetByPeer {
                 closed = true
-                throw StreamError.closedStream(buffer: Buffer())
+                return UnsafeBufferPointer()
             }
         }
         
-        return bytesRead
+        return UnsafeBufferPointer(start: readPointer, count: bytesRead)
     }
 
     public func flush(deadline: Double) throws {
@@ -88,7 +91,7 @@ public final class TCPConnection : Connection {
 
     private func ensureStreamIsOpen() throws {
         if closed {
-            throw StreamError.closedStream(buffer: Buffer())
+            throw StreamError.closedStream
         }
     }
 

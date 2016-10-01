@@ -3,12 +3,6 @@ public protocol Responder : ResponderRepresentable {
 }
 
 extension Responder {
-    public func respond(to request: Request, result: ((Void) throws -> Response) -> Void) {
-        result { try self.respond(to: request) }
-    }
-}
-
-extension Responder {
     public var responder: Responder {
         return self
     }

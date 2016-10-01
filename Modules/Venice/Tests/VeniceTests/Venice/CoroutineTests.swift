@@ -101,7 +101,7 @@ public class CoroutineTests : XCTestCase {
 
         XCTAssert(result == 0)
 
-        event = try poll(fds[0], events: .write)
+        event = try poll(fds[0], events: .write, deadline: 100.milliseconds.fromNow())
         XCTAssert(event == .write)
 
         event = try poll(fds[0], events: .write, deadline: 100.milliseconds.fromNow())
@@ -118,10 +118,10 @@ public class CoroutineTests : XCTestCase {
 
         size = send(fds[1], "A", 1, 0)
         XCTAssert(size == 1)
-        event = try poll(fds[0], events: .write)
+        event = try poll(fds[0], events: .write, deadline: 100.milliseconds.fromNow())
         XCTAssert(event == .write)
 
-        event = try poll(fds[0], events: [.read, .write])
+        event = try poll(fds[0], events: [.read, .write], deadline: 100.milliseconds.fromNow())
         XCTAssert(event == [.read, .write])
 
         var c: Int8 = 0

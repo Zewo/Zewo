@@ -28,19 +28,18 @@ extension Body {
 }
 
 extension Body {
-    public mutating func becomeBuffer(deadline: Double = .never) throws -> Buffer {
+    public mutating func becomeBuffer(deadline: Double) throws -> Buffer {
         switch self {
         case .buffer(let buffer):
             return buffer
         case .reader(let reader):
-            let buffer = Drain(stream: reader, deadline: deadline).buffer
+            let buffer = try reader.drain(deadline: deadline)
             self = .buffer(buffer)
             return buffer
         case .writer(let writer):
-            let drain = Drain()
-            try writer(drain)
-            let buffer = drain.buffer
-
+            let bufferStream = BufferStream()
+            try writer(bufferStream)
+            let buffer = bufferStream.buffer
             self = .buffer(buffer)
             return buffer
         }
@@ -51,34 +50,34 @@ extension Body {
         case .reader(let reader):
             return reader
         case .buffer(let buffer):
-            let stream = Drain(buffer: buffer)
-            self = .reader(stream)
-            return stream
+            let bufferStream = BufferStream(buffer: buffer)
+            self = .reader(bufferStream)
+            return bufferStream
         case .writer(let writer):
-            let stream = Drain()
-            try writer(stream)
-            self = .reader(stream)
-            return stream
+            let bufferStream = BufferStream()
+            try writer(bufferStream)
+            self = .reader(bufferStream)
+            return bufferStream
         }
     }
 
-    public mutating func becomeWriter(deadline: Double = .never) throws -> ((OutputStream) throws -> Void) {
+    public mutating func becomeWriter(deadline: Double) throws -> ((OutputStream) throws -> Void) {
         switch self {
         case .buffer(let buffer):
-            let closure: ((OutputStream) throws -> Void) = { writer in
+            let writer: ((OutputStream) throws -> Void) = { writer in
                 try writer.write(buffer, deadline: deadline)
-                try writer.flush()
+                try writer.flush(deadline: deadline)
             }
-            self = .writer(closure)
-            return closure
+            self = .writer(writer)
+            return writer
         case .reader(let reader):
-            let closure: ((OutputStream) throws -> Void) = { writer in
-                let buffer = Drain(stream: reader, deadline: deadline).buffer
+            let writer: ((OutputStream) throws -> Void) = { writer in
+                let buffer = try reader.drain(deadline: deadline)
                 try writer.write(buffer, deadline: deadline)
-                try writer.flush()
+                try writer.flush(deadline: deadline)
             }
-            self = .writer(closure)
-            return closure
+            self = .writer(writer)
+            return writer
         case .writer(let writer):
             return writer
         }

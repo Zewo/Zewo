@@ -16,7 +16,7 @@ public struct TCPTLSHost : Host {
     }
 
     public func accept(deadline: Double) throws -> Stream {
-        let stream = try host.accept(deadline: deadline)
-        return try SSLConnection(context: context, rawStream: stream)
+        let rawStream = try host.accept(deadline: deadline)
+        return try SSLStream(context: context, rawStream: rawStream)
     }
 }

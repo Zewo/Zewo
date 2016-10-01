@@ -9,24 +9,26 @@ import XCTest
 
 public class FileTests : XCTestCase {
     func testReadWrite() throws {
-        var buffer = Buffer()
+        let deadline = 2.seconds.fromNow()
+        var buffer: Buffer
         let file = try File(path: "/tmp/zewo-test-file", mode: .truncateReadWrite)
-        try file.write("abc")
-        try file.flush()
+
+        try file.write("abc", deadline: deadline)
+        try file.flush(deadline: deadline)
         XCTAssertEqual(try file.cursorPosition(), 3)
         _ = try file.seek(cursorPosition: 0)
-        buffer = try file.read(upTo: 3)
+        buffer = try file.read(upTo: 3, deadline: deadline)
         XCTAssertEqual(buffer.count, 3)
-        XCTAssertEqual(buffer[0..<3], Buffer("abc"))
+        XCTAssertEqual(buffer, Buffer("abc"))
         XCTAssertFalse(file.cursorIsAtEndOfFile)
-        buffer = try file.read(upTo: 3)
+        buffer = try file.read(upTo: 3, deadline: deadline)
         XCTAssertEqual(buffer.count, 0)
         XCTAssertTrue(file.cursorIsAtEndOfFile)
         _ = try file.seek(cursorPosition: 0)
         XCTAssertFalse(file.cursorIsAtEndOfFile)
         _ = try file.seek(cursorPosition: 3)
         XCTAssertFalse(file.cursorIsAtEndOfFile)
-        buffer = try file.read(upTo: 6)
+        buffer = try file.read(upTo: 6, deadline: deadline)
         XCTAssertEqual(buffer.count, 0)
         XCTAssertTrue(file.cursorIsAtEndOfFile)
     }
@@ -34,10 +36,10 @@ public class FileTests : XCTestCase {
     func testReadAllFile() throws {
         let file = try File(path: "/tmp/zewo-test-file", mode: .truncateReadWrite)
         let word = "hello"
-        try file.write(word)
-        try file.flush()
+        try file.write(word, deadline: 1.second.fromNow())
+        try file.flush(deadline: 1.second.fromNow())
         _ = try file.seek(cursorPosition: 0)
-        let buffer = try file.readAll()
+        let buffer = try file.readAll(deadline: 1.second.fromNow())
         XCTAssert(buffer.count == word.utf8.count)
     }
 
@@ -49,8 +51,8 @@ public class FileTests : XCTestCase {
         XCTAssertTrue(File.fileExists(path: filePath))
         XCTAssertFalse(File.isDirectory(path: filePath))
         let word = "hello"
-        try file.write(word)
-        try file.flush()
+        try file.write(word, deadline: 1.second.fromNow())
+        try file.flush(deadline: 1.second.fromNow())
         file.close()
         try File.removeFile(path: filePath)
         XCTAssertThrowsError(try File.removeFile(path: filePath))
@@ -84,14 +86,14 @@ public class FileTests : XCTestCase {
 
     func testFileSize() throws {
         let file = try File(path: "/tmp/zewo-test-file", mode: .truncateReadWrite)
-        try file.write(Buffer("hello"), deadline: .never)
-        try file.flush()
+        try file.write(Buffer("hello"), deadline: 1.second.fromNow())
+        try file.flush(deadline: 1.second.fromNow())
         XCTAssertEqual(file.length, 5)
-        try file.write(" world")
-        try file.flush()
+        try file.write(" world", deadline: 1.second.fromNow())
+        try file.flush(deadline: 1.second.fromNow())
         XCTAssertEqual(file.length, 11)
         file.close()
-        XCTAssertThrowsError(try file.readAll())
+        XCTAssertThrowsError(try file.readAll(deadline: 1.second.fromNow()))
     }
 
     func testZero() throws {
@@ -100,7 +102,7 @@ public class FileTests : XCTestCase {
         let length = 256
 
         for _ in 0 ..< count {
-            let buffer = try file.read(upTo: length)
+            let buffer = try file.read(upTo: length, deadline: 1.second.fromNow())
             XCTAssertEqual(buffer.count, length)
         }
     }
@@ -112,7 +114,7 @@ public class FileTests : XCTestCase {
         let length = 256
 
         for _ in 0 ..< count {
-            let buffer = try file.read(upTo: length)
+            let buffer = try file.read(upTo: length, deadline: 1.second.fromNow())
             XCTAssertEqual(buffer.count, length)
         }
 #endif

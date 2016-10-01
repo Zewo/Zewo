@@ -24,38 +24,39 @@ final class ServerStream : Core.Stream {
         self.closeOnFlush = closeOnFlush
     }
 
+    public func open(deadline: Double) throws {
+        closed = false
+    }
+
     func close() {
         closed = true
     }
 
-    func read(into: UnsafeMutableBufferPointer<UInt8>, deadline: Double) throws -> Int {
+    func read(into readBuffer: UnsafeMutableBufferPointer<Byte>, deadline: Double) throws -> UnsafeBufferPointer<Byte> {
         guard !closed && !inputBuffer.isEmpty else {
-            throw StreamError.closedStream(buffer: Buffer())
+            throw StreamError.closedStream
         }
         
-        guard !inputBuffer.isEmpty && into.count > 0 else {
-            return 0
+        guard !inputBuffer.isEmpty, let readPointer = readBuffer.baseAddress else {
+            return UnsafeBufferPointer()
         }
         
-        let read = min(into.count, inputBuffer.count)
-        inputBuffer.copyBytes(to: into.baseAddress!, count: read)
-        
-        guard read < inputBuffer.count else {
-            inputBuffer = Buffer()
-            close()
-            return read
-        }
-        
+        let read = min(readBuffer.count, inputBuffer.count)
+        inputBuffer.copyBytes(to: readPointer, count: read)
         inputBuffer = inputBuffer.suffix(from: read)
+
+        if inputBuffer.isEmpty {
+            close()
+        }
         
-        return read
+        return UnsafeBufferPointer(start: readPointer, count: read)
     }
     
     func write(_ buffer: UnsafeBufferPointer<UInt8>, deadline: Double) throws {
         outputBuffer.append(buffer)
     }
     
-    func flush(deadline: Double = .never) throws {
+    func flush(deadline: Double) throws {
         if closeOnFlush {
             close()
         }
@@ -76,7 +77,7 @@ class TestHost : Core.Host {
     }
 }
 
-enum CustomError :  Error {
+enum CustomError : Error {
     case error
 }
 
@@ -94,7 +95,7 @@ public class ServerTests : XCTestCase {
             host: TestHost(buffer: Buffer("GET / HTTP/1.1\r\n\r\n")),
             responder: responder
         )
-        let stream = try server.tcpHost.accept()
+        let stream = try server.tcpHost.accept(deadline: 1.second.fromNow())
         server.printHeader()
         try server.process(stream: stream)
         XCTAssert(try String(buffer: (stream as! ServerStream).outputBuffer).contains(substring: "OK"))
@@ -116,7 +117,7 @@ public class ServerTests : XCTestCase {
             host: TestHost(buffer: Buffer("GET / HTTP/1.1\r\n\r\n"), closeOnFlush: true),
             responder: responder
         )
-        stream = try server.tcpHost.accept()
+        stream = try server.tcpHost.accept(deadline: 1.second.fromNow())
         try server.process(stream: stream)
         XCTAssert(try String(buffer: (stream as! ServerStream).outputBuffer).contains(substring: "Bad Request"))
         XCTAssert(called)
@@ -137,7 +138,7 @@ public class ServerTests : XCTestCase {
             host: TestHost(buffer: Buffer("GET / HTTP/1.1\r\n\r\n")),
             responder: responder
         )
-        stream = try server.tcpHost.accept()
+        stream = try server.tcpHost.accept(deadline: 1.second.fromNow())
         XCTAssertThrowsError(try server.process(stream: stream))
         XCTAssert(try String(buffer: (stream as! ServerStream).outputBuffer).contains(substring: "Internal Server Error"))
         XCTAssert(called)
@@ -160,7 +161,7 @@ public class ServerTests : XCTestCase {
             host: TestHost(buffer: request),
             responder: responder
         )
-        stream = try server.tcpHost.accept()
+        stream = try server.tcpHost.accept(deadline: 1.second.fromNow())
         try server.process(stream: stream)
         XCTAssert(called)
     }
@@ -182,7 +183,7 @@ public class ServerTests : XCTestCase {
             host: TestHost(buffer: request),
             responder: responder
         )
-        stream = try server.tcpHost.accept()
+        stream = try server.tcpHost.accept(deadline: 1.second.fromNow())
         try server.process(stream: stream)
         XCTAssert(try String(buffer: (stream as! ServerStream).outputBuffer).contains(substring: "OK"))
         XCTAssertTrue(stream.closed)
@@ -214,7 +215,7 @@ public class ServerTests : XCTestCase {
             host: TestHost(buffer: request),
             responder: responder
         )
-        stream = try server.tcpHost.accept()
+        stream = try server.tcpHost.accept(deadline: 1.second.fromNow())
         try server.process(stream: stream)
         XCTAssert(try String(buffer: (stream as! ServerStream).outputBuffer).contains(substring: "OK"))
         XCTAssertTrue(stream.closed)

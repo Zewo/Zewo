@@ -39,20 +39,20 @@ public class IPTests : XCTestCase {
     }
 
     func testRemoteIPV4() throws {
-        let ip = try IP(remoteAddress: "127.0.0.1", port: 5555, mode: .ipV4)
+        let ip = try IP(remoteAddress: "127.0.0.1", port: 5555, mode: .ipV4, deadline: 1.second.fromNow())
         XCTAssertEqual(String(describing: ip), "127.0.0.1")
     }
 
     func testRemoteIPV6() throws {
-        _ = try IP(remoteAddress: "::1", port: 5555, mode: .ipV6)
+        _ = try IP(remoteAddress: "::1", port: 5555, mode: .ipV6, deadline: 1.second.fromNow())
     }
 
     func testRemoteIPV4Prefered() throws {
-        _ = try IP(remoteAddress: "127.0.0.1", port: 5555, mode: .ipV4Prefered)
+        _ = try IP(remoteAddress: "127.0.0.1", port: 5555, mode: .ipV4Prefered, deadline: 1.second.fromNow())
     }
 
     func testRemoteIPV6Prefered() throws {
-        _ = try IP(remoteAddress: "::1", port: 5555, mode: .ipV6Prefered)
+        _ = try IP(remoteAddress: "::1", port: 5555, mode: .ipV6Prefered, deadline: 1.second.fromNow())
     }
 
     func testInvalidPortIPV4() throws {
@@ -88,19 +88,19 @@ public class IPTests : XCTestCase {
     }
 
     func testRemoteInvalidPortIPV4() throws {
-        XCTAssertThrowsError(try IP(remoteAddress: "127.0.0.1", port: 70000, mode: .ipV4))
+        XCTAssertThrowsError(try IP(remoteAddress: "127.0.0.1", port: 70000, mode: .ipV4, deadline: 1.second.fromNow()))
     }
 
     func testRemoteInvalidPortIPV6() throws {
-        XCTAssertThrowsError(try IP(remoteAddress: "::1", port: 70000, mode: .ipV6))
+        XCTAssertThrowsError(try IP(remoteAddress: "::1", port: 70000, mode: .ipV6, deadline: 1.second.fromNow()))
     }
 
     func testRemoteInvalidPortIPV4Prefered() throws {
-        XCTAssertThrowsError(try IP(remoteAddress: "127.0.0.1", port: 70000, mode: .ipV4Prefered))
+        XCTAssertThrowsError(try IP(remoteAddress: "127.0.0.1", port: 70000, mode: .ipV4Prefered, deadline: 1.second.fromNow()))
     }
 
     func testRemoteInvalidPortIPV6Prefered() throws {
-        XCTAssertThrowsError(try IP(remoteAddress: "::1", port: 70000, mode: .ipV6Prefered))
+        XCTAssertThrowsError(try IP(remoteAddress: "::1", port: 70000, mode: .ipV6Prefered, deadline: 1.second.fromNow()))
     }
 }
 

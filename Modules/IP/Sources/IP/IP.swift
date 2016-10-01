@@ -50,7 +50,7 @@ public struct IP {
         self.init(address: address)
     }
 
-    public init(remoteAddress: String, port: Int, mode: IPMode = .ipV4Prefered, deadline: Double = .never) throws {
+    public init(remoteAddress: String, port: Int, mode: IPMode = .ipV4Prefered, deadline: Double) throws {
         try IP.assertValid(port)
         let address = ipremote(remoteAddress, Int32(port), mode.code, deadline.int64milliseconds)
         try ensureLastOperationSucceeded()

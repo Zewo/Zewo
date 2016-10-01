@@ -1,535 +1,368 @@
-// This file has been modified from its original project Swift-JsonSerializer
-
 #if os(Linux)
     import Glibc
 #else
     import Darwin.C
 #endif
 
-public enum JSONMapParseError : Error, CustomStringConvertible {
-    case unexpectedTokenError(reason: String, lineNumber: Int, columnNumber: Int)
-    case insufficientTokenError(reason: String, lineNumber: Int, columnNumber: Int)
-    case extraTokenError(reason: String, lineNumber: Int, columnNumber: Int)
-    case nonStringKeyError(reason: String, lineNumber: Int, columnNumber: Int)
-    case invalidStringError(reason: String, lineNumber: Int, columnNumber: Int)
-    case invalidNumberError(reason: String, lineNumber: Int, columnNumber: Int)
+import CYAJL
+
+public struct JSONMapParserOptions : OptionSet {
+    public let rawValue: Int
+    public static let allowComments = JSONMapParserOptions(rawValue: 1 << 0)
+    public static let dontValidateStrings = JSONMapParserOptions(rawValue: 1 << 1)
+    public static let allowTrailingGarbage = JSONMapParserOptions(rawValue: 1 << 2)
+    public static let allowMultipleValues = JSONMapParserOptions(rawValue: 1 << 3)
+    public static let allowPartialValues = JSONMapParserOptions(rawValue: 1 << 4)
+
+    public init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+}
+
+public struct JSONMapParserError : Error, CustomStringConvertible {
+    let reason: String
 
     public var description: String {
-        switch self {
-        case .unexpectedTokenError(let r, let l, let c):
-            return "UnexpectedTokenError" + infoDescription(reason: r, line: l, column: c)
-        case .insufficientTokenError(let r, let l, let c):
-            return "InsufficientTokenError" + infoDescription(reason: r, line: l, column: c)
-        case .extraTokenError(let r, let l, let c):
-            return "ExtraTokenError" + infoDescription(reason: r, line: l, column: c)
-        case .nonStringKeyError(let r, let l, let c):
-            return "NonStringKeyError" + infoDescription(reason: r, line: l, column: c)
-        case .invalidStringError(let r, let l, let c):
-            return "InvalidStringError" + infoDescription(reason: r, line: l, column: c)
-        case .invalidNumberError(let r, let l, let c):
-            return "InvalidNumberError" + infoDescription(reason: r, line: l, column: c)
-        }
-    }
-
-    func infoDescription(reason: String, line: Int, column: Int) -> String {
-        return "[Line: \(line), Column: \(column)]: \(reason)"
+        return reason
     }
 }
 
-public struct JSONMapParser : MapParser {
-    public init() {}
-
-    public func parse(_ buffer: Buffer) throws -> Map {
-        return try GenericJSONMapParser(buffer).parse()
-    }
-}
-
-class GenericJSONMapParser<ByteSequence: Collection> where ByteSequence.Iterator.Element == UInt8 {
-    typealias Source = ByteSequence
-    typealias Char = Source.Iterator.Element
-
-    let source: Source
-    var cur: Source.Index
-    let end: Source.Index
-
-    var lineNumber = 1
-    var columnNumber = 1
-
-    init(_ source: Source) {
-        self.source = source
-        self.cur = source.startIndex
-        self.end = source.endIndex
+public final class JSONMapParser : MapParser {
+    public static func parse(_ bytes: UnsafeBufferPointer<Byte>, options: JSONMapParserOptions = []) throws -> Map {
+        let parser = JSONMapParser(options: options)
+        try parser.parse(bytes)
+        return try parser.finish()
     }
 
-    func parse() throws -> Map {
-        let data = try parseValue()
-        skipWhitespaces()
-        if cur == end {
-            return data
-        }
-        throw extraTokenError(reason: "extra tokens found")
-    }
-
-    func unexpectedTokenError(reason: String) -> Error {
-        return JSONMapParseError.unexpectedTokenError(reason: reason, lineNumber: lineNumber, columnNumber: columnNumber)
-    }
-
-    func insufficientTokenError(reason: String) -> Error {
-        return JSONMapParseError.insufficientTokenError(reason: reason, lineNumber: lineNumber, columnNumber: columnNumber)
-    }
-
-    func extraTokenError(reason: String) -> Error {
-        return JSONMapParseError.extraTokenError(reason: reason, lineNumber: lineNumber, columnNumber: columnNumber)
-    }
-
-    func nonStringKeyError(reason: String) -> Error {
-        return JSONMapParseError.nonStringKeyError(reason: reason, lineNumber: lineNumber, columnNumber: columnNumber)
-    }
-
-    func invalidStringError(reason: String) -> Error {
-        return JSONMapParseError.invalidStringError(reason: reason, lineNumber: lineNumber, columnNumber: columnNumber)
-    }
-
-    func invalidNumberError(reason: String) -> Error {
-        return JSONMapParseError.invalidNumberError(reason: reason, lineNumber: lineNumber, columnNumber: columnNumber)
-    }
-}
-
-// MARK: - Private
-
-extension GenericJSONMapParser {
-    fileprivate func parseValue() throws -> Map {
-        skipWhitespaces()
-        if cur == end {
-            throw insufficientTokenError(reason: "unexpected end of tokens")
-        }
-
-        switch currentChar {
-        case Char(ascii: "n"): return try parseSymbol("null", .null)
-        case Char(ascii: "t"): return try parseSymbol("true", .bool(true))
-        case Char(ascii: "f"): return try parseSymbol("false", .bool(false))
-        case Char(ascii: "-"), Char(ascii: "0") ... Char(ascii: "9"): return try parseNumber()
-        case Char(ascii: "\""): return try parseString()
-        case Char(ascii: "{"): return try parseObject()
-        case Char(ascii: "["): return try parseArray()
-        case (let c): throw unexpectedTokenError(reason: "unexpected token: \(c)")
+    public static func parse(_ bytes: [Byte], options: JSONMapParserOptions = []) throws -> Map {
+        return try bytes.withUnsafeBufferPointer {
+            try self.parse($0, options: options)
         }
     }
 
-    private var currentChar: Char {
-        return source[cur]
+    public let options: JSONMapParserOptions
+
+    fileprivate var state: JSONMapParserState = JSONMapParserState(dictionary: true)
+    fileprivate var stack: [JSONMapParserState] = []
+
+    fileprivate let bufferCapacity = 8*1024
+    fileprivate let buffer = UnsafeMutablePointer<CChar>.allocate(capacity: 8*1024)
+
+    fileprivate var result: Map? = nil
+
+    fileprivate var handle: yajl_handle!
+
+    public convenience init() {
+        self.init(options: [])
     }
 
-    private var nextChar: Char {
-        return source[source.index(after: cur)]
+    public init(options: JSONMapParserOptions = []) {
+        self.options = options
+        self.state.dictionaryKey = "root"
+        self.stack.reserveCapacity(12)
+
+        handle = yajl_alloc(&yajl_handle_callbacks,
+                            nil,
+                            Unmanaged.passUnretained(self).toOpaque())
+
+        yajl_config_set(handle, yajl_allow_comments, options.contains(.allowComments) ? 1 : 0)
+        yajl_config_set(handle, yajl_dont_validate_strings, options.contains(.dontValidateStrings) ? 1 : 0)
+        yajl_config_set(handle, yajl_allow_trailing_garbage, options.contains(.allowTrailingGarbage) ? 1 : 0)
+        yajl_config_set(handle, yajl_allow_multiple_values, options.contains(.allowMultipleValues) ? 1 : 0)
+        yajl_config_set(handle, yajl_allow_partial_values, options.contains(.allowPartialValues) ? 1 : 0)
+
+    }
+    deinit {
+        yajl_free(handle)
+        buffer.deallocate(capacity: bufferCapacity)
     }
 
-    private var distanceToEnd: ByteSequence.IndexDistance {
-        return source.distance(from: cur, to: end)
-    }
+    @discardableResult
+    public func parse(_ bytes: UnsafeBufferPointer<Byte>) throws -> Map? {
+        let final = bytes.isEmpty
 
-    private var currentSymbol: Character {
-        return Character(UnicodeScalar(currentChar))
-    }
-
-    private func parseSymbol(_ target: StaticString, _ iftrue: @autoclosure (Void) -> Map) throws -> Map {
-        if expect(target) {
-            return iftrue()
+        guard result == nil else {
+            guard final else {
+                throw JSONMapParserError(reason: "Unexpected bytes. Parser already completed.")
+            }
+            return result
         }
-        throw unexpectedTokenError(reason: "expected \"\(target)\" but \(currentSymbol)")
-    }
 
-    private func parseString() throws -> Map {
-        advance()
+        let status: yajl_status
+        if !final {
+            status = yajl_parse(handle, bytes.baseAddress!, bytes.count)
+        } else {
+            status = yajl_complete_parse(handle)
+        }
 
-        var buffer = [CChar]()
+        guard status == yajl_status_ok else {
+            let reasonBytes = yajl_get_error(handle, 1, bytes.baseAddress!, bytes.count)
+            defer {
+                yajl_free_error(handle, reasonBytes)
+            }
+            let reason = String(cString: reasonBytes!)
+            throw JSONMapParserError(reason: reason)
+        }
 
-        while cur != end && currentChar != Char(ascii: "\"") {
-            switch currentChar {
-            case Char(ascii: "\\"):
-                advance()
-
-                guard cur != end else {
-                    throw invalidStringError(reason: "missing double quote")
-                }
-
-                guard let escapedChar = parseEscapedChar() else {
-                    throw invalidStringError(reason: "missing double quote")
-                }
-
-                String(escapedChar).utf8.forEach {
-                    buffer.append(CChar(bitPattern: $0))
-                }
+        if stack.count == 0 || final {
+            switch state.map {
+            case .dictionary(let value):
+                result = value["root"]
             default:
-                buffer.append(CChar(bitPattern: currentChar))
-            }
-
-            advance()
-        }
-
-        guard expect("\"") else {
-            throw invalidStringError(reason: "missing double quote")
-        }
-
-        buffer.append(0) // trailing nul
-        return .string(String(cString: buffer))
-    }
-
-    private func parseEscapedChar() -> UnicodeScalar? {
-        let character = UnicodeScalar(currentChar)
-
-        // 'u' indicates unicode
-        guard character == "u" else {
-            return unescapeMapping[character] ?? character
-        }
-
-        guard let surrogateValue = parseEscapedUnicodeSurrogate() else {
-            return nil
-        }
-
-        // two consecutive \u#### sequences represent 32 bit unicode characters
-        if distanceToEnd > 2 && nextChar == Char(ascii: "\\") && source[source.index(cur, offsetBy: 2)] == Char(ascii: "u") {
-            advance()
-            advance()
-
-            guard let surrogatePairValue = parseEscapedUnicodeSurrogate() else {
-                return nil
-            }
-
-            guard isHighSurrogate(surrogateValue) else {
-                return nil
-            }
-
-            guard isLowSurrogate(surrogatePairValue) else {
-                return nil
-            }
-
-            let scalar = (UInt32(surrogateValue) << 10) + UInt32(surrogatePairValue) - 0x35fdc00
-            return UnicodeScalar(scalar)
-        }
-
-        if isHighOrLowSurrogate(surrogateValue) {
-            return nil
-        }
-
-        return UnicodeScalar(surrogateValue)
-    }
-
-    private func isHighSurrogate(_ n: UInt32) -> Bool {
-        return 0xD800 ... 0xDBFF ~= Int(n)
-    }
-
-    private func isLowSurrogate(_ n: UInt32) -> Bool {
-        return 0xDC00 ... 0xDFFF ~= Int(n)
-    }
-
-    private func isHighOrLowSurrogate(_ n: UInt32) -> Bool {
-        return isHighSurrogate(n) || isLowSurrogate(n)
-    }
-
-    private func parseEscapedUnicodeSurrogate() -> UInt32? {
-        guard distanceToEnd > 4 else {
-            return nil
-        }
-
-        let requiredLength = 4
-
-        var length = 0
-        var value: UInt32 = 0
-        while true {
-            guard length < requiredLength else {
                 break
             }
-            guard let d = hexToDigit(nextChar) else {
-                break
-            }
-            advance()
-            length += 1
-
-            value <<= 4
-            value |= d
         }
 
-        guard length == requiredLength else { return nil }
-        return value
+        guard !final || result != nil else {
+            throw JSONMapParserError(reason: "Unexpected end of bytes.")
+        }
+
+        return result
     }
 
-    private func parseNumber() throws -> Map {
-        let sign = expect("-") ? -1.0 : 1.0
-        var integer: Int64 = 0
-        var actualNumberStarted = false
-
-        while cur != end {
-            if currentChar == Char(ascii: "0") && !actualNumberStarted {
-                advance()
-                continue
-            }
-            actualNumberStarted = true
-            if let value = digitToInt(currentChar) {
-                let (n, overflowed) = Int64.multiplyWithOverflow(integer, 10)
-                if overflowed {
-                    throw invalidNumberError(reason: "too large number")
-                }
-                integer = n + Int64(value)
-            } else {
-                break
-            }
-            advance()
+    public func finish() throws -> Map {
+        let bytes: [Byte] = []
+        guard let result = try bytes.withUnsafeBufferPointer({ try self.parse($0) }) else {
+            throw JSONMapParserError(reason: "Unexpected end of bytes.")
         }
-
-        if integer != Int64(Double(integer)) {
-            throw invalidNumberError(reason: "too large number")
-        }
-
-        var fraction: Double = 0.0
-        var hasFraction = false
-
-        if expect(".") {
-            hasFraction = true
-            var factor = 0.1
-            var fractionLength = 0
-
-            while cur != end {
-                if let value = digitToInt(currentChar) {
-                    fraction += (Double(value) * factor)
-                    factor /= 10
-                    fractionLength += 1
-                } else {
-                    break
-                }
-                advance()
-            }
-
-            if fractionLength == 0 {
-                throw invalidNumberError(reason: "insufficient fraction part in number")
-            }
-        }
-
-        var exponent: Int64 = 0
-        var expSign: Int64 = 1
-
-        if expect("e") || expect("E") {
-            if expect("-") {
-                expSign = -1
-            } else {
-                _ = expect("+")
-            }
-
-            exponent = 0
-            var exponentLength = 0
-
-            while cur != end {
-                if let value = digitToInt(currentChar) {
-                    exponent = (exponent * 10) + Int64(value)
-                    exponentLength += 1
-                } else {
-                    break
-                }
-                advance()
-            }
-
-            if exponentLength == 0 {
-                throw invalidNumberError(reason: "insufficient exponent part in number")
-            }
-
-            exponent *= expSign
-        }
-
-        if hasFraction || expSign == -1 {
-            return .double(sign * (Double(integer) + fraction) * pow(10, Double(exponent)))
-        }
-
-        return .int(Int(sign * Double(integer) * pow(10, Double(exponent))))
+        return result
     }
 
-    private func parseObject() throws -> Map {
-        advance()
-        skipWhitespaces()
-        var object: [String: Map] = [:]
-
-        LOOP: while cur != end && !expect("}") {
-            let keyValue = try parseValue()
-
-            switch keyValue {
-            case .string(let key):
-                skipWhitespaces()
-
-                if !expect(":") {
-                    throw unexpectedTokenError(reason: "missing colon (:)")
-                }
-
-                skipWhitespaces()
-                let value = try parseValue()
-                object[key] = value
-                skipWhitespaces()
-
-                if expect(",") {
-                    break
-                } else if expect("}") {
-                    break LOOP
-                } else {
-                    throw unexpectedTokenError(reason: "missing comma (,)")
-                }
-            default:
-                throw nonStringKeyError(reason: "unexpected value for object key")
-            }
-        }
-
-        return .dictionary(object)
+    fileprivate func appendNull() -> Int32 {
+        return state.appendNull()
     }
 
-    private func parseArray() throws -> Map {
-        advance()
-        skipWhitespaces()
-
-        var array: [Map] = []
-
-        LOOP: while cur != end && !expect("]") {
-            let data = try parseValue()
-            skipWhitespaces()
-            array.append(data)
-
-            if expect(",") {
-                continue
-            } else if expect("]") {
-                break LOOP
-            }
-            throw unexpectedTokenError(reason: "missing comma (,) (token: \(currentSymbol))")
-        }
-
-        return .array(array)
+    fileprivate func appendBoolean(_ value: Bool) -> Int32 {
+        return state.append(value)
     }
 
-
-    private func expect(_ target: StaticString) -> Bool {
-        if cur == end {
-            return false
-        }
-
-        if !isIdentifier(target.utf8Start.pointee) {
-            if target.utf8Start.pointee == currentChar {
-                advance()
-                return true
-            }
-
-            return false
-        }
-
-        let start = cur
-        let l = lineNumber
-        let c = columnNumber
-
-        var p = target.utf8Start
-        let endp = p.advanced(by: Int(target.utf8CodeUnitCount))
-
-        while p != endp {
-            if p.pointee != currentChar {
-                cur = start
-                lineNumber = l
-                columnNumber = c
-                return false
-            }
-            p += 1
-            advance()
-        }
-
-        return true
+    fileprivate func appendInteger(_ value: Int64) -> Int32 {
+        return state.append(value)
     }
 
-    // only "true", "false", "null" are identifiers
-    private func isIdentifier(_ char: Char) -> Bool {
-        switch char {
-        case Char(ascii: "a") ... Char(ascii: "z"):
-            return true
-        default:
-            return false
+    fileprivate func appendDouble(_ value: Double) -> Int32 {
+        return state.append(value)
+    }
+
+    fileprivate func appendString(_ value: String) -> Int32 {
+        return state.append(value)
+    }
+
+    fileprivate func startMap() -> Int32 {
+        stack.append(state)
+        state = JSONMapParserState(dictionary: true)
+        return 1
+    }
+
+    fileprivate func mapKey(_ key: String) -> Int32 {
+        state.dictionaryKey = key
+        return 1
+    }
+
+    fileprivate func endMap() -> Int32 {
+        if stack.count == 0 {
+            return 0
+        }
+        var previousState = stack.removeLast()
+        let result: Int32 = previousState.append(state.map)
+        state = previousState
+        return result
+    }
+
+    fileprivate func startArray() -> Int32 {
+        stack.append(state)
+        state = JSONMapParserState(dictionary: false)
+        return 1
+    }
+
+    fileprivate func endArray() -> Int32 {
+        if stack.count == 0 {
+            return 0
+        }
+        var previousState = stack.removeLast()
+        let result: Int32 = previousState.append(state.map)
+        state = previousState
+        return result
+    }
+
+}
+
+fileprivate struct JSONMapParserState {
+    let isDictionary: Bool
+    var dictionaryKey: String = ""
+
+    var map: Map {
+        if isDictionary {
+            return .dictionary(dictionary)
+        } else {
+            return .array(array)
         }
     }
 
-    private func advance() {
-        cur = source.index(after: cur)
+    private var dictionary: [String: Map]
+    private var array: [Map]
 
-        if cur != end {
-            switch currentChar {
-
-            case Char(ascii: "\n"):
-                lineNumber += 1
-                columnNumber = 1
-
-            default:
-                columnNumber += 1
-            }
+    init(dictionary: Bool) {
+        self.isDictionary = dictionary
+        if dictionary {
+            self.dictionary = Dictionary<String, Map>(minimumCapacity: 32)
+            self.array = []
+        } else {
+            self.dictionary = [:]
+            self.array = []
+            self.array.reserveCapacity(32)
         }
     }
 
-    fileprivate func skipWhitespaces() {
-        while cur != end {
-            switch currentChar {
-            case Char(ascii: " "), Char(ascii: "\t"), Char(ascii: "\r"), Char(ascii: "\n"):
-                break
-            default:
-                return
-            }
-            advance()
+    mutating func append(_ value: Bool) -> Int32 {
+        if isDictionary {
+            dictionary[dictionaryKey] = .bool(value)
+        } else {
+            array.append(.bool(value))
         }
+        return 1
+    }
+
+    mutating func append(_ value: Int64) -> Int32 {
+        if isDictionary {
+            dictionary[self.dictionaryKey] = .int(Int(value))
+        } else {
+            array.append(.int(Int(value)))
+        }
+        return 1
+    }
+
+    mutating func append(_ value: Double) -> Int32 {
+        if isDictionary {
+            dictionary[dictionaryKey] = .double(value)
+        } else {
+            array.append(.double(value))
+        }
+        return 1
+    }
+
+    mutating func append(_ value: String) -> Int32 {
+        if isDictionary {
+            dictionary[dictionaryKey] = .string(value)
+        } else {
+            array.append(.string(value))
+        }
+        return 1
+    }
+
+    mutating func appendNull() -> Int32 {
+        if isDictionary {
+            dictionary[dictionaryKey] = .null
+        } else {
+            array.append(.null)
+        }
+        return 1
+    }
+
+    mutating func append(_ value: Map) -> Int32 {
+        if isDictionary {
+            dictionary[dictionaryKey] = value
+        } else {
+            array.append(value)
+        }
+        return 1
     }
 }
 
-let unescapeMapping: [UnicodeScalar: UnicodeScalar] = [
-    "t": "\t",
-    "r": "\r",
-    "n": "\n"
-]
+fileprivate var yajl_handle_callbacks = yajl_callbacks(
+    yajl_null: yajl_null,
+    yajl_boolean: yajl_boolean,
+    yajl_integer: yajl_integer,
+    yajl_double: yajl_double,
+    yajl_number: nil,
+    yajl_string: yajl_string,
+    yajl_start_map: yajl_start_map,
+    yajl_map_key: yajl_map_key,
+    yajl_end_map: yajl_end_map,
+    yajl_start_array: yajl_start_array,
+    yajl_end_array: yajl_end_array
+)
 
-let escapeMapping: [Character: String] = [
-    "\r": "\\r",
-    "\n": "\\n",
-    "\t": "\\t",
-    "\\": "\\\\",
-    "\"": "\\\"",
-
-    "\u{2028}": "\\u2028",
-    "\u{2029}": "\\u2029",
-
-    "\r\n": "\\r\\n"
-]
-
-let hexMapping: [UnicodeScalar: UInt32] = [
-    "0": 0x0,
-    "1": 0x1,
-    "2": 0x2,
-    "3": 0x3,
-    "4": 0x4,
-    "5": 0x5,
-    "6": 0x6,
-    "7": 0x7,
-    "8": 0x8,
-    "9": 0x9,
-    "a": 0xA, "A": 0xA,
-    "b": 0xB, "B": 0xB,
-    "c": 0xC, "C": 0xC,
-    "d": 0xD, "D": 0xD,
-    "e": 0xE, "E": 0xE,
-    "f": 0xF, "F": 0xF
-]
-
-let digitMapping: [UnicodeScalar:Int] = [
-    "0": 0,
-    "1": 1,
-    "2": 2,
-    "3": 3,
-    "4": 4,
-    "5": 5,
-    "6": 6,
-    "7": 7,
-    "8": 8,
-    "9": 9
-]
-
-func digitToInt(_ byte: UInt8) -> Int? {
-    return digitMapping[UnicodeScalar(byte)]
+fileprivate func yajl_null(_ ptr: UnsafeMutableRawPointer?) -> Int32 {
+    let ctx = Unmanaged<JSONMapParser>.fromOpaque(ptr!).takeUnretainedValue()
+    return ctx.appendNull()
 }
 
-func hexToDigit(_ byte: UInt8) -> UInt32? {
-    return hexMapping[UnicodeScalar(byte)]
+fileprivate func yajl_boolean(_ ptr: UnsafeMutableRawPointer?, value: Int32) -> Int32 {
+    let ctx = Unmanaged<JSONMapParser>.fromOpaque(ptr!).takeUnretainedValue()
+    return ctx.appendBoolean(value != 0)
+}
+
+fileprivate func yajl_integer(_ ptr: UnsafeMutableRawPointer?, value: Int64) -> Int32 {
+    let ctx = Unmanaged<JSONMapParser>.fromOpaque(ptr!).takeUnretainedValue()
+    return ctx.appendInteger(value)
+}
+
+fileprivate func yajl_double(_ ptr: UnsafeMutableRawPointer?, value: Double) -> Int32 {
+    let ctx = Unmanaged<JSONMapParser>.fromOpaque(ptr!).takeUnretainedValue()
+    return ctx.appendDouble(value)
+}
+
+fileprivate func yajl_string(_ ptr: UnsafeMutableRawPointer?, buffer: UnsafePointer<Byte>?, bufferLength: Int) -> Int32 {
+    let ctx = Unmanaged<JSONMapParser>.fromOpaque(ptr!).takeUnretainedValue()
+
+    let str: String
+    if bufferLength > 0 {
+        if bufferLength < ctx.bufferCapacity {
+            memcpy(UnsafeMutableRawPointer(ctx.buffer), UnsafeRawPointer(buffer!), bufferLength)
+            ctx.buffer[bufferLength] = 0
+            str = String(cString: UnsafePointer(ctx.buffer))
+        } else {
+            var buffer = UnsafeMutablePointer<CChar>.allocate(capacity: bufferLength + 1)
+            defer { buffer.deallocate(capacity: bufferLength + 1) }
+            buffer[bufferLength] = 0
+            str = String(cString: UnsafePointer(buffer))
+        }
+    } else {
+        str = ""
+    }
+
+    return ctx.appendString(str)
+}
+
+fileprivate func yajl_start_map(_ ptr: UnsafeMutableRawPointer?) -> Int32 {
+    let ctx = Unmanaged<JSONMapParser>.fromOpaque(ptr!).takeUnretainedValue()
+    return ctx.startMap()
+}
+
+fileprivate func yajl_map_key(_ ptr: UnsafeMutableRawPointer?, buffer: UnsafePointer<Byte>?, bufferLength: Int) -> Int32 {
+    let ctx = Unmanaged<JSONMapParser>.fromOpaque(ptr!).takeUnretainedValue()
+
+    let str: String
+    if bufferLength > 0 {
+        if bufferLength < ctx.bufferCapacity {
+            memcpy(UnsafeMutableRawPointer(ctx.buffer), UnsafeRawPointer(buffer!), bufferLength)
+            ctx.buffer[bufferLength] = 0
+            str = String(cString: UnsafePointer(ctx.buffer))
+        } else {
+            var buffer = UnsafeMutablePointer<CChar>.allocate(capacity: bufferLength + 1)
+            defer { buffer.deallocate(capacity: bufferLength + 1) }
+            buffer[bufferLength] = 0
+            str = String(cString: UnsafePointer(buffer))
+        }
+    } else {
+        str = ""
+    }
+
+    return ctx.mapKey(str)
+}
+
+fileprivate func yajl_end_map(_ ptr: UnsafeMutableRawPointer?) -> Int32 {
+    let ctx = Unmanaged<JSONMapParser>.fromOpaque(ptr!).takeUnretainedValue()
+    return ctx.endMap()
+}
+
+fileprivate func yajl_start_array(_ ptr: UnsafeMutableRawPointer?) -> Int32 {
+    let ctx = Unmanaged<JSONMapParser>.fromOpaque(ptr!).takeUnretainedValue()
+    return ctx.startArray()
+}
+
+fileprivate func yajl_end_array(_ ptr: UnsafeMutableRawPointer?) -> Int32 {
+    let ctx = Unmanaged<JSONMapParser>.fromOpaque(ptr!).takeUnretainedValue()
+    return ctx.endArray()
 }

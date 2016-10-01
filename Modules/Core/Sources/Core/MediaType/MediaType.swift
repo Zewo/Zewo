@@ -1,7 +1,7 @@
-public protocol MediaTypeRepresentor {
+public protocol MediaTypeConverter {
     static var mediaType: MediaType { get }
-    static var parser: MapParser { get }
-    static var serializer: MapSerializer { get }
+    static var parser: MapParser.Type { get }
+    static var serializer: MapSerializer.Type { get }
 }
 
 enum MediaTypeError : Error {

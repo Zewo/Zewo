@@ -104,7 +104,7 @@ public class TrieRouteMatcherTests : XCTestCase {
             guard var body = try? matcher.match(request)?.respond(to: request).body else {
                 return false
             }
-            guard let buffer = try? body?.becomeBuffer() else {
+            guard let buffer = try? body?.becomeBuffer(deadline: 1.second.fromNow()) else {
                 return false
             }
             return buffer == expectedResponse.buffer
@@ -179,7 +179,7 @@ public class TrieRouteMatcherTests : XCTestCase {
             guard var body = try? matched?.respond(to: request).body else {
                 return false
             }
-            guard let buffer = try? body?.becomeBuffer() else {
+            guard let buffer = try? body?.becomeBuffer(deadline: 1.second.fromNow()) else {
                 return false
             }
             return buffer == expectedResponse.buffer

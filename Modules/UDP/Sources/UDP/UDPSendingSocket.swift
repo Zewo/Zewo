@@ -46,21 +46,23 @@ public final class UDPSendingSocket {
         }
         
         let udpSocket = try UDPSocket(localHost: localHost, localPort: localPort)
-        try self.init(to: IP(remoteAddress: host, port: port), with: udpSocket)
+        try self.init(to: IP(remoteAddress: host, port: port, deadline: 15.seconds.fromNow()), with: udpSocket)
     }
 }
 
 
 extension UDPSendingSocket : OutputStream {
+    public var closed: Bool {
+        return udpSocket.closed
+    }
+
+    public func open(deadline: Double) throws {}
+
     public func close() {
         udpSocket.close()
     }
     
-    public var closed: Bool {
-        return udpSocket.closed
-    }
-    
-    public func write(_ buffer: UnsafeBufferPointer<UInt8>, deadline: Double = .never) throws {
+    public func write(_ buffer: UnsafeBufferPointer<UInt8>, deadline: Double) throws {
         try udpSocket.write(buffer, to: remoteIP)
     }
     
@@ -68,7 +70,5 @@ extension UDPSendingSocket : OutputStream {
         try flush(deadline: .never)
     }
     
-    public func flush(deadline: Double) throws {
-        if false { fatalError("No flush for udp sockets") } // no-op
-    }
+    public func flush(deadline: Double) throws {}
 }

@@ -37,7 +37,7 @@ public struct Server {
         }
 
         if enableContentNegotiation {
-            chain.append(ContentNegotiationMiddleware(mediaTypes: [JSON.self, URLEncodedForm.self]))
+            chain.append(ServerContentNegotiationMiddleware(mediaTypes: [JSON.self, URLEncodedForm.self]))
         }
 
         chain.append(contentsOf: middleware)
@@ -100,7 +100,7 @@ public struct Server {
         }
 
         if enableContentNegotiation {
-            chain.append(ContentNegotiationMiddleware(mediaTypes: [JSON.self, URLEncodedForm.self]))
+            chain.append(ServerContentNegotiationMiddleware(mediaTypes: [JSON.self, URLEncodedForm.self]))
         }
 
         chain.append(contentsOf: middleware)
@@ -146,7 +146,7 @@ extension Server {
         printHeader()
         try retry(times: 10, waiting: 5.seconds) {
             while true {
-                let stream = try tcpHost.accept()
+                let stream = try tcpHost.accept(deadline: .never)
                 co { do { try self.process(stream: stream) } catch { self.failure(error) } }
             }
         }
@@ -157,22 +157,22 @@ extension Server {
     }
 
     public func process(stream: Stream) throws {
-        let chunkBytes = UnsafeMutablePointer<UInt8>.allocate(capacity: bufferSize)
-        defer { chunkBytes.deallocate(capacity: bufferSize) }
-        let chunk = UnsafeMutableBufferPointer(start: chunkBytes, count: bufferSize)
-        
+        let buffer = UnsafeMutableBufferPointer<Byte>(capacity: bufferSize)
+        defer { buffer.deallocate(capacity: bufferSize) }
+
         let parser = MessageParser(mode: .request)
         let serializer = ResponseSerializer(stream: stream, bufferSize: bufferSize)
 
         while !stream.closed {
             do {
-                let bytesRead = try stream.read(into: chunk)
-                let chunkRead = UnsafeBufferPointer(start: chunkBytes, count: bytesRead)
+                // TODO: Add timeout parameter
+                let bytesRead = try stream.read(into: buffer, deadline: 30.seconds.fromNow())
                 
-                try parser.parse(chunkRead) { message in
+                for message in try parser.parse(bytesRead) {
                     let request = message as! Request
                     let response = try middleware.chain(to: responder).respond(to: request)
-                    try serializer.serialize(response)
+                    // TODO: Add timeout parameter
+                    try serializer.serialize(response, deadline: 5.minutes.fromNow())
                     
                     if let upgrade = response.upgradeConnection {
                         try upgrade(request, stream)
@@ -191,8 +191,8 @@ extension Server {
                 }
                 
                 let (response, unrecoveredError) = Server.recover(error: error)
-                try serializer.serialize(response)
-                
+                try serializer.serialize(response, deadline: .never)
+
                 if let error = unrecoveredError {
                     throw error
                 }

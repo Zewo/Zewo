@@ -1,8 +1,7 @@
-@_exported import struct Dispatch.DispatchData
 #if os(Linux)
-import Glibc
+    import Glibc
 #else
-import Darwin
+    import Darwin
 #endif
 
 public typealias Byte = UInt8
@@ -21,31 +20,35 @@ public struct Buffer : RandomAccessCollection {
     public init(_ bytes: [Byte] = []) {
         self.bytes = bytes
     }
+
+    public init(_ bytes: ArraySlice<Byte>) {
+        self.bytes = [Byte](bytes)
+    }
     
     public init(_ bytes: UnsafeBufferPointer<Byte>) {
         self.bytes = [Byte](bytes)
     }
     
     public mutating func append(_ other: Buffer) {
-        bytes += other.bytes
+        bytes.append(contentsOf: other.bytes)
     }
     
     public mutating func append(_ other: [Byte]) {
-        bytes += other
+        bytes.append(contentsOf: other)
     }
     
     public mutating func append(_ other: UnsafeBufferPointer<Byte>) {
         guard other.count > 0 else {
             return
         }
-        bytes += [Byte](other)
+        bytes.append(contentsOf: [Byte](other))
     }
     
     public mutating func append(_ other: UnsafePointer<Byte>, count: Int) {
         guard count > 0 else {
             return
         }
-        bytes += [UInt8](UnsafeBufferPointer(start: other, count: count))
+        bytes.append(contentsOf: [Byte](UnsafeBufferPointer(start: other, count: count)))
     }
     
     public subscript(index: Index) -> Byte {
@@ -53,11 +56,11 @@ public struct Buffer : RandomAccessCollection {
     }
     
     public subscript(bounds: Range<Int>) -> Buffer {
-        return Buffer([Byte](bytes[bounds]))
+        return Buffer(bytes[bounds])
     }
     
     public subscript(bounds: CountableRange<Int>) -> Buffer {
-        return Buffer([Byte](bytes[bounds]))
+        return Buffer(bytes[bounds])
     }
     
     public var startIndex: Int {
@@ -105,6 +108,35 @@ public struct Buffer : RandomAccessCollection {
         }
         
     }
+
+    public func withUnsafeBufferPointer<R>(_ body: (UnsafeBufferPointer<Byte>) throws -> R) rethrows -> R {
+        return try bytes.withUnsafeBufferPointer(body)
+    }
+
+    public mutating func withUnsafeMutableBufferPointer<R>(_ body: (inout UnsafeMutableBufferPointer<Byte>) throws -> R) rethrows -> R {
+        return try bytes.withUnsafeMutableBufferPointer(body)
+    }
+}
+
+extension UnsafeBufferPointer {
+    public init() {
+        self.init(start: nil, count: 0)
+    }
+}
+
+extension UnsafeMutableBufferPointer {
+    public init() {
+        self.init(start: nil, count: 0)
+    }
+
+    public init(capacity: Int) {
+        let pointer = UnsafeMutablePointer<Element>.allocate(capacity: capacity)
+        self.init(start: pointer, count: capacity)
+    }
+
+    public func deallocate(capacity: Int) {
+        baseAddress?.deallocate(capacity: capacity)
+    }
 }
 
 public protocol BufferInitializable {
@@ -124,7 +156,6 @@ extension Buffer : BufferRepresentable {
 public protocol BufferConvertible : BufferInitializable, BufferRepresentable {}
 
 extension Buffer {
-    
     public init(_ string: String) {
         self = Buffer([Byte](string.utf8))
     }
@@ -135,15 +166,17 @@ extension Buffer {
             return count
         }
     }
+
     
     public init(capacity: Int, fill: (UnsafeMutableBufferPointer<Byte>) throws -> Int) rethrows {
         var bytes = [Byte](repeating: 0, count: capacity)
         let usedCapacity = try bytes.withUnsafeMutableBufferPointer { try fill($0) }
-        
+
         guard usedCapacity > 0 else {
             self = Buffer()
             return
         }
+
         
         self = Buffer([Byte](bytes.prefix(usedCapacity)))
     }
@@ -179,17 +212,13 @@ extension Buffer {
     }
 }
 
-extension Buffer: CustomDebugStringConvertible {
-    
+extension Buffer : CustomDebugStringConvertible {
     public var debugDescription: String {
         return (try? String(buffer: self)) ?? hexadecimalString()
     }
-    
 }
 
-extension Buffer: Equatable {    
-}
-
+extension Buffer : Equatable {}
 
 public func ==(lhs: Buffer, rhs: Buffer) -> Bool {
     guard lhs.count == rhs.count else {
@@ -198,6 +227,6 @@ public func ==(lhs: Buffer, rhs: Buffer) -> Bool {
     guard lhs.count > 0 && rhs.count > 0 else {
         return true
     }
-    
+
     return lhs.bytes == rhs.bytes
 }

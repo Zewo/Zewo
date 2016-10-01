@@ -1,6 +1,5 @@
 import Core
 
-
 public struct Request : Message {
     public enum Method {
         case delete

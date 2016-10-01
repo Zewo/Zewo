@@ -1,8 +1,11 @@
 import CLibvenice
 import POSIX
 
-public final class UDPSocket {
+public enum UDPError : Error {
+    case invalidReadBuffer
+}
 
+public final class UDPSocket {
     private var socket: udpsock?
     public private(set) var closed = false
 
@@ -44,17 +47,33 @@ public final class UDPSocket {
         try ensureLastOperationSucceeded()
     }
 
-    public func read(into buffer: UnsafeMutableBufferPointer<Byte>, deadline: Double = .never) throws -> (Int, IP) {
+    public func read(into readBuffer: UnsafeMutableBufferPointer<Byte>, deadline: Double) throws -> (UnsafeBufferPointer<Byte>, IP) {
         try ensureStreamIsOpen()
 
-        var senderAddress = ipaddr()
-        let bytesRead = udprecv(socket, &senderAddress, buffer.baseAddress!, buffer.count, deadline.int64milliseconds)
+        guard let readPointer = readBuffer.baseAddress else {
+            throw UDPError.invalidReadBuffer
+        }
+
+        var address = ipaddr()
+        let bytesRead = udprecv(socket, &address, readPointer, readBuffer.count, deadline.int64milliseconds)
 
         try ensureLastOperationSucceeded()
 
-        let ip = IP(address: senderAddress)
-        return (bytesRead, ip)
+        let ip = IP(address: address)
+        return (UnsafeBufferPointer(start: readPointer, count: bytesRead), ip)
     }
+
+    public func read(upTo byteCount: Int, deadline: Double) throws -> (Buffer, IP) {
+        var bytes = [Byte](repeating: 0, count: byteCount)
+
+        let (readBuffer, ip) = try bytes.withUnsafeMutableBufferPointer {
+            try read(into: $0, deadline: deadline)
+        }
+
+        return (Buffer(readBuffer), ip)
+    }
+
+    public func open(deadline: Double) throws {}
 
     public func close() {
         if !closed, let socket = socket {
@@ -69,7 +88,7 @@ public final class UDPSocket {
     
     private func ensureStreamIsOpen() throws {
         if closed {
-            throw StreamError.closedStream(buffer: Buffer())
+            throw StreamError.closedStream
         }
     }
     
@@ -78,12 +97,9 @@ public final class UDPSocket {
     }
 }
 
-
-
 extension UDPSocket : InputStream {
-    
-    public func read(into: UnsafeMutableBufferPointer<UInt8>, deadline: Double = .never) throws -> Int {
-        let (bytesRead, _) = try read(into: into, deadline: deadline)
+    public func read(into readBuffer: UnsafeMutableBufferPointer<Byte>, deadline: Double = .never) throws -> UnsafeBufferPointer<Byte> {
+        let (bytesRead, _) = try read(into: readBuffer, deadline: deadline)
         return bytesRead
     }
 }

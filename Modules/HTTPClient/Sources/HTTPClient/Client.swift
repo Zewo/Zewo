@@ -1,5 +1,3 @@
-import Foundation
-
 public enum HTTPClientError : Error {
     case invalidURIScheme
     case uriHostRequired
@@ -22,7 +20,7 @@ public final class Client : Responder {
     public let requestTimeout: Double
     public let bufferSize: Int
 
-    var connection: Connection?
+    var stream: Stream?
     var serializer: RequestSerializer?
     var parser: MessageParser?
 
@@ -66,11 +64,11 @@ extension Client {
         var request = request
         addHeaders(to: &request)
 
-        let connection = try getConnection()
-        let serializer = getSerializer(connection: connection)
-        let parser = getParser(connection: connection)
+        let stream = try getStream()
+        let serializer = getSerializer(stream: stream)
+        let parser = getParser()
 
-        self.connection = connection
+        self.stream = stream
         self.serializer = serializer
         self.parser = parser
 
@@ -78,27 +76,29 @@ extension Client {
 
         do {
             // TODO: Add deadline to serializer
-            try serializer.serialize(request)
+            // TODO: Deal with multiple responses
+
+            try serializer.serialize(request, deadline: requestDeadline)
             
             var response: Response!
-            while !connection.closed {
-                let chunk = try connection.read(upTo: bufferSize, deadline: requestDeadline)
-                try parser.parse(chunk) { message in
+            while !stream.closed {
+                let chunk = try stream.read(upTo: bufferSize, deadline: requestDeadline)
+                for message in try parser.parse(chunk) {
                     response = message as! Response
                 }
             }
 
             if let upgrade = request.upgradeConnection {
-                try upgrade(response, connection)
+                try upgrade(response, stream)
             }
 
             if response.isError || !keepAlive {
-                self.connection = nil
+                self.stream = nil
             }
 
             return response
         } catch let error as StreamError {
-            self.connection = nil
+            self.stream = nil
             throw error
         }
     }
@@ -112,15 +112,15 @@ extension Client {
         }
     }
 
-    private func getConnection() throws -> Connection {
-        if let connection = self.connection {
-            return connection
+    private func getStream() throws -> Stream {
+        if let stream = self.stream {
+            return stream
         }
 
-        let connection: Connection
+        let stream: Stream
 
         if secure {
-            connection = try TCPTLSConnection(
+            stream = try TCPTLSStream(
                 host: host,
                 port: port,
                 verifyBundle: verifyBundle,
@@ -131,25 +131,26 @@ extension Client {
                 deadline: now() + connectionTimeout
             )
         } else {
-            connection = try TCPConnection(
+            stream = try TCPStream(
                 host: host,
                 port: port,
                 deadline: now() + connectionTimeout
             )
         }
 
-        try connection.open(deadline: now() + connectionTimeout)
-        return connection
+        try stream.open(deadline: now() + connectionTimeout)
+        return stream
     }
 
-    private func getSerializer(connection: Connection) -> RequestSerializer {
+    private func getSerializer(stream: Stream) -> RequestSerializer {
         if let serializer = serializer {
             return serializer
         }
-        return RequestSerializer(stream: connection)
+        return RequestSerializer(stream: stream)
     }
 
-    private func getParser(connection: Connection) -> MessageParser {
+
+    private func getParser() -> MessageParser {
         if let parser = self.parser {
             return parser
         }

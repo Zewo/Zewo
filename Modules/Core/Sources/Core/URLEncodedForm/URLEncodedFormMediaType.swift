@@ -1,4 +1,6 @@
-extension URLEncodedForm : MediaTypeRepresentor {
+public enum URLEncodedForm {}
+
+extension URLEncodedForm : MediaTypeConverter {
     public static var mediaType: MediaType {
         return MediaType(
             type: "application",
@@ -7,11 +9,11 @@ extension URLEncodedForm : MediaTypeRepresentor {
         )
     }
 
-    public static var parser: MapParser {
-        return URLEncodedFormMapParser()
+    public static var parser: MapParser.Type {
+        return URLEncodedFormMapParser.self
     }
 
-    public static var serializer: MapSerializer {
-        return URLEncodedFormMapSerializer()
+    public static var serializer: MapSerializer.Type {
+        return URLEncodedFormMapSerializer.self
     }
 }

@@ -33,6 +33,10 @@ extension FileMode {
     }
 }
 
+public let standardInputStream: Stream = try! File(fileDescriptor: STDIN_FILENO)
+public let standardOutputStream: Stream = try! File(fileDescriptor: STDOUT_FILENO)
+public let standardErrorStream: Stream = try! File(fileDescriptor: STDERR_FILENO)
+
 public final class File : Stream {
     fileprivate var file: mfile?
     public fileprivate(set) var closed = false
@@ -99,8 +103,17 @@ public final class File : Stream {
 }
 
 extension File {
+    // TODO: Actually open the file here instead of init.
+    public func open(deadline: Double) throws {}
+
+    public func close() {
+        if !closed {
+            fileclose(file)
+        }
+        closed = true
+    }
     
-    public func write(_ buffer: UnsafeBufferPointer<UInt8>, deadline: Double = .never) throws {
+    public func write(_ buffer: UnsafeBufferPointer<UInt8>, deadline: Double) throws {
         guard !buffer.isEmpty else {
             return
         }
@@ -114,23 +127,24 @@ extension File {
         }
     }
 
-    public func read(into: UnsafeMutableBufferPointer<UInt8>, deadline: Double = .never) throws -> Int {
-        guard !into.isEmpty else {
-            return 0
+    public func read(into readBuffer: UnsafeMutableBufferPointer<Byte>, deadline: Double) throws -> UnsafeBufferPointer<Byte> {
+        guard let readPointer = readBuffer.baseAddress else {
+            return UnsafeBufferPointer()
         }
         
         try ensureFileIsOpen()
         
-        let bytesRead = filereadlh(file, into.baseAddress!, 1, into.count, deadline.int64milliseconds)
+        let bytesRead = filereadlh(file, readPointer, 1, readBuffer.count, deadline.int64milliseconds)
         
-        if bytesRead == 0 {
+        guard bytesRead > 0 else {
             try ensureLastOperationSucceeded()
+            return UnsafeBufferPointer()
         }
         
-        return bytesRead
+        return UnsafeBufferPointer(start: readPointer, count: bytesRead)
     }
 
-    public func readAll(bufferSize: Int = 2048, deadline: Double = .never) throws -> Buffer {
+    public func readAll(bufferSize: Int = 2048, deadline: Double) throws -> Buffer {
         var buffer = Buffer()
         
         while true {
@@ -152,16 +166,9 @@ extension File {
         try ensureLastOperationSucceeded()
     }
 
-    public func close() {
-        if !closed {
-            fileclose(file)
-        }
-        closed = true
-    }
-
     private func ensureFileIsOpen() throws {
         if closed {
-            throw StreamError.closedStream(buffer: Buffer())
+            throw StreamError.closedStream
         }
     }
 }

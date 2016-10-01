@@ -4,10 +4,12 @@ import XCTest
 import struct Foundation.Data
 
 public class UDPSocketTests : XCTestCase {
-    
     func testBasicClientServer() throws {
-        let serverSocket = try UDPSocket(ip: IP(port: 5050))
-        let clientSocket = try UDPSocket(ip: IP(port: 5051)).sending(to: IP(port: 5050))
+        let deadline = 5.seconds.fromNow()
+        let serverIP = try IP(port: 5050)
+        let clientIP = try IP(port: 5051)
+        let serverSocket = try UDPSocket(ip: serverIP)
+        let clientSocket = try UDPSocket(ip: clientIP).sending(to: serverIP)
 
         let originalMessage = "Hello, World!"
         let doneChannel = Channel<Void>()
@@ -15,9 +17,7 @@ public class UDPSocketTests : XCTestCase {
         // Coroutine for the server socket
         co {
             do {
-                let buffer = try Buffer(capacity: 1024) {
-                    try serverSocket.read(into: $0)
-                }
+                let (buffer, _) = try serverSocket.read(upTo: 4096, deadline: deadline)
                 
                 // Check received buffer has appropriate count and content
                 XCTAssertEqual(buffer.count, originalMessage.characters.count)
@@ -26,31 +26,22 @@ public class UDPSocketTests : XCTestCase {
                 // Not mandatory: compare received and original string messages
                 let receivedMessage = try String(buffer: buffer)
                 XCTAssertEqual(receivedMessage, originalMessage)
-                
             } catch {
                 XCTFail()
             }
             
             doneChannel.send()
         }
-        
 
-        // Send data to the server
-        do {
-            try clientSocket.write(Buffer(originalMessage))
-        } catch {
-            XCTFail("failed to send data to the server")
-            return
-        }
-        
-        doneChannel.receive()!
+        try clientSocket.write(Buffer(originalMessage), deadline: 1.second.fromNow())
+        doneChannel.receive()
     }
     
     
     /// Sending *to* a closed UDP port should *not* fail: this is UDP
     func testSendToClosedSocket() throws {
         let clientSocket = try UDPSocket(ip: IP(port: 5051)).sending(to: IP(port: 5052))
-        try clientSocket.write(Buffer([1, 2, 3]))
+        try clientSocket.write(Buffer([1, 2, 3]), deadline: 1.second.fromNow())
         XCTAssert(true, "Could not write to UDPSocket")
     }
     
@@ -59,7 +50,7 @@ public class UDPSocketTests : XCTestCase {
     func testSendFromClosedSocket() throws {
         let clientSocket = try UDPSocket(ip: IP(port: 5051)).sending(to: IP(port: 5052))
         clientSocket.close()
-        XCTAssertThrowsError(try clientSocket.write(Buffer([1, 2, 3])))
+        XCTAssertThrowsError(try clientSocket.write(Buffer([1, 2, 3]), deadline: 1.second.fromNow()))
     }
     
 }

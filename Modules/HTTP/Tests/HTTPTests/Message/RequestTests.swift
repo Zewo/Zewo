@@ -10,7 +10,7 @@ public class RequestTests : XCTestCase {
         XCTAssertEqual(request.headers, ["Content-Length": "0"])
         XCTAssertEqual(request.body, .buffer(Buffer()))
 
-        request = Request(body: Drain(buffer: "foo") as Core.InputStream)
+        request = Request(body: BufferStream(buffer: "foo"))
         XCTAssertEqual(request.method, .get)
         XCTAssertEqual(request.url, URL(string: "/"))
         XCTAssertEqual(request.version, Version(major: 1, minor: 1))
@@ -18,8 +18,8 @@ public class RequestTests : XCTestCase {
         XCTAssertTrue(request.body.isReader)
 
         request = Request { stream in
-            try stream.write("foo")
-            try stream.flush()
+            try stream.write("foo", deadline: 1.second.fromNow())
+            try stream.flush(deadline: 1.second.fromNow())
         }
         XCTAssertEqual(request.method, .get)
         XCTAssertEqual(request.url, URL(string: "/"))
@@ -42,7 +42,7 @@ public class RequestTests : XCTestCase {
         XCTAssertEqual(request.headers, ["Content-Length": "0"])
         XCTAssertEqual(request.body, .buffer(Buffer()))
 
-        request = Request(url: "/", body: Drain(buffer: "foo") as Core.InputStream)!
+        request = Request(url: "/", body: BufferStream(buffer: "foo"))!
         XCTAssertEqual(request.method, .get)
         XCTAssertEqual(request.url, URL(string: "/"))
         XCTAssertEqual(request.version, Version(major: 1, minor: 1))
@@ -50,8 +50,8 @@ public class RequestTests : XCTestCase {
         XCTAssertTrue(request.body.isReader)
 
         request = Request(url: "/") { stream in
-            try stream.write("foo")
-            try stream.flush()
+            try stream.write("foo", deadline: 1.second.fromNow())
+            try stream.flush(deadline: 1.second.fromNow())
         }!
         XCTAssertEqual(request.method, .get)
         XCTAssertEqual(request.url, URL(string: "/"))
@@ -112,7 +112,7 @@ public class RequestTests : XCTestCase {
         request.upgradeConnection { (response, stream) in
             called = true
         }
-        try request.upgradeConnection?(Response(), Drain())
+        try request.upgradeConnection?(Response(), BufferStream())
         XCTAssert(called)
     }
 

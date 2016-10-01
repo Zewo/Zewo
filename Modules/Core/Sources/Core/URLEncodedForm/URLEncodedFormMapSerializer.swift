@@ -2,32 +2,48 @@ enum URLEncodedFormMapSerializerError : Error {
     case invalidMap
 }
 
-public struct URLEncodedFormMapSerializer : MapSerializer {
+public final class URLEncodedFormMapSerializer : MapSerializer {
+    private var buffer: String = ""
+    private var bufferSize: Int = 0
+    private typealias Body = (UnsafeBufferPointer<Byte>) throws -> Void
+
     public init() {}
 
-    public func serialize(_ map: Map) throws -> Buffer {
-        return try serializeToString(map).buffer
-    }
+    public func serialize(_ map: Map, bufferSize: Int, body: Body) throws {
+        self.bufferSize = bufferSize
 
-    public func serializeToString(_ map: Map) throws -> String {
         switch map {
-        case .dictionary(let dictionary): return try serializeDictionary(dictionary)
-        default: throw URLEncodedFormMapSerializerError.invalidMap
+        case .dictionary(let dictionary):
+            for (offset: index, element: (key: key, value: map)) in dictionary.enumerated() {
+                if index != 0 {
+                   try append(string: "&", body: body)
+                }
+
+                try append(string: key + "=", body: body)
+                let value = try map.asString(converting: true)
+                try append(string: value.percentEncoded(allowing: .uriQueryAllowed), body: body)
+            }
+        default:
+            throw URLEncodedFormMapSerializerError.invalidMap
+        }
+        
+        try write(body: body)
+    }
+
+    private func append(string: String, body: Body) throws {
+        buffer += string
+
+        if buffer.characters.count >= bufferSize {
+            try write(body: body)
         }
     }
 
-    func serializeDictionary(_ object: [String: Map]) throws -> String {
-        var string = ""
-
-        for (offset: index, element: (key: key, value: map)) in object.enumerated() {
-            if index != 0 {
-                string += "&"
+    private func write(body: Body) throws {
+        try buffer.withCString {
+            try $0.withMemoryRebound(to: Byte.self, capacity: buffer.utf8.count) {
+                try body(UnsafeBufferPointer(start: $0, count: buffer.utf8.count))
             }
-            string += String(key) + "="
-            let value = try map.asString(converting: true)
-            string += value.percentEncoded(allowing: .uriQueryAllowed)
         }
-
-        return string
+        buffer = ""
     }
 }
