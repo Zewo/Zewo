@@ -8,6 +8,7 @@
     <a href="http://slack.zewo.io"><img src="https://zewo-slackin.herokuapp.com/badge.svg" alt="Slack" /></a>
     <a href="https://travis-ci.org/Zewo/Zewo"><img src="https://travis-ci.org/Zewo/Zewo.svg" alt="Travis" /></a>
     <a href="https://codecov.io/gh/Zewo/Zewo"><img src="https://codecov.io/gh/Zewo/Zewo/branch/master/graph/badge.svg" alt="Codecov" /></a>
+    <a href="https://codebeat.co/projects/github-com-zewo-zewo"><img src="https://codebeat.co/badges/d580cc1f-5bdb-494b-8391-d147c7a287a1" alt="Codebeat" /></a>
     <a href="#backers"><img src="https://opencollective.com/zewo/backers/badge.svg"></a>
     <a href="#sponsors"><img src="https://opencollective.com/zewo/sponsors/badge.svg"></a>
 </p>
@@ -301,9 +302,11 @@ remote: Verifying deploy... done.
 
 That's it. Your app is now live! 😎 You can check mine on [https://hello-zewo-1969.herokuapp.com/hello](https://hello-zewo-1969.herokuapp.com/hello).
 
+⚠️ It may take a while for the page to load. Free heroku dynos sleep when there's no activity in a certain amount of time. After the dyno wakes up, subsequent access should be instantaneous.
+
 ### What's next?
 
-Check out our [organization](https://github.com/Zewo) for more. You can also take a look at our [documentation](http://zewo.readme.io). If you have any doubts you can reach us at our [slack](http://slack.zewo.io). We're very active and always ready to help.
+Check out our [organization](https://github.com/Zewo) for more. You can also take a look at our [documentation](http://docs.zewo.io). If you have any doubts you can reach us at our [slack](http://slack.zewo.io). We're very active and always ready to help.
 
 ## Support
 
