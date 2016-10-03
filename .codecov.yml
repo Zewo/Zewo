@@ -7,7 +7,19 @@ coverage:
   range: "70...100"
 
   ignore:
-    - "Modules/*/Tests/*"
+    - "Modules/Core/Tests/*"
+    - "Modules/File/Tests/*"
+    - "Modules/HTTP/Tests/*"
+    - "Modules/HTTPFile/Tests/*"
+    - "Modules/HTTPServer/Tests/*"
+    - "Modules/IP/Tests/*"
+    - "Modules/OpenSSL/Tests/*"
+    - "Modules/POSIX/Tests/*"
+    - "Modules/Reflection/Tests/*"
+    - "Modules/TCP/Tests/*"
+    - "Modules/UDP/Tests/*"
+    - "Modules/Venice/Tests/*"
+    - "Modules/HTTPClient/Tests/*"
 
   notify:
     slack:
