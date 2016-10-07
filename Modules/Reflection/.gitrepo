@@ -6,6 +6,6 @@
 [subrepo]
 	remote = https://github.com/Zewo/Reflection
 	branch = master
-	commit = 368cda276820e6f6cf923bd264d34ea7de89d68d
-	parent = 5b80df984feda8ea627aed84c70e7fca82969eac
+	commit = 1834c319ff708e124089396ad8c901efc485acd9
+	parent = 4d9aea94425a66d84e961fe56c811fce228bb986
 	cmdver = 0.3.0
