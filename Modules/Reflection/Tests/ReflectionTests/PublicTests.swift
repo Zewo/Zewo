@@ -42,13 +42,25 @@ func == (lhs: ReferencePerson, rhs: ReferencePerson) -> Bool {
 }
 
 public class PublicTests : XCTestCase {
+    
     func testConstructType() throws {
-        for _ in 0 ..< 1000 {
+        for _ in 0..<1000 {
             let person: Person = try construct {
                 (["firstName": "Brad", "lastName": "Hilton", "age": 27] as [String : Any])[$0.key]!
             }
             let other = Person(firstName: "Brad", lastName: "Hilton", age: 27)
             XCTAssert(person == other)
+        }
+    }
+    
+    func testConstructAnyType() throws {
+        for _ in 0..<1000 {
+            let type: Any.Type = Person.self
+            let person: Any = try construct(type) {
+                (["firstName": "Brad", "lastName": "Hilton", "age": 27] as [String : Any])[$0.key]!
+            }
+            let other = Person(firstName: "Brad", lastName: "Hilton", age: 27)
+            XCTAssert(person as! Person == other)
         }
     }
 
@@ -124,7 +136,6 @@ public class PublicTests : XCTestCase {
         XCTAssert(!Reflection.value("John", is: Array<String>.self))
         XCTAssert(!Reflection.value(89, is: String.self))
         XCTAssert(!Reflection.value(["Larry"], is: Int.self))
-
         let person = Person(firstName: "Hillary", lastName: "Mason", age: 32)
         let referencePerson = ReferencePerson()
         let subclassedPerson = SubclassedPerson()

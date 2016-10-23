@@ -70,17 +70,21 @@ extension Mapper {
 extension Mapper {
     
     public func map<T>(arrayFrom key: String) throws -> [T] {
-        return try structuredData.flatMapThrough(key) { try $0.get() as T }
+        return try structuredData.mapThrough(key) { try $0.get() as T }
     }
     
     public func map<T where T: StructuredDataInitializable>(arrayFrom key: String) throws -> [T] {
-        return try structuredData.flatMapThrough(key) { try? T(structuredData: $0) }
+        return try structuredData.mapThrough(key) { try T(structuredData: $0) }
     }
     
     public func map<T: RawRepresentable where
                     T.RawValue: StructuredDataInitializable>(arrayFrom key: String) throws -> [T] {
-        return try structuredData.flatMapThrough(key) {
-            return (try? T.RawValue(structuredData: $0)).flatMap({ T(rawValue: $0) })
+        return try structuredData.mapThrough(key) {
+  					guard let value = T(rawValue: try T.RawValue(structuredData: $0)) else {
+              throw Error.cantInitFromRawValue
+  					}
+  					
+  					return value
         }
     }
 }
