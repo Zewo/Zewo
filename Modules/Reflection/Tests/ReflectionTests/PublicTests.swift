@@ -1,5 +1,5 @@
 import XCTest
-@testable import Reflection
+import Reflection
 
 struct Person : Equatable {
     var firstName: String
@@ -127,6 +127,9 @@ public class PublicTests : XCTestCase {
         let person = Person(firstName: "Brad", lastName: "Hilton", age: 29)
         let firstName: String = try get("firstName", from: person)
         XCTAssert(person.firstName == firstName)
+        let referencePerson = ReferencePerson(firstName: "Brad", lastName: "Hilton", age: 29)
+        let referenceFirstName: String = try get("firstName", from: referencePerson)
+        XCTAssert(referencePerson.firstName == referenceFirstName)
     }
 
     func testValueIs() {
@@ -163,6 +166,20 @@ public class PublicTests : XCTestCase {
         testMemoryProperties(String.self)
         testMemoryProperties(Array<Int>.self)
     }
+    
+    func testCString() {
+        do {
+            let firstName = "Brad".withCString { return String(cString: $0) }
+            let indirectStorage = ["firstName" : firstName]
+            let person: Person = try construct(dictionary: [
+                "firstName": firstName,
+                "lastName": "Hilton",
+                "age": 27
+                ])
+            XCTAssert(indirectStorage["firstName"]! == person.firstName)
+        } catch {}
+    }
+    
 }
 
 extension PublicTests {
@@ -176,6 +193,7 @@ extension PublicTests {
             ("testValueForKeyOfInstance", testValueForKeyOfInstance),
             ("testValueIs", testValueIs),
             ("testMemoryProperties", testMemoryProperties),
+            ("testCString", testCString)
         ]
     }
 }

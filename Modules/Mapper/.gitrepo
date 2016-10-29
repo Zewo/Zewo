@@ -6,6 +6,6 @@
 [subrepo]
 	remote = https://github.com/Zewo/Mapper
 	branch = master
-	commit = c760fa9352308c42e6211fd21cf4fc5b0e3cbbe4
-	parent = fe2d5ebe2a0f50dbcb6ed620ba039b54e4f808a4
+	commit = ae3548eb1e7e32b9a78a947c0e6a9ff6362ffe4e
+	parent = cc6b8a6f3cab5307301734d1d803cc4a1f331546
 	cmdver = 0.3.0
