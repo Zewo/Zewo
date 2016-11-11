@@ -51,10 +51,13 @@ public final class WebSocket {
     fileprivate let pingEventEmitter = EventEmitter<Buffer>()
     fileprivate let pongEventEmitter = EventEmitter<Buffer>()
     fileprivate let closeEventEmitter = EventEmitter<(code: CloseCode?, reason: String?)>()
+    
+    fileprivate let connectionTimeout: Double
 
-    public init(stream: Axis.Stream, mode: Mode) {
+    public init(stream: Axis.Stream, mode: Mode, connectionTimeout: Double = 60.seconds) {
         self.stream = stream
         self.mode = mode
+        self.connectionTimeout = connectionTimeout
     }
 
     @discardableResult
@@ -139,7 +142,7 @@ public final class WebSocket {
     public func start() throws {
         while !stream.closed {
             do {
-                let data = try stream.read(upTo: self.bufferSize, deadline: 5.seconds.fromNow())
+                let data = try stream.read(upTo: self.bufferSize, deadline: connectionTimeout.fromNow())
                 try processData(data)
             } catch StreamError.closedStream {
                 break

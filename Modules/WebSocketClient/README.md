@@ -25,12 +25,13 @@ let package = Package(
 ```swift
 import WebSocketClient
 
+let name = "Dan"
 let client = try WebSocketClient(url: "ws://localhost:8080") { ws in
     print("Connected!")
     ws.onClose { code, reason in
         print("\(code): \(reason)")
     }
-    try ws.send("Hi I'm \(UUID())")
+    try ws.send("Hi, I'm \(name)!")
 }
 
 try client.connect()

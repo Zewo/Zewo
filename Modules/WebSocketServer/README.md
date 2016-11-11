@@ -26,6 +26,8 @@ let package = Package(
 
 ## Usage
 
+In both of these examples, the [HTTPServer](https://github.com/Zewo/HTTPServer) module is used.
+
 `WebSocketServer` can be used as a responder or a middleware:
 
 ```swift

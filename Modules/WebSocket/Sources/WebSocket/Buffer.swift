@@ -26,9 +26,10 @@ extension Buffer {
             valuePointer.deallocate(capacity: 1)
         }
 
-        self = valuePointer.withMemoryRebound(to: UInt8.self, capacity: totalBytes) { bytes in
+        var bytes = [UInt8](repeating: 0, count: totalBytes)
+        self = valuePointer.withMemoryRebound(to: UInt8.self, capacity: totalBytes) { p in
             for i in 0..<totalBytes {
-                bytes[totalBytes - 1 - i] = (bytes + i).pointee
+                bytes[totalBytes - 1 - i] = (p + i).pointee
             }
             return Buffer(UnsafeBufferPointer(start: bytes, count: totalBytes))
         }

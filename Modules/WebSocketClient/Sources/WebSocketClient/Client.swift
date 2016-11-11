@@ -13,8 +13,8 @@ public struct WebSocketClient {
     private let client: Responder
     private let url: URL
     private let didConnect: (WebSocket) throws -> Void
-
-    public init(url: URL, didConnect: @escaping (WebSocket) throws -> Void) throws {
+    private let connectionTimeout: Double?
+    public init(url: URL, connectionTimeout: Double? = nil, didConnect: @escaping (WebSocket) throws -> Void) throws {
         guard let scheme = url.scheme, scheme == "ws" || scheme == "wss" else {
             throw ClientError.unsupportedScheme
         }
@@ -25,16 +25,16 @@ public struct WebSocketClient {
         let urlStr = url.absoluteString
         let urlhttp = URL(string: urlStr.replacingCharacters(in: urlStr.range(of:"ws")!, with: "http"))!
         self.client = try HTTPClient.Client(url: urlhttp)
-
+        self.connectionTimeout = connectionTimeout
         self.didConnect = didConnect
         self.url = url
     }
 
-    public init(url: String, didConnect: @escaping (WebSocket) throws -> Void) throws {
+    public init(url: String, connectionTimeout: Double? = nil, didConnect: @escaping (WebSocket) throws -> Void) throws {
         guard let url = URL(string: url) else {
             throw URLError.invalidURL
         }
-        try self.init(url: url, didConnect: didConnect)
+        try self.init(url: url, connectionTimeout: connectionTimeout, didConnect: didConnect)
     }
 
     public func connect() throws {
@@ -57,8 +57,12 @@ public struct WebSocketClient {
             guard let accept = response.webSocketAccept, accept == WebSocket.accept(key) else {
                 throw ClientError.responseNotWebsocket
             }
-
-            let webSocket = WebSocket(stream: stream, mode: .client)
+            let webSocket: WebSocket
+            if let connectionTimeout = self.connectionTimeout {
+                webSocket = WebSocket(stream: stream, mode: .client, connectionTimeout: connectionTimeout)
+            } else {
+                webSocket = WebSocket(stream: stream, mode: .client)
+            }
             try self.didConnect(webSocket)
             try webSocket.start()
         }
