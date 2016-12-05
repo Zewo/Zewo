@@ -66,7 +66,7 @@ The inner-most circle is the entire project, moving away from the center are fol
 
 ### Install swiftenv
 
-The [swiftenv](https://github.com/kylef/swiftenv) tool allows you to easily install, and switch between multiple versions of Swift. You can install **swiftenv** following official [instructions](https://github.com/kylef/swiftenv#installation).
+The [swiftenv](https://github.com/kylef/swiftenv) tool allows you to easily install, and switch between multiple versions of Swift. You can install **swiftenv** following official [instructions](https://swiftenv.fuller.li/en/latest/installation.html).
 
 ⚠️ With **homebrew** use:
 
