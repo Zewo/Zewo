@@ -159,3 +159,31 @@ extension Logger {
         return Logger.logTimeFormatter.string(from: Date())
     }
 }
+
+final class Weak<T: AnyObject> {
+    weak var value : T?
+    init (value: T) {
+        self.value = value
+    }
+}
+
+public final class LoggerManager {
+
+    static var appenders: [Appender] = []
+
+    static var loggers: [String: Weak<Logger>] = [:]
+
+    public class func configure(appenders: [Appender]) {
+        self.appenders = appenders
+    }
+
+    public static func getLogger(name: String) -> Logger {
+        if let logger = LoggerManager.loggers[name] , logger.value != nil {
+            return logger.value!
+        } else {
+            let logger = Logger(name: name, appenders: LoggerManager.appenders)
+            loggers[name] = Weak(value: logger)
+            return loggers[name]!.value!
+        }
+    }
+}

@@ -2,6 +2,37 @@ import XCTest
 import Foundation
 @testable import Axis
 
+var executedAppender: Bool = false
+
+class FakeAppender: Appender {
+    public func append(event: Logger.Event) {
+        executedAppender = true
+    }
+
+    public var name: String = "fake"
+    public var levels: Logger.Level = []
+}
+
+
+public class LoggerManagerTests : XCTestCase {
+
+    func testConfigure() {
+        LoggerManager.loggers = [:]
+        LoggerManager.configure(appenders: [FakeAppender()])
+        let logger = LoggerManager.getLogger(name: "test") // could be freed when reference = 0
+        logger.debug("test")
+        XCTAssert(executedAppender)
+    }
+
+    func testGetLogger() {
+        LoggerManager.loggers = [:]
+        LoggerManager.configure(appenders: [])
+        let logger = LoggerManager.getLogger(name: "test")
+        let logger2 = LoggerManager.getLogger(name: "test")
+        XCTAssert(logger === logger2)
+    }
+}
+
 public class LoggerTests : XCTestCase {
     func testLogger() throws {
         let appender = StandardOutputAppender()
@@ -61,6 +92,15 @@ extension LoggerTests {
         return [
             ("testLogger", testLogger),
             ("testDateFormatter", testDateFormatter)
+        ]
+    }
+}
+
+extension LoggerManagerTests {
+    public static var allTests: [(String, (LoggerManagerTests) -> () throws -> Void)] {
+        return [
+            ("testConfigure", testConfigure),
+            ("testGetLogger", testGetLogger)
         ]
     }
 }
