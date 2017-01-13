@@ -15,7 +15,6 @@ public struct TCPTLSStream : Stream {
     }
 
     public func open(deadline: Double) throws {
-        try tcpStream.open(deadline: deadline)
         try sslStream.open(deadline: deadline)
     }
 
