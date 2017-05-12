@@ -20,17 +20,6 @@ public enum AddressFamily {
     case ipv4
     case ipv6
 
-    init?(rawValue: Int32) {
-        switch rawValue {
-        case AF_INET:
-            self = .ipv4
-        case AF_INET6:
-            self = .ipv6
-        default:
-            return nil
-        }
-    }
-
     var rawValue: Int32 {
         switch self {
         case .ipv4:
@@ -152,8 +141,10 @@ public struct Address {
     public var family: AddressFamily {
         var address = self
         switch address.withAddressPointer(body: { Int32($0.pointee.sa_family) }) {
-        case AF_INET: return .ipv4
-        default: return .ipv6
+        case AF_INET:
+            return .ipv4
+        default:
+            return .ipv6
         }
     }
 

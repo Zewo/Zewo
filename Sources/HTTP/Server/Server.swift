@@ -78,9 +78,8 @@ public final class Server {
             do {
                 try accept(host, respond: respond)
             } catch SystemError.tooManyOpenFiles {
-                let waitDuration = 10.seconds
                 logger.info("Too many open files. Retrying in 10 seconds.")
-                try Coroutine.wakeUp(waitDuration.fromNow())
+                try Coroutine.wakeUp(10.seconds.fromNow())
                 continue
             } catch VeniceError.canceledCoroutine {
                 break
@@ -147,11 +146,11 @@ public final class Server {
             
             if let upgrade = response.upgradeConnection {
                 try upgrade(request, stream)
-                stream.close()
+                try stream.close()
             }
             
             if !request.isKeepAlive {
-                stream.close()
+                try stream.close()
             }
         }
     }

@@ -127,9 +127,11 @@ public enum SystemError : Error {
     case previousOwnerDied
 
     case other(errorNumber: Int32)
-}
 
-extension SystemError {
+    public static var lastOperationError: SystemError {
+        return SystemError(errorNumber: errno)
+    }
+    
     public init(errorNumber: Int32) {
         switch errorNumber {
         case 0: self = .success
@@ -255,9 +257,7 @@ extension SystemError {
         default: self = .other(errorNumber: errorNumber)
         }
     }
-}
 
-extension SystemError {
     public var errorNumber: Int32 {
         switch self {
         case .success: return 0
@@ -386,26 +386,14 @@ extension SystemError {
     }
 }
 
-extension SystemError : Equatable {}
-
-public func == (lhs: SystemError, rhs: SystemError) -> Bool {
-    return lhs.errorNumber == rhs.errorNumber
-}
-
-extension SystemError {
-    public static func description(for errorNumber: Int32) -> String {
-        return String(cString: strerror(errorNumber))
+extension SystemError : Equatable {
+    public static func == (lhs: SystemError, rhs: SystemError) -> Bool {
+        return lhs.errorNumber == rhs.errorNumber
     }
 }
 
 extension SystemError : CustomStringConvertible {
     public var description: String {
-        return SystemError.description(for: errorNumber)
-    }
-}
-
-extension SystemError {
-    public static var lastOperationError: SystemError {
-        return SystemError(errorNumber: errno)
+        return String(cString: strerror(errorNumber))
     }
 }

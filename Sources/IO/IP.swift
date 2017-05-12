@@ -16,8 +16,6 @@ extension IPError : CustomStringConvertible {
 public enum IPMode {
     case ipv4
     case ipv6
-    case ipv4Prefered
-    case ipv6Prefered
 }
 
 public struct IP {
@@ -35,24 +33,21 @@ public struct IP {
         self.address = address
     }
 
-    public init(port: Int, mode: IPMode = .ipv4Prefered) throws {
+    public init(port: Int, mode: IPMode = .ipv4) throws {
         try assertValidPort(port)
         let address: Address
         
         switch mode {
-        case .ipv4, .ipv4Prefered:
+        case .ipv4:
             address = Address(family: .ipv4, port: port)
-        case .ipv6, .ipv6Prefered:
+        case .ipv6:
             address = Address(family: .ipv6, port: port)
         }
         
         self.init(address: address)
     }
 
-    // TODO:
-    // get address from interface name
-
-    public init(address literal: String, port: Int, mode: IPMode = .ipv4Prefered, deadline: Deadline) throws {
+    public init(address literal: String, port: Int, mode: IPMode = .ipv4, deadline: Deadline) throws {
         try assertValidPort(port)
         let address: Address
         
@@ -60,22 +55,11 @@ public struct IP {
             switch mode {
             case .ipv4:
                 address = try Address(family: .ipv4, address: literal, port: port)
-            case .ipv4Prefered:
-                do {
-                    address = try Address(family: .ipv4, address: literal, port: port)
-                } catch {
-                    address = try Address(family: .ipv6, address: literal, port: port)
-                }
             case .ipv6:
                 address = try Address(family: .ipv6, address: literal, port: port)
-            case .ipv6Prefered:
-                do {
-                    address = try Address(family: .ipv6, address: literal, port: port)
-                } catch {
-                    address = try Address(family: .ipv4, address: literal, port: port)
-                }
             }
         } catch {
+            // Resolve DNS
             address = try Address(address: literal, port: port, mode: mode, deadline: deadline)
         }
         

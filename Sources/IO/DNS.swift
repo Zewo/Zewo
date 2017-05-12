@@ -26,7 +26,12 @@ private enum DNS {
 }
 
 extension Address {
-    public init(address: String, port: Int, mode: IPMode = .ipv4Prefered, deadline: Deadline = 15.seconds.fromNow()) throws {
+    public init(
+        address: String,
+        port: Int,
+        mode: IPMode = .ipv4,
+        deadline: Deadline
+    ) throws {
         try assertValidPort(port)
         var result: Int32 = 0
         var options = DNS.options
@@ -52,12 +57,12 @@ extension Address {
 
             switch result {
             case EAGAIN, EWOULDBLOCK:
-                let fileDescriptor = FileDescriptor(dns_ai_pollfd(addressInfo))
+                let fileDescriptor = try FileDescriptor(dns_ai_pollfd(addressInfo))
                 try fileDescriptor.poll(event: .read, deadline: deadline)
                 /* There's no guarantee that the file descriptor will be reused
                  in next iteration. We have to clean the fdwait cache here
                  to be on the safe side. */
-                fileDescriptor.clean()
+                fileDescriptor.detach()
                 continue loop
             case 0:
                 guard let ip = ip else {
@@ -88,16 +93,6 @@ extension Address {
             }
         case .ipv6:
             if ipv4 != nil {
-                ipv4?.deallocate(capacity: 1)
-                ipv4 = nil
-            }
-        case .ipv4Prefered:
-            if ipv4 != nil && ipv6 != nil {
-                ipv6?.deallocate(capacity: 1)
-                ipv6 = nil
-            }
-        case .ipv6Prefered:
-            if ipv6 != nil && ipv4 != nil {
                 ipv4?.deallocate(capacity: 1)
                 ipv4 = nil
             }

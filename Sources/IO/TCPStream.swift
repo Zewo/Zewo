@@ -35,7 +35,7 @@ public final class TCPStream : DuplexStream {
     
     deinit {
         writeBuffer.deallocate()
-        close()
+        try? close()
     }
 
     public func open(deadline: Deadline) throws {
@@ -45,7 +45,7 @@ public final class TCPStream : DuplexStream {
             throw TCPError.failedToCreateSocket
         }
 
-        let socket = FileDescriptor(rawSocket)
+        let socket = try FileDescriptor(rawSocket)
         try tune(socket: socket)
 
         do {
@@ -55,11 +55,11 @@ public final class TCPStream : DuplexStream {
                 try socket.poll(event: .write, deadline: deadline)
                 try POSIX.checkError(socket: rawSocket)
             } catch VeniceError.timeout {
-                try IO.close(socket: socket)
+                try socket.close()
                 throw VeniceError.timeout
             }
         } catch {
-            try IO.close(socket: socket)
+            try socket.close()
             throw TCPError.failedToConnectSocket
         }
 
@@ -81,7 +81,7 @@ public final class TCPStream : DuplexStream {
                 let bytesRead = try POSIX.receive(socket: socket.fileDescriptor, buffer: buffer)
                 
                 guard bytesRead != 0 else {
-                    close()
+                    try close()
                     throw SystemError.connectionResetByPeer
                 }
                 
@@ -166,7 +166,7 @@ public final class TCPStream : DuplexStream {
                     try socket.poll(event: .write, deadline: deadline)
                     continue loop
                 case SystemError.connectionResetByPeer, SystemError.brokenPipe:
-                    close()
+                    try close()
                     throw error
                 default:
                     throw error
@@ -175,14 +175,10 @@ public final class TCPStream : DuplexStream {
         }
     }
 
-    public func close() {
-        guard let socket = try? getSocket() else {
-            return
-        }
-
-        socket.clean()
-        try? IO.close(socket: socket)
+    public func close() throws {
+        let socket = try getSocket()
         self.socket = nil
+        try socket.close()
     }
 
     private func getSocket() throws -> FileDescriptor {

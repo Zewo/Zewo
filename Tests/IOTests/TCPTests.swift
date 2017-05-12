@@ -24,7 +24,7 @@ public class TCPTests: XCTestCase {
 
         let stream = try TCPStream(host: "127.0.0.1", port: port, deadline: 1.second.fromNow())
         try stream.open(deadline: 1.second.fromNow())
-        stream.close()
+        try stream.close()
         try channel.receive(deadline: .never)
         try coroutine.cancel()
         XCTAssertThrowsError(try stream.write("123", deadline: 1.second.fromNow()))
@@ -43,7 +43,7 @@ public class TCPTests: XCTestCase {
 
         let connection = try TCPStream(host: "127.0.0.1", port: port, deadline: 1.second.fromNow())
         try connection.open(deadline: 1.second.fromNow())
-        connection.close()
+        try connection.close()
         try channel.receive(deadline: .never)
         try coroutine.cancel()
         XCTAssertThrowsError(try connection.flush(deadline: 1.second.fromNow()))
@@ -62,7 +62,7 @@ public class TCPTests: XCTestCase {
 
         let connection = try TCPStream(host: "127.0.0.1", port: port, deadline: 1.second.fromNow())
         try connection.open(deadline: 1.second.fromNow())
-        connection.close()
+        try connection.close()
         try channel.receive(deadline: .never)
         try coroutine.cancel()
         let buffer = UnsafeMutableRawBufferPointer(start: nil, count: 0)
@@ -86,7 +86,7 @@ public class TCPTests: XCTestCase {
             let buffer = try connection.read(into: buffer, deadline: 1.second.fromNow())
 
             XCTAssertEqual(buffer[0], 65)
-            connection.close()
+            try connection.close()
             try channel.send(deadline: .never)
         }
 

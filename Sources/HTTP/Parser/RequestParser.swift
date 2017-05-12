@@ -238,7 +238,7 @@ public final class RequestParser {
         let read = try stream.read(into: buffer, deadline: deadline)
         
         if read.isEmpty {
-            stream.close()
+            try stream.close()
         }
         
         let requests = try parse(read)

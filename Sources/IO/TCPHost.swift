@@ -15,8 +15,8 @@ public final class TCPHost : Host {
     private let socket: FileDescriptor
     public let ip: IP
 
-    public init(socket: Int32, ip: IP) {
-        self.socket = FileDescriptor(socket)
+    public init(socket: FileDescriptor, ip: IP) throws {
+        self.socket = socket
         self.ip = ip
     }
 
@@ -27,11 +27,11 @@ public final class TCPHost : Host {
             throw TCPError.failedToCreateSocket
         }
         
-        let socket = FileDescriptor(rawSocket)
+        let socket = try FileDescriptor(rawSocket)
         try tune(socket: socket)
 
         if reusePort {
-            try setReusePort(socket: rawSocket)
+            try setReusePort(socket: socket)
         }
 
         do {
@@ -47,13 +47,13 @@ public final class TCPHost : Host {
             do {
                 address = try POSIX.getAddress(socket: rawSocket)
             } catch {
-                try close(socket: socket)
+                try socket.close()
                 throw TCPError.failedToGetSocketAddress
             }
         }
 
         let ip = IP(address: address)
-        self.init(socket: rawSocket, ip: ip)
+        try self.init(socket: socket, ip: ip)
     }
 
     public convenience init(
@@ -71,7 +71,7 @@ public final class TCPHost : Host {
         loop: while true {
             do {
                 let (rawSocket, address) = try POSIX.accept(socket: socket.fileDescriptor)
-                let acceptSocket = FileDescriptor(rawSocket)
+                let acceptSocket = try FileDescriptor(rawSocket)
                 try tune(socket: acceptSocket)
                 let ip = IP(address: address)
                 return TCPStream(socket: acceptSocket, ip: ip)
@@ -88,29 +88,25 @@ public final class TCPHost : Host {
     }
 }
 
-func close(socket: FileDescriptor) throws {
-    socket.clean()
-    try POSIX.close(fileDescriptor: socket.fileDescriptor)
+func setReusePort(socket: FileDescriptor) throws {
+    do {
+        try POSIX.setReusePort(socket: socket.fileDescriptor)
+    } catch {
+        try socket.close()
+        throw error
+    }
 }
 
 func tune(socket: FileDescriptor) throws {
     do {
-        try setNonBlocking(fileDescriptor: socket.fileDescriptor)
         try setReuseAddress(socket: socket.fileDescriptor)
         #if os(macOS)
             try setNoSignalOnBrokenPipe(socket: socket.fileDescriptor)
         #endif
     } catch {
-        try close(socket: socket)
+        try socket.close()
         throw error
     }
 }
 
-func setReusePort(socket: FileDescriptor) throws {
-    do {
-        try POSIX.setReusePort(socket: socket.fileDescriptor)
-    } catch {
-        try close(socket: socket)
-        throw error
-    }
-}
+

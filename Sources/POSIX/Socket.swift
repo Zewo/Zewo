@@ -5,17 +5,8 @@
 #endif
 
 #if os(Linux)
-    public enum SocketType: RawRepresentable {
+    public enum SocketType {
         case stream
-
-        public init?(rawValue: Int32) {
-            switch rawValue {
-            case Int32(SOCK_STREAM.rawValue):
-                self = .stream
-            default:
-                return nil
-            }
-        }
 
         public var rawValue: Int32 {
             switch self {
@@ -24,17 +15,8 @@
         }
     }
 #else
-    public enum SocketType: RawRepresentable {
+    public enum SocketType {
         case stream
-
-        public init?(rawValue: Int32) {
-            switch rawValue {
-            case SOCK_STREAM:
-                self = .stream
-            default:
-                return nil
-            }
-        }
 
         public var rawValue: Int32 {
             switch self {
@@ -49,15 +31,18 @@ public func socket(
     type: SocketType,
     `protocol`: Int32
 ) throws -> Int32 {
-    let fileDescriptor = socket(family.rawValue, Int32(type.rawValue), `protocol`)
-    switch fileDescriptor {
-    case -1: throw SystemError.lastOperationError
-    default: return fileDescriptor
+    let result = socket(family.rawValue, Int32(type.rawValue), `protocol`)
+    
+    guard result != -1 else {
+        throw SystemError.lastOperationError
     }
+    
+    return result
 }
 
 public func bind(socket: Int32, address: Address) throws {
     var address = address
+    
     let result = address.withAddressPointer {
         bind(socket, $0, socklen_t(address.length))
     }
@@ -78,6 +63,7 @@ public func listen(socket: Int32, backlog: Int) throws {
 public func accept(socket: Int32) throws -> (Int32, Address) {
     var address = Address()
     var length = socklen_t(MemoryLayout<sockaddr>.size)
+    
     let acceptSocket = address.withAddressPointer { pointer in
         accept(socket, pointer, &length)
     }
@@ -92,8 +78,6 @@ public func accept(socket: Int32) throws -> (Int32, Address) {
 public func connect(socket: Int32, address: Address) throws {
     var address = address
     let length = socklen_t(MemoryLayout<sockaddr>.size)
-
-    try setNonBlocking(fileDescriptor: socket)
 
     let result = address.withAddressPointer { addressPointer in
         connect(socket, addressPointer, length)

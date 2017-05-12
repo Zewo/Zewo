@@ -87,7 +87,7 @@ public final class ResponseSerializer {
     private func writeBody(for response: Response, deadline: Deadline) throws {
         try write(to: stream, body: response.body, deadline: deadline)
         try stream.flush(deadline: deadline)
-        stream.close()
+        try stream.close()
     }
     
     @inline(__always)
