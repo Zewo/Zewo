@@ -80,13 +80,6 @@
     {
       "file": "/Volumes/Macintosh HD 2/Development/GitHub/Zewo/Zewo/Sources/Core/Content/Content.swift",
       "line": null,
-      "symbol": "Content",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Volumes/Macintosh HD 2/Development/GitHub/Zewo/Zewo/Sources/Core/Content/Content.swift",
-      "line": null,
       "symbol": "NoContent",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
@@ -150,8 +143,8 @@
     {
       "file": "/Volumes/Macintosh HD 2/Development/GitHub/Zewo/Zewo/Sources/Core/Content/Content.swift",
       "line": 15,
-      "symbol": "ContentRepresentable.content",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "symbol": "ContentRepresentable.content()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
@@ -164,8 +157,8 @@
     {
       "file": "/Volumes/Macintosh HD 2/Development/GitHub/Zewo/Zewo/Sources/Core/Content/Content.swift",
       "line": 21,
-      "symbol": "Int.content",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "symbol": "Int.content()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
@@ -178,8 +171,8 @@
     {
       "file": "/Volumes/Macintosh HD 2/Development/GitHub/Zewo/Zewo/Sources/Core/Content/Content.swift",
       "line": 35,
-      "symbol": "Bool.content",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "symbol": "Bool.content()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
@@ -192,8 +185,8 @@
     {
       "file": "/Volumes/Macintosh HD 2/Development/GitHub/Zewo/Zewo/Sources/Core/Content/Content.swift",
       "line": 49,
-      "symbol": "String.content",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "symbol": "String.content()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
@@ -206,8 +199,8 @@
     {
       "file": "/Volumes/Macintosh HD 2/Development/GitHub/Zewo/Zewo/Sources/Core/Content/Content.swift",
       "line": 63,
-      "symbol": "Double.content",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "symbol": "Double.content()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
@@ -220,8 +213,8 @@
     {
       "file": "/Volumes/Macintosh HD 2/Development/GitHub/Zewo/Zewo/Sources/Core/Content/Content.swift",
       "line": 77,
-      "symbol": "Content.content",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "symbol": "Content.content()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
@@ -255,8 +248,8 @@
     {
       "file": "/Volumes/Macintosh HD 2/Development/GitHub/Zewo/Zewo/Sources/Core/Content/Content.swift",
       "line": 93,
-      "symbol": "NoContent.content",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "symbol": "NoContent.content()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {

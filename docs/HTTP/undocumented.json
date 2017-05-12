@@ -996,21 +996,28 @@
     },
     {
       "file": "/Volumes/Macintosh HD 2/Development/GitHub/Zewo/Zewo/Sources/HTTP/Response/Response.swift",
-      "line": 125,
+      "line": 123,
+      "symbol": "Response.init(status:headers:content:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Volumes/Macintosh HD 2/Development/GitHub/Zewo/Zewo/Sources/HTTP/Response/Response.swift",
+      "line": 137,
       "symbol": "Response.cookies",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Volumes/Macintosh HD 2/Development/GitHub/Zewo/Zewo/Sources/HTTP/Response/Response.swift",
-      "line": 151,
+      "line": 163,
       "symbol": "Response.response",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Volumes/Macintosh HD 2/Development/GitHub/Zewo/Zewo/Sources/HTTP/Response/Response.swift",
-      "line": 157,
+      "line": 169,
       "symbol": "Response.statusLineDescription",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"

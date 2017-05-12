@@ -110,14 +110,26 @@ extension Response {
     public convenience init(
         status: Status,
         headers: Headers = [:],
-        content representable: ContentRepresentable
+        content: Content
     ) {
         self.init(
             status: status,
             headers: headers
         )
         
-        self.content = representable.content
+        self.content = content
+    }
+    
+    public convenience init(
+        status: Status,
+        headers: Headers = [:],
+        content representable: ContentRepresentable
+    ) throws {
+        try self.init(
+            status: status,
+            headers: headers,
+            content: representable.content()
+        )
     }
 }
 

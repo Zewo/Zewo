@@ -12,13 +12,13 @@ public protocol ContentInitializable {
 }
 
 public protocol ContentRepresentable {
-    var content: Content { get }
+    func content() throws -> Content
 }
 
 public protocol ContentConvertible : ContentInitializable, ContentRepresentable {}
 
 extension Int : ContentConvertible {
-    public var content: Content {
+    public func content() throws -> Content {
         return .int(self)
     }
 
@@ -32,7 +32,7 @@ extension Int : ContentConvertible {
 }
 
 extension Bool : ContentConvertible {
-    public var content: Content {
+    public func content() throws -> Content {
         return .bool(self)
     }
 
@@ -46,7 +46,7 @@ extension Bool : ContentConvertible {
 }
 
 extension String : ContentConvertible {
-    public var content: Content {
+    public func content() throws -> Content {
         return .string(self)
     }
 
@@ -60,7 +60,7 @@ extension String : ContentConvertible {
 }
 
 extension Double : ContentConvertible {
-    public var content: Content {
+    public func content() throws -> Content {
         return .double(self)
     }
 
@@ -74,7 +74,7 @@ extension Double : ContentConvertible {
 }
 
 extension Content : ContentConvertible {
-    public var content: Content {
+    public func content() throws -> Content {
         return self
     }
 
@@ -90,7 +90,7 @@ public struct NoContent {
 extension NoContent : ContentConvertible {
     public init(content: Content) throws {}
     
-    public var content: Content {
+    public func content() throws -> Content {
         return .array([])
     }
 }
@@ -107,31 +107,31 @@ public enum Content {
 }
 
 extension Content {
-    public init<T: ContentRepresentable>(_ value: T?) {
-        self = value?.content ?? .null
+    public init<T: ContentRepresentable>(_ value: T?) throws {
+        self = try value?.content() ?? .null
     }
     
-    public init<T: ContentRepresentable>(_ values: [T]?) {
+    public init<T: ContentRepresentable>(_ values: [T]?) throws {
         if let values = values {
-            self = .array(values.map({$0.content}))
+            self = try .array(values.map({ try $0.content() }))
         } else {
             self = .null
         }
     }
     
-    public init<T: ContentRepresentable>(_ values: [T?]?) {
+    public init<T: ContentRepresentable>(_ values: [T?]?) throws {
         if let values = values {
-            self = .array(values.map({$0?.content ?? .null}))
+            self = try .array(values.map({ try $0?.content() ?? .null}))
         } else {
             self = .null
         }
     }
     
-    public init<T: ContentRepresentable>(_ values: [String: T]?) {
+    public init<T: ContentRepresentable>(_ values: [String: T]?) throws {
         if let values = values {
             var dictionary: [String: Content] = [:]
             
-            for (key, value) in values.map({($0.key, $0.value.content)}) {
+            for (key, value) in try values.map({($0.key, try $0.value.content() )}) {
                 dictionary[key] = value
             }
             
@@ -141,11 +141,11 @@ extension Content {
         }
     }
     
-    public init<T: ContentRepresentable>(_ values: [String: T?]?) {
+    public init<T: ContentRepresentable>(_ values: [String: T?]?) throws {
         if let values = values {
             var dictionary: [String: Content] = [:]
             
-            for (key, value) in values.map({($0.key, $0.value?.content ?? .null)}) {
+            for (key, value) in try values.map({($0.key, try $0.value?.content() ?? .null)}) {
                 dictionary[key] = value
             }
             
