@@ -16,11 +16,7 @@ extension RouterError : ResponseRepresentable {
     }
 }
 
-public protocol Router {
-    func respond(to request: Request) -> Response
-}
-
-open class BasicRouter : Router {
+open class BasicRouter {
     fileprivate struct Path {
         private var path: String.CharacterView
         

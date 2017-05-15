@@ -39,7 +39,7 @@ public final class Server {
         parseTimeout: Duration = 5.minutes,
         serializeTimeout: Duration = 5.minutes,
         logAppenders: [LogAppender] = [defaultAppender],
-        router: Router
+        router: BasicRouter
     ) {
         self.init(
             bufferSize: bufferSize,
