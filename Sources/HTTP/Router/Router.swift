@@ -16,19 +16,37 @@ extension RouterError : ResponseRepresentable {
     }
 }
 
-public final class Router {
-    public typealias Preprocess = (Request) throws -> Void
-    public typealias Postprocess = (Response, Request) throws -> Void
-    public typealias Recover = (Error) throws -> Response
+open class Router {
+    public struct Path {
+        private var path: String.CharacterView
+        
+        fileprivate init(_ path: String) {
+            self.path = path.characters.dropFirst()
+        }
+        
+        public mutating func popPathComponent() -> String? {
+            if path.isEmpty {
+                return nil
+            }
+            
+            var pathComponent = String.CharacterView()
+            
+            while let character = path.popFirst() {
+                guard character != "/" else {
+                    break
+                }
+                
+                pathComponent.append(character)
+            }
+            
+            return String(pathComponent)
+        }
+    }
+    
     public typealias Respond = (Request) throws -> Response
     
     fileprivate var subrouters: [String: Router] = [:]
-    fileprivate var pathParameterSubrouter: (String, Router)?
-    
-    fileprivate var preprocess: Preprocess = { _ in }
     fileprivate var responders: [Method: Respond] = [:]
-    fileprivate var postprocess: Postprocess = { _ in }
-    fileprivate var recover: Recover = { error in throw error }
     
     init() {}
     
@@ -43,30 +61,10 @@ public final class Router {
         return subrouters[path] = route
     }
     
-    public func add(parameter: String, body: (Router) -> Void) {
-        let route = Router()
-        body(route)
-        pathParameterSubrouter = (parameter, route)
-    }
-    
-    public func preprocess(body: @escaping Preprocess) {
-        preprocess = body
-    }
-    
     public func respond(method: Method, body: @escaping Respond) {
         responders[method] = body
     }
     
-    public func postprocess(body: @escaping Postprocess) {
-        postprocess = body
-    }
-    
-    public func recover(body: @escaping Recover) {
-        recover = body
-    }
-}
-
-extension Router {
     public func get(body: @escaping Respond) {
         respond(method: .get, body: body)
     }
@@ -86,34 +84,7 @@ extension Router {
     public func delete(body: @escaping Respond) {
         respond(method: .delete, body: body)
     }
-}
 
-extension Router {
-    private struct Path {
-        private var path: String.CharacterView
-        
-        fileprivate init(_ path: String) {
-            self.path = path.characters.dropFirst()
-        }
-        
-        fileprivate mutating func popPathComponent() -> String? {
-            if path.isEmpty {
-                return nil
-            }
-            
-            var pathComponent = String.CharacterView()
-            
-            while let character = path.popFirst() {
-                guard character != "/" else {
-                    break
-                }
-                
-                pathComponent.append(character)
-            }
-            
-            return String(pathComponent)
-        }
-    }
     
     public func respond(to request: Request) -> Response {
         do {
@@ -124,22 +95,12 @@ extension Router {
         }
     }
     
-    @inline(__always)
-    private func respond(to request: Request, path: inout Path) throws -> Response {
-        do {
-            try preprocess(request)
-            let response = try process(request, path: &path)
-            try postprocess(response, request)
-            return response
-        } catch {
-            return try recover(error)
-        }
-    }
-    
-    @inline(__always)
-    private func process(_ request: Request, path: inout Path) throws -> Response {
+    public func respond(to request: Request, path: inout Path) throws -> Response {
         if let pathComponent = path.popPathComponent() {
-            let subrouter = try getSubrouter(for: pathComponent, request: request)
+            guard let subrouter = subrouters[pathComponent] else {
+                throw RouterError.notFound
+            }
+            
             return try subrouter.respond(to: request, path: &path)
         }
         
@@ -148,18 +109,6 @@ extension Router {
         }
         
         throw RouterError.methodNotAllowed
-    }
-    
-    @inline(__always)
-    private func getSubrouter(for pathComponent: String, request: Request) throws -> Router {
-        if let subrouter = subrouters[pathComponent] {
-            return subrouter
-        } else if let (pathParameterKey, subrouter) = pathParameterSubrouter {
-            request.uri.parameters.set(pathComponent, for: pathParameterKey)
-            return subrouter
-        }
-        
-        throw RouterError.notFound
     }
     
     @inline(__always)
