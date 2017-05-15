@@ -1,6 +1,6 @@
 import HTTP
 
-let router = Router { root in
+let router = BasicRouter { root in
     root.get { request in
         return Response(status: .ok)
     }

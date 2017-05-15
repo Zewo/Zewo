@@ -16,7 +16,11 @@ extension RouterError : ResponseRepresentable {
     }
 }
 
-open class Router {
+public protocol Router {
+    func respond(to request: Request) -> Response
+}
+
+open class BasicRouter : Router {
     public struct Path {
         private var path: String.CharacterView
         
@@ -45,18 +49,18 @@ open class Router {
     
     public typealias Respond = (Request) throws -> Response
     
-    fileprivate var subrouters: [String: Router] = [:]
+    fileprivate var subrouters: [String: BasicRouter] = [:]
     fileprivate var responders: [Method: Respond] = [:]
     
     init() {}
     
-    public convenience init(_ body: (Router) -> Void) {
+    public convenience init(_ body: (BasicRouter) -> Void) {
         self.init()
         body(self)
     }
     
-    public func add(path: String, body: (Router) -> Void) {
-        let route = Router()
+    public func add(path: String, body: (BasicRouter) -> Void) {
+        let route = BasicRouter()
         body(route)
         return subrouters[path] = route
     }
@@ -121,3 +125,5 @@ open class Router {
         }
     }
 }
+
+
