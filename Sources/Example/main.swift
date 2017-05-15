@@ -2,9 +2,7 @@ import HTTP
 
 let router = BasicRouter { root in
     root.get { request in
-        return Response(status: .ok, headers: ["Transfer-Encoding": "chunked"]) { stream in
-            try stream.write("hello world", deadline: 1.second.fromNow())
-        }
+        return Response(status: .ok, body: "hello world", timeout: 5.seconds)
     }
 }
 

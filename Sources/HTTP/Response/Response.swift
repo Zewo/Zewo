@@ -73,6 +73,24 @@ extension Response {
     public convenience init(
         status: Status,
         headers: Headers = [:],
+        body buffer: BufferRepresentable,
+        timeout: Duration
+    ) {
+        self.init(
+            status: status,
+            headers: headers,
+            version: .oneDotOne,
+            body: .writable { stream in
+                try stream.write(buffer, deadline: timeout.fromNow())
+            }
+        )
+        
+        contentLength = buffer.bufferSize
+    }
+    
+    public convenience init(
+        status: Status,
+        headers: Headers = [:],
         content: Content
     ) {
         self.init(
