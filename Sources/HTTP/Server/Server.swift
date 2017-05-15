@@ -34,6 +34,23 @@ public final class Server {
         self.respond = respond
     }
     
+    /// Creates a new HTTP server
+    public convenience init(
+        bufferSize: Int = 4096,
+        parseTimeout: Duration = 5.minutes,
+        serializeTimeout: Duration = 5.minutes,
+        logAppenders: [LogAppender] = [defaultAppender],
+        router: Router
+    ) {
+        self.init(
+            bufferSize: bufferSize,
+            parseTimeout: parseTimeout,
+            serializeTimeout: serializeTimeout,
+            logAppenders: logAppenders,
+            respond: router.respond
+        )
+    }
+    
     deinit {
         try? group.close()
     }
@@ -154,7 +171,6 @@ public final class Server {
             
             if !request.isKeepAlive {
                 try stream.done(deadline: self.serializeTimeout.fromNow())
-                return
             }
         }
     }

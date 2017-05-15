@@ -8,6 +8,6 @@ struct Root : Route {
 
 let root = Root()
 let router = Router(route: root)
-let server = Server(respond: router.respond)
+let server = Server(router: router)
 
 try server.start()
