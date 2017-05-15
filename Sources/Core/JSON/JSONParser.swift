@@ -6,35 +6,31 @@
 
 import CYAJL
 
-public struct JSONMapParserOptions : OptionSet {
-    public let rawValue: Int
-    public static let allowComments = JSONMapParserOptions(rawValue: 1 << 0)
-    public static let dontValidateStrings = JSONMapParserOptions(rawValue: 1 << 1)
-    public static let allowTrailingGarbage = JSONMapParserOptions(rawValue: 1 << 2)
-    public static let allowMultipleValues = JSONMapParserOptions(rawValue: 1 << 3)
-    public static let allowPartialValues = JSONMapParserOptions(rawValue: 1 << 4)
-    
-    public init(rawValue: Int) {
-        self.rawValue = rawValue
-    }
-}
-
-public struct JSONMapParserError : Error, CustomStringConvertible {
-    let reason: String
-    
-    public var description: String {
-        return reason
-    }
+public struct JSONParserError : Error, CustomStringConvertible {
+    public let description: String
 }
 
 public final class JSONParser : ContentParser {
-    public static func parse(_ bytes: UnsafeRawBufferPointer, options: JSONMapParserOptions = []) throws -> Content {
+    public struct Options : OptionSet {
+        public let rawValue: Int
+        public static let allowComments = Options(rawValue: 1 << 0)
+        public static let dontValidateStrings = Options(rawValue: 1 << 1)
+        public static let allowTrailingGarbage = Options(rawValue: 1 << 2)
+        public static let allowMultipleValues = Options(rawValue: 1 << 3)
+        public static let allowPartialValues = Options(rawValue: 1 << 4)
+        
+        public init(rawValue: Int) {
+            self.rawValue = rawValue
+        }
+    }
+    
+    public static func parse(_ bytes: UnsafeRawBufferPointer, options: Options = []) throws -> Content {
         let parser = JSONParser(options: options)
         try parser.parse(bytes)
         return try parser.finish()
     }
     
-    public let options: JSONMapParserOptions
+    public let options: Options
     
     fileprivate var state: JSONMapParserState = JSONMapParserState(dictionary: true)
     fileprivate var stack: [JSONMapParserState] = []
@@ -50,7 +46,7 @@ public final class JSONParser : ContentParser {
         self.init(options: [])
     }
     
-    public init(options: JSONMapParserOptions = []) {
+    public init(options: Options = []) {
         self.options = options
         self.state.dictionaryKey = "root"
         self.stack.reserveCapacity(12)
@@ -80,7 +76,7 @@ public final class JSONParser : ContentParser {
         
         guard result == nil else {
             guard final else {
-                throw JSONMapParserError(reason: "Unexpected bytes. Parser already completed.")
+                throw JSONParserError(description: "Unexpected bytes. Parser already completed.")
             }
             
             return result
@@ -110,12 +106,11 @@ public final class JSONParser : ContentParser {
                 yajl_free_error(handle, reasonBytes)
             }
             
-            guard let cString = reasonBytes else {
-                throw JSONMapParserError(reason: "Unkown reason.")
+            guard let reason = reasonBytes else {
+                throw JSONParserError(description: "Unkown error while parsing JSON.")
             }
             
-            let reason = String(cString: cString)
-            throw JSONMapParserError(reason: reason)
+            throw JSONParserError(description: String(cString: reason))
         }
         
         if stack.count == 0 || final {
@@ -128,7 +123,7 @@ public final class JSONParser : ContentParser {
         }
         
         guard !final || result != nil else {
-            throw JSONMapParserError(reason: "Unexpected end of bytes.")
+            throw JSONParserError(description: "Unexpected end of bytes.")
         }
         
         return result
@@ -138,7 +133,7 @@ public final class JSONParser : ContentParser {
         let empty = UnsafeRawBufferPointer(start: nil, count: 0)
         
         guard let result = try self.parse(empty) else {
-            throw JSONMapParserError(reason: "Unexpected end of bytes.")
+            throw JSONParserError(description: "Unexpected end of bytes.")
         }
         
         return result

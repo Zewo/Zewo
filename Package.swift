@@ -6,9 +6,8 @@ let package = Package(
         Target(name: "CHTTPParser"),
         Target(name: "CYAJL"),
         
-        Target(name: "POSIX"),
         Target(name: "Core", dependencies: ["CYAJL"]),
-        Target(name: "IO", dependencies: ["Core", "POSIX"]),
+        Target(name: "IO", dependencies: ["Core"]),
         Target(name: "HTTP", dependencies: ["CHTTPParser", "IO"]),
         Target(name: "Example", dependencies: ["HTTP"]),
     ],

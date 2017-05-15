@@ -1,0 +1,3139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>SystemError Enum Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Enum/SystemError" class="dashAnchor"></a>
+    <a title="SystemError Enum Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">Core Docs</a> (45% documented)</p>
+        <p class="header-right"><a href="https://github.com/Zewo/Zewo"><img src="../img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">Core Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        SystemError Enum Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Stream.html">Stream</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/ReadableStream.html">ReadableStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/WritableStream.html">WritableStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Stream.html#/s:P4Core12DuplexStream">DuplexStream</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Media Type.html">Media Type</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/MediaType.html">MediaType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Content.html">Content</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/Content.html">Content</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/NoContent.html">NoContent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/ContentInitializable.html">ContentInitializable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/ContentRepresentable.html">ContentRepresentable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Content.html#/s:P4Core18ContentConvertible">ContentConvertible</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/ContentParser.html">ContentParser</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/ContentSerializer.html">ContentSerializer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ContentType.html">ContentType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../JSON.html">JSON</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/JSONParser.html">JSONParser</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/JSONParser/Options.html">– Options</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/JSONParserError.html">JSONParserError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/JSONSerializer.html">JSONSerializer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/JSONSerializerError.html">JSONSerializerError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../URI.html">URI</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/URI.html">URI</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/URI.html#/s:VV4Core3URI10Parameters">– Parameters</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/URI/UserInfo.html">– UserInfo</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Logger.html">Logger</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/Logger.html">Logger</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Logger/Level.html">– Level</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Logger/Event.html">– Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Logger/LocationInfo.html">– LocationInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/LogAppender.html">LogAppender</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StandardOutputAppender.html">StandardOutputAppender</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Other Enums.html">Other Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/ContentError.html">ContentError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/ContentParserError.html">ContentParserError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/IndexPathComponentValue.html">IndexPathComponentValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/ParametersError.html">ParametersError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/SystemError.html">SystemError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Other Extensions.html">Other Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/Bool.html">Bool</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Data.html">Data</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Double.html">Double</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Int.html">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/String.html">String</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/UUID.html">UUID</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Other Protocols.html">Other Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/IndexPathComponent.html">IndexPathComponent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/ParametersInitializable.html">ParametersInitializable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/UnsafeRawBufferPointerRepresentable.html">UnsafeRawBufferPointerRepresentable</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>SystemError</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">SystemError</span> <span class="p">:</span> <span class="kt">Error</span></code></pre>
+
+                </div>
+              </div>
+            <p>POSIX error representation.</p>
+<h2 id='example' class='heading'>Example:</h2>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">listen</span><span class="p">(</span><span class="nv">socket</span><span class="p">:</span> <span class="kt">Int32</span><span class="p">,</span> <span class="nv">backlog</span><span class="p">:</span> <span class="kt">Int32</span><span class="p">)</span> <span class="k">throws</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="nf">listen</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="n">backlog</span><span class="p">)</span>
+
+    <span class="k">guard</span> <span class="n">result</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="p">{</span>
+       <span class="k">throw</span> <span class="kt">SystemError</span><span class="o">.</span><span class="n">lastOperationError</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">do</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="nf">listen</span><span class="p">(</span><span class="nv">socket</span><span class="p">:</span> <span class="n">socket</span><span class="p">)</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="kt">SystemError</span><span class="o">.</span><span class="n">addressAlreadyInUse</span> <span class="p">{</span>
+    <span class="nf">print</span><span class="p">(</span><span class="s">"Another socket is already listening on the same port."</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZvO4Core11SystemError18lastOperationErrorS0_"></a>
+                    <a name="//apple_ref/swift/Variable/lastOperationError" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZvO4Core11SystemError18lastOperationErrorS0_">lastOperationError</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Error from the last executed operation, if any.
+The error is created from the value present in <code>errno</code>.</p>
+<div class="aside aside-warning">
+    <p class="aside-title">Warning</p>
+    <code>lastOperationError</code> is significant only when the return
+value of the last operation indicated an error (i.e., -1 from
+most system calls; -1 or <code>nil</code> from most library functions).
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">lastOperationError</span><span class="p">:</span> <span class="kt">SystemError</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemErrorcFT11errorNumberVs5Int32_S0_"></a>
+                    <a name="//apple_ref/swift/Method/init(errorNumber:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemErrorcFT11errorNumberVs5Int32_S0_">init(errorNumber:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Initializes <code>SystemError</code> with the given POSIX error number.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">errorNumber</span><span class="p">:</span> <span class="kt">Int32</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>errorNumber</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>POSIX error number representing the error.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vO4Core11SystemError11errorNumberVs5Int32"></a>
+                    <a name="//apple_ref/swift/Property/errorNumber" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vO4Core11SystemError11errorNumberVs5Int32">errorNumber</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>POSIX error number representing the error.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">errorNumber</span><span class="p">:</span> <span class="kt">Int32</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError7successFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/success" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError7successFMS0_S0_">success</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>No error.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">success</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError21operationNotPermittedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/operationNotPermitted" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError21operationNotPermittedFMS0_S0_">operationNotPermitted</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Operation not permitted. Equivalent of <code>EPERM</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">operationNotPermitted</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError21noSuchFileOrDirectoryFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/noSuchFileOrDirectory" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError21noSuchFileOrDirectoryFMS0_S0_">noSuchFileOrDirectory</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>No such file or directory. Equivalent of <code>ENOENT</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">noSuchFileOrDirectory</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError13noSuchProcessFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/noSuchProcess" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError13noSuchProcessFMS0_S0_">noSuchProcess</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>No such process. Equivalent of <code>ESRCH</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">noSuchProcess</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError21interruptedSystemCallFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/interruptedSystemCall" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError21interruptedSystemCallFMS0_S0_">interruptedSystemCall</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Interrupted system call. Equivalent of <code>EINTR</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">interruptedSystemCall</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError16inputOutputErrorFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/inputOutputError" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError16inputOutputErrorFMS0_S0_">inputOutputError</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Input-output error. Equivalent of <code>EIO</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">inputOutputError</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError19deviceNotConfiguredFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/deviceNotConfigured" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError19deviceNotConfiguredFMS0_S0_">deviceNotConfigured</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Device not configured. Equivalent of <code>ENXIO</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">deviceNotConfigured</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError19argumentListTooLongFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/argumentListTooLong" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError19argumentListTooLongFMS0_S0_">argumentListTooLong</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Argument list too long. Equivalent of <code>E2BIG</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">argumentListTooLong</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError21executableFormatErrorFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/executableFormatError" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError21executableFormatErrorFMS0_S0_">executableFormatError</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Executable format error. Equivalent of <code>ENOEXEC</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">executableFormatError</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError17badFileDescriptorFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/badFileDescriptor" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError17badFileDescriptorFMS0_S0_">badFileDescriptor</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Bad file descriptor. Equivalent of <code>EBADF</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">badFileDescriptor</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError16noChildProcessesFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/noChildProcesses" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError16noChildProcessesFMS0_S0_">noChildProcesses</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>No child process. Equivalent of <code>ECHILD</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">noChildProcesses</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError23resourceDeadlockAvoidedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/resourceDeadlockAvoided" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError23resourceDeadlockAvoidedFMS0_S0_">resourceDeadlockAvoided</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Resource deadlock avoided. Equivalent of <code>EDEADLK</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">resourceDeadlockAvoided</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError20cannotAllocateMemoryFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/cannotAllocateMemory" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError20cannotAllocateMemoryFMS0_S0_">cannotAllocateMemory</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Cannot allocate memory. Equivalent of <code>ENOMEM</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">cannotAllocateMemory</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError16permissionDeniedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/permissionDenied" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError16permissionDeniedFMS0_S0_">permissionDenied</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Permission denied. Equivalent of <code>EACCES</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">permissionDenied</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError10badAddressFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/badAddress" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError10badAddressFMS0_S0_">badAddress</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Bad address. Equivalent of <code>EFAULT</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">badAddress</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError19blockDeviceRequiredFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/blockDeviceRequired" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError19blockDeviceRequiredFMS0_S0_">blockDeviceRequired</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Block device required. Equivalent of <code>ENOTBLK</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">blockDeviceRequired</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError20deviceOrResourceBusyFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/deviceOrResourceBusy" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError20deviceOrResourceBusyFMS0_S0_">deviceOrResourceBusy</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Device or resource busy. Equivalent of <code>EBUSY</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">deviceOrResourceBusy</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError10fileExistsFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/fileExists" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError10fileExistsFMS0_S0_">fileExists</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>File exists. Equivalent of <code>EEXIST</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">fileExists</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError15crossDeviceLinkFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/crossDeviceLink" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError15crossDeviceLinkFMS0_S0_">crossDeviceLink</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Cross device link. Equivalent of <code>EXDEV</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">crossDeviceLink</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError29operationNotSupportedByDeviceFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/operationNotSupportedByDevice" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError29operationNotSupportedByDeviceFMS0_S0_">operationNotSupportedByDevice</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Operation not supported by device. Equivalent of <code>ENODEV</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">operationNotSupportedByDevice</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError13notADirectoryFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/notADirectory" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError13notADirectoryFMS0_S0_">notADirectory</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Not a directory. Equivalent of <code>ENOTDIR</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">notADirectory</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError12isADirectoryFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/isADirectory" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError12isADirectoryFMS0_S0_">isADirectory</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Is a directory. Equivalent of <code>EISDIR</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">isADirectory</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError15invalidArgumentFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/invalidArgument" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError15invalidArgumentFMS0_S0_">invalidArgument</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Invalid argument. Equivalent of <code>EINVAL</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">invalidArgument</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError24tooManyOpenFilesInSystemFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/tooManyOpenFilesInSystem" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError24tooManyOpenFilesInSystemFMS0_S0_">tooManyOpenFilesInSystem</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Too many open files in system. Equivalent of <code>ENFILE</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">tooManyOpenFilesInSystem</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError16tooManyOpenFilesFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/tooManyOpenFiles" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError16tooManyOpenFilesFMS0_S0_">tooManyOpenFiles</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Too many open files. Equivalent of <code>EMFILE</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">tooManyOpenFiles</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError40inappropriateInputOutputControlForDeviceFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/inappropriateInputOutputControlForDevice" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError40inappropriateInputOutputControlForDeviceFMS0_S0_">inappropriateInputOutputControlForDevice</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Inappropriate Input-output control for device. Equivalent of <code>ENOTTY</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">inappropriateInputOutputControlForDevice</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError12textFileBusyFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/textFileBusy" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError12textFileBusyFMS0_S0_">textFileBusy</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Text file busy. Equivalent of <code>ETXTBSY</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">textFileBusy</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError12fileTooLargeFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/fileTooLarge" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError12fileTooLargeFMS0_S0_">fileTooLarge</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>File too large. Equivalent of <code>EFBIG</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">fileTooLarge</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError19noSpaceLeftOnDeviceFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/noSpaceLeftOnDevice" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError19noSpaceLeftOnDeviceFMS0_S0_">noSpaceLeftOnDevice</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>No space left on device. Equivalent of <code>ENOSPC</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">noSpaceLeftOnDevice</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError11illegalSeekFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/illegalSeek" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError11illegalSeekFMS0_S0_">illegalSeek</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Illegal seek. Equivalent of <code>ESPIPE</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">illegalSeek</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError18readOnlyFileSystemFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/readOnlyFileSystem" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError18readOnlyFileSystemFMS0_S0_">readOnlyFileSystem</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Read-only file system. Equivalent of <code>EROFS</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">readOnlyFileSystem</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError12tooManyLinksFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/tooManyLinks" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError12tooManyLinksFMS0_S0_">tooManyLinks</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Too many links. Equivalent of <code>EMLINK</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">tooManyLinks</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError10brokenPipeFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/brokenPipe" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError10brokenPipeFMS0_S0_">brokenPipe</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Broken pipe. Equivalent of <code>EPIPE</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">brokenPipe</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError28numericalArgumentOutOfDomainFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/numericalArgumentOutOfDomain" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError28numericalArgumentOutOfDomainFMS0_S0_">numericalArgumentOutOfDomain</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Numerical argument out of domain. Equivalent of <code>EDOM</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">numericalArgumentOutOfDomain</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError14resultTooLargeFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/resultTooLarge" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError14resultTooLargeFMS0_S0_">resultTooLarge</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Result too large. Equivalent of <code>ERANGE</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">resultTooLarge</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError30resourceTemporarilyUnavailableFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/resourceTemporarilyUnavailable" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError30resourceTemporarilyUnavailableFMS0_S0_">resourceTemporarilyUnavailable</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Resource temporarily unavailable. Equivalent of <code>EAGAIN</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">resourceTemporarilyUnavailable</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError19operationWouldBlockFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/operationWouldBlock" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError19operationWouldBlockFMS0_S0_">operationWouldBlock</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Operation would block. Equivalent of <code>EWOULDBLOCK</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">operationWouldBlock</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError22operationNowInProgressFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/operationNowInProgress" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError22operationNowInProgressFMS0_S0_">operationNowInProgress</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Operation now in progress. Equivalent of <code>EINPROGRESS</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">operationNowInProgress</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError26operationAlreadyInProgressFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/operationAlreadyInProgress" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError26operationAlreadyInProgressFMS0_S0_">operationAlreadyInProgress</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Operation already in progress. Equivalent of <code>EALREADY</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">operationAlreadyInProgress</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError26socketOperationOnNonSocketFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/socketOperationOnNonSocket" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError26socketOperationOnNonSocketFMS0_S0_">socketOperationOnNonSocket</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Socket operation on non socket. Equivalent of <code>ENOTSOCK</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">socketOperationOnNonSocket</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError26destinationAddressRequiredFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/destinationAddressRequired" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError26destinationAddressRequiredFMS0_S0_">destinationAddressRequired</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Destination address required. Equivalent of <code>EDESTADDRREQ</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">destinationAddressRequired</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError14messageTooLongFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/messageTooLong" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError14messageTooLongFMS0_S0_">messageTooLong</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Message too long. Equivalent of <code>EMSGSIZE</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">messageTooLong</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError26protocolWrongTypeForSocketFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/protocolWrongTypeForSocket" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError26protocolWrongTypeForSocketFMS0_S0_">protocolWrongTypeForSocket</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Protocol of wrong type for socket. Equivalent of <code>EPROTOTYPE</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">protocolWrongTypeForSocket</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError20protocolNotAvailableFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/protocolNotAvailable" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError20protocolNotAvailableFMS0_S0_">protocolNotAvailable</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Protocol not available. Equivalent of <code>ENOPROTOOPT</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">protocolNotAvailable</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError20protocolNotSupportedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/protocolNotSupported" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError20protocolNotSupportedFMS0_S0_">protocolNotSupported</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Protocol not supported. Equivalent of <code>EPROTONOSUPPORT</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">protocolNotSupported</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError22socketTypeNotSupportedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/socketTypeNotSupported" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError22socketTypeNotSupportedFMS0_S0_">socketTypeNotSupported</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Socket type not supported. Equivalent of <code>ESOCKTNOSUPPORT</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">socketTypeNotSupported</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError21operationNotSupportedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/operationNotSupported" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError21operationNotSupportedFMS0_S0_">operationNotSupported</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Operation not supported. Equivalent of <code>ENOTSUP</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">operationNotSupported</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError26protocolFamilyNotSupportedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/protocolFamilyNotSupported" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError26protocolFamilyNotSupportedFMS0_S0_">protocolFamilyNotSupported</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Protocol family not supported. Equivalent of <code>EPFNOSUPPORT</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">protocolFamilyNotSupported</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError41addressFamilyNotSupportedByProtocolFamilyFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/addressFamilyNotSupportedByProtocolFamily" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError41addressFamilyNotSupportedByProtocolFamilyFMS0_S0_">addressFamilyNotSupportedByProtocolFamily</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Address family not supported by protocol family. Equivalent of <code>EAFNOSUPPORT</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">addressFamilyNotSupportedByProtocolFamily</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError19addressAlreadyInUseFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/addressAlreadyInUse" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError19addressAlreadyInUseFMS0_S0_">addressAlreadyInUse</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Address already in use. Equivalent of <code>EADDRINUSE</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">addressAlreadyInUse</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError28cannotAssignRequestedAddressFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/cannotAssignRequestedAddress" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError28cannotAssignRequestedAddressFMS0_S0_">cannotAssignRequestedAddress</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Cannot assign requested address. Equivalent of <code>EADDRNOTAVAIL</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">cannotAssignRequestedAddress</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError13networkIsDownFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/networkIsDown" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError13networkIsDownFMS0_S0_">networkIsDown</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Network is down. Equivalent of <code>ENETDOWN</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">networkIsDown</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError20networkIsUnreachableFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/networkIsUnreachable" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError20networkIsUnreachableFMS0_S0_">networkIsUnreachable</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Network is unreachable. Equivalent of <code>ENETUNREACH</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">networkIsUnreachable</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError31networkDroppedConnectionOnResetFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/networkDroppedConnectionOnReset" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError31networkDroppedConnectionOnResetFMS0_S0_">networkDroppedConnectionOnReset</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Network dropped connection on reset. Equivalent of <code>ENETRESET</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">networkDroppedConnectionOnReset</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError29softwareCausedConnectionAbortFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/softwareCausedConnectionAbort" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError29softwareCausedConnectionAbortFMS0_S0_">softwareCausedConnectionAbort</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Software caused connection abort. Equivalent of <code>ECONNABORTED</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">softwareCausedConnectionAbort</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError21connectionResetByPeerFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/connectionResetByPeer" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError21connectionResetByPeerFMS0_S0_">connectionResetByPeer</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Connection reset by peer. Equivalent of <code>ECONNRESET</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">connectionResetByPeer</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError22noBufferSpaceAvailableFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/noBufferSpaceAvailable" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError22noBufferSpaceAvailableFMS0_S0_">noBufferSpaceAvailable</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>No buffer space available. Equivalent of <code>ENOBUFS</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">noBufferSpaceAvailable</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError24socketIsAlreadyConnectedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/socketIsAlreadyConnected" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError24socketIsAlreadyConnectedFMS0_S0_">socketIsAlreadyConnected</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Socket is already connected. Equivalent of <code>EISCONN</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">socketIsAlreadyConnected</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError20socketIsNotConnectedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/socketIsNotConnected" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError20socketIsNotConnectedFMS0_S0_">socketIsNotConnected</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Socket is not connected. Equivalent of <code>ENOTCONN</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">socketIsNotConnected</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError29cannotSendAfterSocketShutdownFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/cannotSendAfterSocketShutdown" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError29cannotSendAfterSocketShutdownFMS0_S0_">cannotSendAfterSocketShutdown</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Cannot send after socket shutdown. Equivalent of <code>ESHUTDOWN</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">cannotSendAfterSocketShutdown</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError17tooManyReferencesFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/tooManyReferences" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError17tooManyReferencesFMS0_S0_">tooManyReferences</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Too many references. Equivalent of <code>ETOOMANYREFS</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">tooManyReferences</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError17operationTimedOutFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/operationTimedOut" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError17operationTimedOutFMS0_S0_">operationTimedOut</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Operation timed out. Equivalent of <code>ETIMEDOUT</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">operationTimedOut</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError17connectionRefusedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/connectionRefused" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError17connectionRefusedFMS0_S0_">connectionRefused</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Connection refused. Equivalent of <code>ECONNREFUSED</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">connectionRefused</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError28tooManyLevelsOfSymbolicLinksFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/tooManyLevelsOfSymbolicLinks" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError28tooManyLevelsOfSymbolicLinksFMS0_S0_">tooManyLevelsOfSymbolicLinks</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Too many levels of symbolic links. Equivalent of <code>ELOOP</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">tooManyLevelsOfSymbolicLinks</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError15fileNameTooLongFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/fileNameTooLong" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError15fileNameTooLongFMS0_S0_">fileNameTooLong</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>File name too long. Equivalent of <code>ENAMETOOLONG</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">fileNameTooLong</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError10hostIsDownFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/hostIsDown" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError10hostIsDownFMS0_S0_">hostIsDown</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Host is down. Equivalent of <code>EHOSTDOWN</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">hostIsDown</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError13noRouteToHostFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/noRouteToHost" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError13noRouteToHostFMS0_S0_">noRouteToHost</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>No route to host. Equivalent of <code>EHOSTUNREACH</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">noRouteToHost</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError17directoryNotEmptyFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/directoryNotEmpty" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError17directoryNotEmptyFMS0_S0_">directoryNotEmpty</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Directory not empty. Equivalent of <code>ENOTEMPTY</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">directoryNotEmpty</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError12tooManyUsersFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/tooManyUsers" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError12tooManyUsersFMS0_S0_">tooManyUsers</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Too many users. Equivalent of <code>EUSERS</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">tooManyUsers</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError17diskQuotaExceededFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/diskQuotaExceeded" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError17diskQuotaExceededFMS0_S0_">diskQuotaExceeded</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Disk quota exceeded. Equivalent of <code>EDQUOT</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">diskQuotaExceeded</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError15staleFileHandleFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/staleFileHandle" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError15staleFileHandleFMS0_S0_">staleFileHandle</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Stale file handle. Equivalent of <code>ESTALE</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">staleFileHandle</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError14objectIsRemoteFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/objectIsRemote" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError14objectIsRemoteFMS0_S0_">objectIsRemote</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Object is remote. Equivalent of <code>EREMOTE</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">objectIsRemote</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError16noLocksAvailableFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/noLocksAvailable" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError16noLocksAvailableFMS0_S0_">noLocksAvailable</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>No locks available. Equivalent of <code>ENOLCK</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">noLocksAvailable</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError22functionNotImplementedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/functionNotImplemented" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError22functionNotImplementedFMS0_S0_">functionNotImplemented</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Function not implemented. Equivalent of <code>ENOSYS</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">functionNotImplemented</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError31valueTooLargeForDefinedDataTypeFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/valueTooLargeForDefinedDataType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError31valueTooLargeForDefinedDataTypeFMS0_S0_">valueTooLargeForDefinedDataType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Value too large for defined data type. Equivalent of <code>EOVERFLOW</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">valueTooLargeForDefinedDataType</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError17operationCanceledFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/operationCanceled" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError17operationCanceledFMS0_S0_">operationCanceled</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Operation canceled. Equivalent of <code>ECANCELED</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">operationCanceled</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError17identifierRemovedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/identifierRemoved" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError17identifierRemovedFMS0_S0_">identifierRemoved</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Identifier removed. Equivalent of <code>EIDRM</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">identifierRemoved</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError22noMessageOfDesiredTypeFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/noMessageOfDesiredType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError22noMessageOfDesiredTypeFMS0_S0_">noMessageOfDesiredType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>No message of desired type. Equivalent of <code>ENOMSG</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">noMessageOfDesiredType</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError19illegalByteSequenceFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/illegalByteSequence" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError19illegalByteSequenceFMS0_S0_">illegalByteSequence</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Illegal byte sequence. Equivalent of <code>EILSEQ</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">illegalByteSequence</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError10badMessageFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/badMessage" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError10badMessageFMS0_S0_">badMessage</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Bad message. Equivalent of <code>EBADMSG</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">badMessage</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError17multihopAttemptedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/multihopAttempted" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError17multihopAttemptedFMS0_S0_">multihopAttempted</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Multihop attempted. Equivalent of <code>EMULTIHOP</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">multihopAttempted</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError15noDataAvailableFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/noDataAvailable" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError15noDataAvailableFMS0_S0_">noDataAvailable</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>No data available. Equivalent of <code>ENODATA</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">noDataAvailable</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError18linkHasBeenSeveredFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/linkHasBeenSevered" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError18linkHasBeenSeveredFMS0_S0_">linkHasBeenSevered</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Link has been severed. Equivalent of <code>ENOLINK</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">linkHasBeenSevered</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError21outOfStreamsResourcesFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/outOfStreamsResources" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError21outOfStreamsResourcesFMS0_S0_">outOfStreamsResources</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Out of stream resources. Equivalent of <code>ENOSR</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">outOfStreamsResources</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError16deviceNotAStreamFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/deviceNotAStream" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError16deviceNotAStreamFMS0_S0_">deviceNotAStream</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Device not a stream. Equivalent of <code>ENOSTR</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">deviceNotAStream</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError13protocolErrorFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/protocolError" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError13protocolErrorFMS0_S0_">protocolError</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Protocol error. Equivalent of <code>EPROTO</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">protocolError</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError12timerExpiredFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/timerExpired" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError12timerExpiredFMS0_S0_">timerExpired</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Timer expired. Equivalent of <code>ETIME</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">timerExpired</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError19stateNotRecoverableFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/stateNotRecoverable" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError19stateNotRecoverableFMS0_S0_">stateNotRecoverable</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>State not recoverable. Equivalent of <code>ENOTRECOVERABLE</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">stateNotRecoverable</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError17previousOwnerDiedFMS0_S0_"></a>
+                    <a name="//apple_ref/swift/Element/previousOwnerDied" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError17previousOwnerDiedFMS0_S0_">previousOwnerDied</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Previous owner died. Equivalent of <code>EOWNERDEAD</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="n">previousOwnerDied</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FO4Core11SystemError5otherFMS0_FT11errorNumberVs5Int32_S0_"></a>
+                    <a name="//apple_ref/swift/Element/other" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FO4Core11SystemError5otherFMS0_FT11errorNumberVs5Int32_S0_">other</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Other error not listed above. Equivalent of <code><a href="../Enums/SystemError.html#/s:vO4Core11SystemError11errorNumberVs5Int32">errorNumber</a></code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">case</span> <span class="nf">other</span><span class="p">(</span><span class="nv">errorNumber</span><span class="p">:</span> <span class="kt">Int32</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2017 <a class="link" href="http://zewo.io" target="_blank" rel="external">Zewo</a>. All rights reserved. (Last updated: 2017-05-15)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.1</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

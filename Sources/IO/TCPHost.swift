@@ -1,7 +1,5 @@
-import Core
-import POSIX
 import Venice
-
+import Core
 import CLibdill
 
 // TODO: Create TCP errors

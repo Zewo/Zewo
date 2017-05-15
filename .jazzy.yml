@@ -1,3 +1,6 @@
+module: Core
+output: docs/Core
+
 clean: true
 author: Zewo
 author_url: http://zewo.io
@@ -6,3 +9,42 @@ swift_version: 3.1
 xcodebuild_arguments:
   - -scheme
   - Zewo
+
+custom_categories:
+  - name: Stream
+    children:
+    - ReadableStream
+    - WritableStream
+    - DuplexStream
+
+  - name: Media Type
+    children:
+    - MediaType
+
+  - name: Content
+    children:
+    - Content
+    - NoContent
+    - ContentInitializable
+    - ContentRepresentable
+    - ContentConvertible
+    - ContentParser
+    - ContentSerializer
+    - ContentType
+
+  - name: JSON
+    children:
+    - JSONParser
+    - JSONParserError
+    - JSONSerializer
+    - JSONSerializerError
+
+  - name: URI
+    children:
+    - URI
+  
+  - name: Logger
+    children:
+    - Logger
+    - LogAppender
+    - StandardOutputAppender

@@ -1,13 +1,5 @@
-#if os(Linux)
-    import Glibc
-#else
-    import Darwin.C
-#endif
-
-import Core
 import Venice
-import POSIX
-
+import Core
 import CLibdill
 
 public final class TCPStream : Handle, DuplexStream {

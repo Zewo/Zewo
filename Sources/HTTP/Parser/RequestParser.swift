@@ -2,7 +2,6 @@ import CHTTPParser
 import Core
 import Foundation
 import Venice
-import POSIX
 
 public typealias RequestParserError = http_errno
 
@@ -65,6 +64,14 @@ extension URI {
             return nil
         }
         
+        let scheme: String?
+        let userInfo: UserInfo?
+        let host: String?
+        let port: Int?
+        let path: String?
+        let query:  String?
+        let fragment: String?
+        
         if uri.field_set & 1 != 0 {
             scheme = URI.substring(buffer: buffer, start: uri.scheme_start, end: uri.scheme_end)
         } else {
@@ -102,11 +109,26 @@ extension URI {
         }
         
         if uri.field_set & 64 != 0 {
-            let userInfoString = URI.substring(buffer: buffer, start: uri.user_info_start, end: uri.user_info_end)
+            let userInfoString = URI.substring(
+                buffer: buffer,
+                start: uri.user_info_start,
+                end: uri.user_info_end
+            )
+            
             userInfo = URI.userInfo(userInfoString)
         } else {
             userInfo = nil
         }
+        
+        self.init(
+            scheme: scheme,
+            userInfo: userInfo,
+            host: host,
+            port: port,
+            path: path,
+            query: query,
+            fragment: fragment
+        )
     }
     
     @inline(__always)
@@ -141,7 +163,7 @@ public final class RequestParser {
     fileprivate enum State: Int {
         case ready = 1
         case messageBegin = 2
-        case url = 3
+        case uri = 3
         case headerField = 5
         case headerValue = 6
         case headersComplete = 7
@@ -150,7 +172,7 @@ public final class RequestParser {
     }
     
     fileprivate class Context {
-        var url: URI?
+        var uri: URI?
         var headers: Headers = [:]
         
         weak var bodyStream: RequestBodyStream?
@@ -291,14 +313,14 @@ public final class RequestParser {
             switch state {
             case .ready, .messageBegin, .body, .messageComplete:
                 break
-            case .url:
-                guard let url = bytes.withUnsafeBytes({ buffer in
+            case .uri:
+                guard let uri = bytes.withUnsafeBytes({ buffer in
                     return URI(buffer: buffer, isConnect: parser.method == HTTP_CONNECT.rawValue)
                 }) else {
                     return 1
                 }
                 
-                context.url = url
+                context.uri = uri
             case .headerField:
                 bytes.append(0)
                 
@@ -318,7 +340,7 @@ public final class RequestParser {
             case .headersComplete:
                 context.currentHeaderField = nil
                 
-                guard let url = context.url else {
+                guard let uri = context.uri else {
                     return 1
                 }
                 
@@ -326,7 +348,7 @@ public final class RequestParser {
                 
                 let request = Request(
                     method: Method(code: http_method(rawValue: parser.method)),
-                    url: url,
+                    uri: uri,
                     headers: context.headers,
                     version: Version(major: Int(parser.http_major), minor: Int(parser.http_minor)),
                     body: .readable(bodyStream)
@@ -371,7 +393,7 @@ private func http_parser_on_url(
     length: Int
 ) -> Int32 {
     let parser = Unmanaged<RequestParser>.fromOpaque(pointer!.pointee.data).takeUnretainedValue()
-    return parser.process(state: .url, data: UnsafeRawBufferPointer(start: data, count: length))
+    return parser.process(state: .uri, data: UnsafeRawBufferPointer(start: data, count: length))
 }
 
 private func http_parser_on_header_field(

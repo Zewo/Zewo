@@ -79,4 +79,4 @@ extension WritableStream {
     }
 }
 
-public typealias DuplexStream = ReadableStream & WritableStream
+public protocol DuplexStream : ReadableStream, WritableStream {}

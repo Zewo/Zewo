@@ -1,6 +1,5 @@
 import Core
 import Venice
-import POSIX
 
 public enum ResponseBodyStreamError : Error {
     case writeExceedsContentLength

@@ -2,97 +2,10 @@ import Foundation
 
 public enum ContentError : Error {
     case cannotInitialize(type: ContentInitializable.Type, from: Content)
-    case cannotGet(type: Any.Type, from: Content)
-    case outOfBounds(index: Int, count: Int)
-    case valueNotFound(key: String)
-}
-
-public protocol ContentInitializable {
-    init(content: Content) throws
-}
-
-public protocol ContentRepresentable {
-    func content() throws -> Content
-}
-
-public protocol ContentConvertible : ContentInitializable, ContentRepresentable {}
-
-extension Int : ContentConvertible {
-    public func content() throws -> Content {
-        return .int(self)
-    }
-
-    public init(content: Content) throws {
-        guard case .int(let value) = content else {
-            throw ContentError.cannotInitialize(type: type(of: self), from: content)
-        }
-
-        self = value
-    }
-}
-
-extension Bool : ContentConvertible {
-    public func content() throws -> Content {
-        return .bool(self)
-    }
-
-    public init(content: Content) throws {
-        guard case .bool(let value) = content else {
-            throw ContentError.cannotInitialize(type: type(of: self), from: content)
-        }
-
-        self = value
-    }
-}
-
-extension String : ContentConvertible {
-    public func content() throws -> Content {
-        return .string(self)
-    }
-
-    public init(content: Content) throws {
-        guard case .string(let value) = content else {
-            throw ContentError.cannotInitialize(type: type(of: self), from: content)
-        }
-
-        self = value
-    }
-}
-
-extension Double : ContentConvertible {
-    public func content() throws -> Content {
-        return .double(self)
-    }
-
-    public init(content: Content) throws {
-        guard case .double(let value) = content else {
-            throw ContentError.cannotInitialize(type: type(of: self), from: content)
-        }
-
-        self = value
-    }
-}
-
-extension Content : ContentConvertible {
-    public func content() throws -> Content {
-        return self
-    }
-
-    public init(content: Content) throws {
-        self = content
-    }
-}
-
-public struct NoContent {
-    public init() {}
-}
-
-extension NoContent : ContentConvertible {
-    public init(content: Content) throws {}
-    
-    public func content() throws -> Content {
-        return .array([])
-    }
+    case outOfBounds(indexPath: [IndexPathComponent], count: Int)
+    case valueNotFound(indexPath: [IndexPathComponent])
+    case valueNotArray(indexPath: [IndexPathComponent])
+    case valueNotDictionary(indexPath: [IndexPathComponent])
 }
 
 public enum Content {
@@ -107,10 +20,12 @@ public enum Content {
 }
 
 extension Content {
+    /// :nodoc:
     public init<T: ContentRepresentable>(_ value: T?) throws {
         self = try value?.content() ?? .null
     }
     
+    /// :nodoc:
     public init<T: ContentRepresentable>(_ values: [T]?) throws {
         if let values = values {
             self = try .array(values.map({ try $0.content() }))
@@ -119,6 +34,7 @@ extension Content {
         }
     }
     
+    /// :nodoc:
     public init<T: ContentRepresentable>(_ values: [T?]?) throws {
         if let values = values {
             self = try .array(values.map({ try $0?.content() ?? .null}))
@@ -127,6 +43,7 @@ extension Content {
         }
     }
     
+    /// :nodoc:
     public init<T: ContentRepresentable>(_ values: [String: T]?) throws {
         if let values = values {
             var dictionary: [String: Content] = [:]
@@ -141,6 +58,7 @@ extension Content {
         }
     }
     
+    /// :nodoc:
     public init<T: ContentRepresentable>(_ values: [String: T?]?) throws {
         if let values = values {
             var dictionary: [String: Content] = [:]
@@ -189,120 +107,111 @@ extension Content {
     }
     
     private func get(_ indexPath: [IndexPathComponent]) throws -> Content {
-        var value: Content = self
+        var value = self
+        var visited: [IndexPathComponent] = []
         
-        for element in indexPath {
-            switch element.indexPathComponent {
+        for component in indexPath {
+            visited.append(component)
+            
+            switch component.indexPathComponent {
             case let .index(index):
-                let array: [Content] = try get()
-                
-                if array.indices.contains(index) {
-                    value = array[index]
-                } else {
-                    throw ContentError.outOfBounds(index: index, count: array.count)
+                guard case let .array(array) = self else {
+                    throw ContentError.valueNotArray(indexPath: visited)
                 }
                 
+                guard array.indices.contains(index) else {
+                    throw ContentError.outOfBounds(indexPath: visited, count: array.count)
+                }
+                
+                value = array[index]
             case let .key(key):
-                let dictionary: [String: Content] = try get()
-                
-                if let newValue = dictionary[key] {
-                    value = newValue
-                } else {
-                    throw ContentError.valueNotFound(key: key)
+                guard case let .dictionary(dictionary) = self else {
+                    throw ContentError.valueNotDictionary(indexPath: visited)
                 }
+                
+                guard let newValue = dictionary[key] else {
+                    throw ContentError.valueNotFound(indexPath: visited)
+                }
+                
+                value = newValue
             }
         }
         
         return value
     }
-    
-    private func get<T>(_ indexPath: IndexPathComponent...) throws -> T {
-        if indexPath.isEmpty {
-            switch self {
-            case let .bool(value as T):
-                return value
-            case let .int(value as T):
-                return value
-            case let .double(value as T):
-                return value
-            case let .string(value as T):
-                return value
-            case let .data(value as T):
-                return value
-            case let .array(value as T):
-                return value
-            case let .dictionary(value as T):
-                return value
-            default:
-                throw ContentError.cannotGet(type: T.self, from: self)
-            }
-        }
-        
-        return try get(indexPath).get()
-    }
 }
 
-extension Content : Equatable {}
-
-public func == (lhs: Content, rhs: Content) -> Bool {
-    switch (lhs, rhs) {
-    case (.null, .null): return true
-    case let (.int(l), .int(r)) where l == r: return true
-    case let (.bool(l), .bool(r)) where l == r: return true
-    case let (.string(l), .string(r)) where l == r: return true
-    case let (.data(l), .data(r)) where l == r: return true
-    case let (.double(l), .double(r)) where l == r: return true
-    case let (.array(l), .array(r)) where l == r: return true
-    case let (.dictionary(l), .dictionary(r)) where l == r: return true
-    default: return false
+extension Content : Equatable {
+    /// :nodoc:
+    public static func == (lhs: Content, rhs: Content) -> Bool {
+        switch (lhs, rhs) {
+        case (.null, .null): return true
+        case let (.int(l), .int(r)) where l == r: return true
+        case let (.bool(l), .bool(r)) where l == r: return true
+        case let (.string(l), .string(r)) where l == r: return true
+        case let (.data(l), .data(r)) where l == r: return true
+        case let (.double(l), .double(r)) where l == r: return true
+        case let (.array(l), .array(r)) where l == r: return true
+        case let (.dictionary(l), .dictionary(r)) where l == r: return true
+        default: return false
+        }
     }
 }
 
 extension Content : ExpressibleByNilLiteral {
+    /// :nodoc:
     public init(nilLiteral value: Void) {
         self = .null
     }
 }
 
 extension Content : ExpressibleByBooleanLiteral {
+    /// :nodoc:
     public init(booleanLiteral value: BooleanLiteralType) {
         self = .bool(value)
     }
 }
 
 extension Content : ExpressibleByIntegerLiteral {
+    /// :nodoc:
     public init(integerLiteral value: IntegerLiteralType) {
         self = .int(value)
     }
 }
 
 extension Content : ExpressibleByFloatLiteral {
+    /// :nodoc:
     public init(floatLiteral value: FloatLiteralType) {
         self = .double(value)
     }
 }
 
 extension Content : ExpressibleByStringLiteral {
+    /// :nodoc:
     public init(unicodeScalarLiteral value: String) {
         self = .string(value)
     }
     
+    /// :nodoc:
     public init(extendedGraphemeClusterLiteral value: String) {
         self = .string(value)
     }
     
+    /// :nodoc:
     public init(stringLiteral value: StringLiteralType) {
         self = .string(value)
     }
 }
 
 extension Content : ExpressibleByArrayLiteral {
+    /// :nodoc:
     public init(arrayLiteral elements: Content...) {
         self = .array(elements)
     }
 }
 
 extension Content : ExpressibleByDictionaryLiteral {
+    /// :nodoc:
     public init(dictionaryLiteral elements: (String, Content)...) {
         var dictionary = [String: Content](minimumCapacity: elements.count)
         
@@ -315,6 +224,7 @@ extension Content : ExpressibleByDictionaryLiteral {
 }
 
 extension Content : CustomStringConvertible {
+    /// :nodoc:
     public var description: String {
         let escapeMapping: [UnicodeScalar: String.UnicodeScalarView] = [
             "\r": "\\r".unicodeScalars,

@@ -4,7 +4,7 @@ enum MediaTypeError : Error {
     case malformedMediaTypeString
 }
 
-public struct MediaType : CustomStringConvertible {
+public struct MediaType {
     public let type: String
     public let subtype: String
     public let parameters: [String: String]
@@ -13,16 +13,6 @@ public struct MediaType : CustomStringConvertible {
         self.type = type
         self.subtype = subtype
         self.parameters = parameters
-    }
-
-    public var description: String {
-        var string = "\(type)/\(subtype)"
-
-        if !parameters.isEmpty {
-            string += parameters.reduce(";") { $0 + " \($1.0)=\($1.1)" }
-        }
-
-        return string
     }
 
     public init(string: String) throws {
@@ -72,34 +62,115 @@ public struct MediaType : CustomStringConvertible {
 
         return false
     }
-}
-
-extension Collection where Self.Iterator.Element == MediaType {
-    public func matches(other mediaType: MediaType) -> Bool {
-        for type in self {
-            if type.matches(other: mediaType) {
+    
+    /// Returns `true` if the media type matches any of the media types
+    /// in the `mediaTypes` collection.
+    ///
+    /// - Parameter mediaTypes: Collection of media types.
+    /// - Returns: Boolean indicating if the media type matches any of the
+    /// media types in the collection.
+    public func matches<C : Collection>(
+        any mediaTypes: C
+    ) -> Bool where C.Iterator.Element == MediaType {
+        for mediaType in mediaTypes {
+            if matches(other: mediaType) {
                 return true
             }
         }
+    
         return false
+    }
+    
+    
+    /// Creates a `MediaType` from a file extension, if possible.
+    ///
+    /// - Parameter fileExtension: File extension (ie., "txt", "json", "html").
+    /// - Returns: Newly created `MediaType`.
+    public static func from(fileExtension: String) -> MediaType? {
+        guard let mediaType = fileExtensionMediaTypeMapping[fileExtension] else {
+            return nil
+        }
+        
+        return try? MediaType(string: mediaType)
+    }
+}
+
+extension MediaType : CustomStringConvertible {
+    /// :nodoc:
+    public var description: String {
+        var string = "\(type)/\(subtype)"
+        
+        if !parameters.isEmpty {
+            string += parameters.reduce(";") { $0 + " \($1.0)=\($1.1)" }
+        }
+        
+        return string
     }
 }
 
 extension MediaType : Hashable {
+    /// :nodoc:
     public var hashValue: Int {
         return type.hashValue ^ subtype.hashValue
     }
 }
 
 extension MediaType : Equatable {
+    /// :nodoc:
     public static func == (lhs: MediaType, rhs: MediaType) -> Bool {
         return lhs.hashValue == rhs.hashValue
     }
 }
 
 public extension MediaType {
-    static let json = MediaType(type: "application", subtype: "json", parameters: ["charset": "utf-8"])
+    /// Plain text media type.
     static let plainText = MediaType(type: "text", subtype: "plain", parameters: ["charset": "utf-8"])
+    /// HTML media type.
+    static let html = MediaType(type: "text", subtype: "html", parameters: ["charset": "utf-8"])
+    /// CSS media type.
+    static let css = MediaType(type: "text", subtype: "css", parameters: ["charset": "utf-8"])
+    /// URL encoded form media type.
+    static let urlEncodedForm = MediaType(type: "application", subtype: "x-www-form-urlencoded", parameters: ["charset": "utf-8"])
+    /// JSON media type.
+    static let json = MediaType(type: "application", subtype: "json", parameters: ["charset": "utf-8"])
+    /// XML media type.
+    static let xml = MediaType(type: "application", subtype: "xml", parameters: ["charset": "utf-8"])
+    /// DTD media type.
+    static let dtd = MediaType(type: "application", subtype: "xml-dtd", parameters: ["charset": "utf-8"])
+    /// PDF data.
+    static let pdf = MediaType(type: "application", subtype: "pdf")
+    /// Zip file.
+    static let zip = MediaType(type: "application", subtype: "zip")
+    /// tar file.
+    static let tar = MediaType(type: "application", subtype: "x-tar")
+    /// Gzip file.
+    static let gzip = MediaType(type: "application", subtype: "x-gzip")
+    /// Bzip2 file.
+    static let bzip2 = MediaType(type: "application", subtype: "x-bzip2")
+    /// Binary data.
+    static let binary = MediaType(type: "application", subtype: "octet-stream")
+    /// GIF image.
+    static let gif = MediaType(type: "image", subtype: "gif")
+    /// JPEG image.
+    static let jpeg = MediaType(type: "image", subtype: "jpeg")
+    /// PNG image.
+    static let png = MediaType(type: "image", subtype: "png")
+    /// SVG image.
+    static let svg = MediaType(type: "image", subtype: "svg+xml")
+    /// Basic audio.
+    static let audio = MediaType(type: "audio", subtype: "basic")
+    /// MIDI audio.
+    static let midi = MediaType(type: "audio", subtype: "x-midi")
+    /// MP3 audio.
+    static let mp3 = MediaType(type: "audio", subtype: "mpeg")
+    /// Wave audio.
+    static let wave = MediaType(type: "audio", subtype: "wav")
+    /// OGG audio.
+    static let ogg = MediaType(type: "audio", subtype: "vorbis")
+    /// AVI video.
+    static let avi = MediaType(type: "video", subtype: "avi")
+    /// MPEG video.
+    static let mpeg = MediaType(type: "video", subtype: "mpeg")
 }
 
 let fileExtensionMediaTypeMapping: [String: String] = [
@@ -633,11 +704,3 @@ let fileExtensionMediaTypeMapping: [String: String] = [
 	"sisx": "x-epoc/x-sisx-app",
 	"vrm": "x-world/x-vrml",
 ]
-
-public func mediaType(forFileExtension fileExtension: String) -> MediaType? {
-	guard let mediaType = fileExtensionMediaTypeMapping[fileExtension] else {
-		return nil
-	}
-    
-	return try? MediaType(string: mediaType)
-}

@@ -1,6 +1,5 @@
-import POSIX
 import Venice
-
+import Core
 import CLibdill
 
 public enum IPError: Error {

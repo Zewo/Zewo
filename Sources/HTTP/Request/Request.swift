@@ -5,7 +5,7 @@ public final class Request : Message {
     public typealias UpgradeConnection = (Response, DuplexStream) throws -> Void
     
     public var method: Method
-    public var url: URI
+    public var uri: URI
     public var version: Version
     public var headers: Headers
     public var body: Body
@@ -15,54 +15,30 @@ public final class Request : Message {
     
     public var upgradeConnection: UpgradeConnection?
     
-    lazy var parameters: Parameters = Parameters(url: self.url)
-    
     public init(
         method: Method,
-        url: URI,
+        uri: URI,
         headers: Headers = [:],
         version: Version = .oneDotOne,
         body: Body
     ) {
         self.method = method
-        self.url = url
+        self.uri = uri
         self.headers = headers
         self.version = version
         self.body = body
     }
 }
 
-extension Parameters {
-    public convenience init(url: URI) {
-        guard let query = url.query else {
-            self.init()
-            return
-        }
-
-        var parameters: [String: String] = [:]
-        let components = query.components(separatedBy: "&")
-        
-        for component in components {
-            let pair = component.components(separatedBy: "=")
-            
-            if pair.count == 2 {
-                parameters[pair[0]] = pair[1]
-            }
-        }
-
-        self.init(parameters: parameters)
-    }
-}
-
 extension Request {
     public convenience init(
         method: Method,
-        url: URI,
+        uri: URI,
         headers: Headers = [:]
     ) {
         self.init(
             method: method,
-            url: url,
+            uri: uri,
             headers: headers,
             version: .oneDotOne,
             body: .empty
@@ -73,13 +49,13 @@ extension Request {
     
     public convenience init(
         method: Method,
-        url: URI,
+        uri: URI,
         headers: Headers = [:],
         body stream: ReadableStream
     ) {
         self.init(
             method: method,
-            url: url,
+            uri: uri,
             headers: headers,
             version: .oneDotOne,
             body: .readable(stream)
@@ -143,7 +119,7 @@ extension Request {
 
 extension Request : CustomStringConvertible {
     public var requestLineDescription: String {
-        return method.description + " " + url.description + " " + version.description + "\n"
+        return method.description + " " + uri.description + " " + version.description + "\n"
     }
     
     public var description: String {
@@ -153,11 +129,7 @@ extension Request : CustomStringConvertible {
 
 extension Request {
     public func getParameters<P : ParametersInitializable>() throws -> P {
-        if let noParams = NoParameters() as? P {
-            return noParams
-        }
-        
-        return try P(parameters: parameters)
+        return try P(parameters: uri.parameters)
     }
     
     public func getContent<C : ContentInitializable>() throws -> C {
@@ -166,6 +138,7 @@ extension Request {
         }
         
         guard let content = content else {
+            // TODO: Create a proper error for this.
             throw ContentError.cannotInitialize(type: C.self, from: .null)
         }
         

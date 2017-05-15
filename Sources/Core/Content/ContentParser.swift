@@ -13,21 +13,11 @@ extension ContentParser {
     public func finish() throws -> Content {
         let empty = UnsafeRawBufferPointer(start: nil, count: 0)
         
-        guard let map = try self.parse(empty) else {
+        guard let content = try self.parse(empty) else {
             throw ContentParserError.invalidInput
         }
         
-        return map
-    }
-    
-    public static func parse(_ buffer: UnsafeRawBufferPointer) throws -> Content {
-        let parser = self.init()
-        
-        if let map = try parser.parse(buffer) {
-            return map
-        }
-        
-        return try parser.finish()
+        return content
     }
     
     public static func parse(
@@ -37,7 +27,10 @@ extension ContentParser {
     ) throws -> Content {
         let parser = self.init()
         let buffer = UnsafeMutableRawBufferPointer.allocate(count: bufferSize)
-        defer { buffer.deallocate() }
+        
+        defer {
+            buffer.deallocate()
+        }
         
         while true {
             let readBuffer = try stream.read(buffer, deadline: deadline)

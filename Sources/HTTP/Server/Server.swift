@@ -1,4 +1,3 @@
-import POSIX
 import Core
 import IO
 import Venice

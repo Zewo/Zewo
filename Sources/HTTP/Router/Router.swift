@@ -43,10 +43,10 @@ public final class Router {
         return subrouters[path] = route
     }
     
-    public func add(parameter: ParameterKey, body: (Router) -> Void) {
+    public func add(parameter: String, body: (Router) -> Void) {
         let route = Router()
         body(route)
-        pathParameterSubrouter = (parameter.key, route)
+        pathParameterSubrouter = (parameter, route)
     }
     
     public func preprocess(body: @escaping Preprocess) {
@@ -117,8 +117,7 @@ extension Router {
     
     public func respond(to request: Request) -> Response {
         do {
-            let urlPath = request.url.path
-            var path = Path(urlPath ?? "")
+            var path = Path(request.uri.path ?? "/")
             return try respond(to: request, path: &path)
         } catch {
             return recover(from: error)
@@ -156,7 +155,7 @@ extension Router {
         if let subrouter = subrouters[pathComponent] {
             return subrouter
         } else if let (pathParameterKey, subrouter) = pathParameterSubrouter {
-            request.parameters.set(pathComponent, for: pathParameterKey)
+            request.uri.parameters.set(pathComponent, for: pathParameterKey)
             return subrouter
         }
         
