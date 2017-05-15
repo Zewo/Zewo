@@ -21,14 +21,14 @@ public protocol Router {
 }
 
 open class BasicRouter : Router {
-    public struct Path {
+    fileprivate struct Path {
         private var path: String.CharacterView
         
         fileprivate init(_ path: String) {
             self.path = path.characters.dropFirst()
         }
         
-        public mutating func popPathComponent() -> String? {
+        fileprivate mutating func popPathComponent() -> String? {
             if path.isEmpty {
                 return nil
             }
@@ -88,7 +88,6 @@ open class BasicRouter : Router {
     public func delete(body: @escaping Respond) {
         respond(method: .delete, body: body)
     }
-
     
     public func respond(to request: Request) -> Response {
         do {
@@ -99,7 +98,8 @@ open class BasicRouter : Router {
         }
     }
     
-    public func respond(to request: Request, path: inout Path) throws -> Response {
+    @inline(__always)
+    private func respond(to request: Request, path: inout Path) throws -> Response {
         if let pathComponent = path.popPathComponent() {
             guard let subrouter = subrouters[pathComponent] else {
                 throw RouterError.notFound
