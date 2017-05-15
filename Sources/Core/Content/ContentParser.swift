@@ -40,7 +40,7 @@ extension ContentParser {
         defer { buffer.deallocate() }
         
         while true {
-            let readBuffer = try stream.read(into: buffer, deadline: deadline)
+            let readBuffer = try stream.read(buffer, deadline: deadline)
             
             if let result = try parser.parse(readBuffer) {
                 return result

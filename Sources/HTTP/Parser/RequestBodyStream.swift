@@ -18,10 +18,11 @@ final class RequestBodyStream : ReadableStream {
     }
     
     func open(deadline: Deadline) throws {}
-    func close() {}
+    func done(deadline: Deadline) throws {}
+    func close() throws {}
     
     func read(
-        into buffer: UnsafeMutableRawBufferPointer,
+        _ buffer: UnsafeMutableRawBufferPointer,
         deadline: Deadline
     ) throws -> UnsafeRawBufferPointer {
         guard let baseAddress = buffer.baseAddress else {

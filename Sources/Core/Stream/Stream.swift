@@ -54,20 +54,21 @@ extension Data : UnsafeRawBufferPointerRepresentable {
 
 public protocol ReadableStream {
     func open(deadline: Deadline) throws
+    func done(deadline: Deadline) throws
     func close() throws
 
     func read(
-        into buffer: UnsafeMutableRawBufferPointer,
+        _ buffer: UnsafeMutableRawBufferPointer,
         deadline: Deadline
     ) throws -> UnsafeRawBufferPointer
 }
 
 public protocol WritableStream {
     func open(deadline: Deadline) throws
+    func done(deadline: Deadline) throws
     func close() throws
 
     func write(_ buffer: UnsafeRawBufferPointer, deadline: Deadline) throws
-    func flush(deadline: Deadline) throws
 }
 
 extension WritableStream {

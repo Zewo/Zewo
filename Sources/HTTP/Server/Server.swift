@@ -17,22 +17,25 @@ public final class Server {
     
     private let logger: Logger
     private let group = Coroutine.Group()
+    private let respond: Respond
 
     /// Creates a new HTTP server
     public init(
         bufferSize: Int = 4096,
         parseTimeout: Duration = 5.minutes,
         serializeTimeout: Duration = 5.minutes,
-        logAppenders: [LogAppender] = [defaultAppender]
+        logAppenders: [LogAppender] = [defaultAppender],
+        respond: @escaping Respond
     ) {
         self.bufferSize = bufferSize
         self.parseTimeout = parseTimeout
         self.serializeTimeout = serializeTimeout
         self.logger = Logger(name: "HTTP server", appenders: logAppenders)
+        self.respond = respond
     }
     
     deinit {
-        try? group.cancel()
+        try? group.close()
     }
 
     /// Start server
@@ -41,20 +44,17 @@ public final class Server {
         port: Int = 8080,
         backlog: Int = 2048,
         reusePort: Bool = false,
-        deadline: Deadline = 1.minute.fromNow(),
         header: String = defaultHeader,
         file: String = #file,
         function: String = #function,
         line: Int = #line,
-        column: Int = #column,
-        respond: @escaping Respond
+        column: Int = #column
     ) throws {
         let tcp = try TCPHost(
             host: host,
             port: port,
             backlog: backlog,
-            reusePort: reusePort,
-            deadline: deadline
+            reusePort: reusePort
         )
         
         log(
@@ -69,20 +69,23 @@ public final class Server {
             )
         )
         
-        try start(host: tcp, respond: respond)
+        try start(host: tcp)
     }
     
     /// Start server
-    public func start(host: Host, respond: @escaping Respond) throws {
+    public func start(host: Host) throws {
         while true {
             do {
-                try accept(host, respond: respond)
+                try accept(host)
             } catch SystemError.tooManyOpenFiles {
-                logger.info("Too many open files. Retrying in 10 seconds.")
+                logger.info("Too many open files while accepting connections. Retrying in 10 seconds.")
                 try Coroutine.wakeUp(10.seconds.fromNow())
                 continue
-            } catch VeniceError.canceledCoroutine {
+            } catch VeniceError.canceled {
                 break
+            } catch {
+                logger.error("Error while accepting connections.", error: error)
+                throw error
             }
         }
     }
@@ -90,7 +93,7 @@ public final class Server {
     /// Stop server
     public func stop() throws {
         self.logger.info("Stopping HTTP server.")
-        try group.cancel()
+        try group.close()
     }
     
     private static var defaultAppender: LogAppender {
@@ -99,13 +102,13 @@ public final class Server {
     
     private static var defaultHeader: String {
         var header = "\n"
-        header += "   _____                                          \n"
-        header += "  / ___/ ____   ____ _ _____ _____ ____  _      __\n"
-        header += "  \\__ \\ / __ \\ / __ `// ___// ___// __ \\| | /| / /\n"
-        header += " ___/ // /_/ // /_/ // /   / /   / /_/ /| |/ |/ / \n"
-        header += "/____// .___/ \\__,_//_/   /_/    \\____/ |__/|__/  \n"
-        header += "     /_/                                          \n"
-        header += "--------------------------------------------------\n"
+        header += "                        _____                         \n"
+        header += "     _.-ˆˆ-._.-ˆˆ-._   /__  /   ____ _      __ ____   \n"
+        header += "    |ˆ-._.-ˆˆˆ-._.-ˆ|    / /   / __/| | /| / // __ \\ \n"
+        header += "    |   |ˆ-._.-ˆ|   |   / /__ / __/ | |/ |/ // /_/ /  \n"
+        header += "    ˆ-._|   |   |_.-ˆ  /____//____/ |__/|__/ \\____/  \n"
+        header += "        ˆ-._|_.-ˆ                                       \n"
+        header += "_______________________________________________________ \n"
         return header
     }
     
@@ -117,40 +120,41 @@ public final class Server {
     }
     
     @inline(__always)
-    private func accept(_ host: Host, respond: @escaping Respond) throws {
+    private func accept(_ host: Host) throws {
         let stream = try host.accept(deadline: .never)
         
         try group.addCoroutine {
             do {
-                try self.process(stream, respond: respond)
+                try self.process(stream)
             } catch SystemError.brokenPipe {
                 return
             } catch SystemError.connectionResetByPeer {
                 return
-            } catch VeniceError.canceledCoroutine {
+            } catch VeniceError.canceled {
                 return
             } catch {
-                self.logger.error("HTTP Server Error", error: error)
+                self.logger.error("Error while processing connection.", error: error)
             }
         }
     }
 
     @inline(__always)
-    private func process(_ stream: DuplexStream, respond: @escaping Respond) throws {
+    private func process(_ stream: DuplexStream) throws {
         let parser = RequestParser(stream: stream, bufferSize: bufferSize)
         let serializer = ResponseSerializer(stream: stream, bufferSize: bufferSize)
         
         try parser.parse(timeout: parseTimeout) { request in
-            let response = respond(request)
+            let response = self.respond(request)
             try serializer.serialize(response, timeout: self.serializeTimeout)
             
             if let upgrade = response.upgradeConnection {
                 try upgrade(request, stream)
-                try stream.close()
+                try stream.done(deadline: self.serializeTimeout.fromNow())
             }
             
             if !request.isKeepAlive {
-                try stream.close()
+                try stream.done(deadline: self.serializeTimeout.fromNow())
+                return
             }
         }
     }

@@ -2,111 +2,67 @@ import Core
 import POSIX
 import Venice
 
-public enum TCPError : Error {
-    case failedToCreateSocket
-    case failedToConnectSocket
-    case failedToBindSocket
-    case failedToListen
-    case failedToGetSocketAddress
-    case invalidFileDescriptor
-}
+import CLibdill
 
-public final class TCPHost : Host {
-    private let socket: FileDescriptor
+// TODO: Create TCP errors
+public enum TCPError : Error {}
+
+public final class TCPHost : Handle, Host {
     public let ip: IP
 
-    public init(socket: FileDescriptor, ip: IP) throws {
-        self.socket = socket
+    init(handle: HandleDescriptor, ip: IP) throws {
         self.ip = ip
+        super.init(handle: handle)
+    }
+    
+    deinit {
+        try? close()
     }
 
     public convenience init(ip: IP, backlog: Int, reusePort: Bool) throws {
         var address = ip.address
+        let result = tcp_listen(&address, Int32(backlog))
         
-        guard let rawSocket = try? POSIX.socket(family: address.family, type: .stream, protocol: 0) else {
-            throw TCPError.failedToCreateSocket
-        }
+        // TODO: Set reusePort
         
-        let socket = try FileDescriptor(rawSocket)
-        try tune(socket: socket)
-
-        if reusePort {
-            try setReusePort(socket: socket)
-        }
-
-        do {
-            try POSIX.bind(socket: rawSocket, address: address)
-        } catch {
-            throw TCPError.failedToBindSocket
-        }
-
-        try POSIX.listen(socket: rawSocket, backlog: backlog)
-
-        // If the user requested an ephemeral port, retrieve the port number assigned by the OS now.
-        if address.port == 0 {
-            do {
-                address = try POSIX.getAddress(socket: rawSocket)
-            } catch {
-                try socket.close()
-                throw TCPError.failedToGetSocketAddress
+        guard result != -1 else {
+            switch errno {
+            default:
+                throw SystemError.lastOperationError
             }
         }
-
-        let ip = IP(address: address)
-        try self.init(socket: socket, ip: ip)
+        
+        try self.init(handle: result, ip: ip)
     }
 
     public convenience init(
-        host: String = "0.0.0.0",
+        host: String = "",
         port: Int = 8080,
         backlog: Int = 128,
-        reusePort: Bool = false,
-        deadline: Deadline
+        reusePort: Bool = false
     ) throws {
-        let ip = try IP(address: host, port: port, deadline: deadline)
+        let ip: IP
+        
+        if host == "" {
+            ip = try IP(port: port)
+        } else {
+            ip = try IP(local: host, port: port)
+        }
+        
         try self.init(ip: ip, backlog: backlog, reusePort: reusePort)
     }
 
     public func accept(deadline: Deadline) throws -> DuplexStream {
-        loop: while true {
-            do {
-                let (rawSocket, address) = try POSIX.accept(socket: socket.fileDescriptor)
-                let acceptSocket = try FileDescriptor(rawSocket)
-                try tune(socket: acceptSocket)
-                let ip = IP(address: address)
-                return TCPStream(socket: acceptSocket, ip: ip)
-            } catch {
-                switch error {
-                case SystemError.resourceTemporarilyUnavailable, SystemError.operationWouldBlock:
-                    try socket.poll(event: .read, deadline: deadline)
-                    continue loop
-                default:
-                    throw error
-                }
+        var address = ipaddr()
+        let result = tcp_accept(handle, &address, deadline.value)
+        
+        guard result != -1 else {
+            switch errno {
+            default:
+                throw SystemError.lastOperationError
             }
         }
+
+        return TCPStream(handle: result, ip: IP(address: &address))
     }
 }
-
-func setReusePort(socket: FileDescriptor) throws {
-    do {
-        try POSIX.setReusePort(socket: socket.fileDescriptor)
-    } catch {
-        try socket.close()
-        throw error
-    }
-}
-
-func tune(socket: FileDescriptor) throws {
-    do {
-        try setReuseAddress(socket: socket.fileDescriptor)
-        #if os(macOS)
-            try setNoSignalOnBrokenPipe(socket: socket.fileDescriptor)
-        #endif
-    } catch {
-        try socket.close()
-        throw error
-    }
-}
-
-

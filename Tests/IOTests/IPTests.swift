@@ -18,20 +18,20 @@ public class IPTests: XCTestCase {
     }
 
     func testLocalIPV4() throws {
-        _ = try IP(address: "127.0.0.1", port: 5555, mode: .ipv4, deadline: deadline)
+        _ = try IP(local: "127.0.0.1", port: 5555, mode: .ipv4)
     }
 
     func testLocalIPV6() throws {
-        _ = try IP(address: "::1", port: 5555, mode: .ipv6, deadline: deadline)
+        _ = try IP(local: "::1", port: 5555, mode: .ipv6)
     }
 
     func testRemoteIPV4() throws {
-        let ip = try IP(address: "127.0.0.1", port: 5555, mode: .ipv4, deadline: 1.second.fromNow())
+        let ip = try IP(remote: "127.0.0.1", port: 5555, mode: .ipv4, deadline: 1.second.fromNow())
         XCTAssertEqual(String(describing: ip), "127.0.0.1")
     }
 
     func testRemoteIPV6() throws {
-        _ = try IP(address: "::1", port: 5555, mode: .ipv6, deadline: 1.second.fromNow())
+        _ = try IP(remote: "::1", port: 5555, mode: .ipv6, deadline: 1.second.fromNow())
     }
 
     func testInvalidPortIPV4() throws {
@@ -43,19 +43,19 @@ public class IPTests: XCTestCase {
     }
 
     func testInvalidLocalIPV4() throws {
-        XCTAssertThrowsError(try IP(address: "yo-yo ma", port: 5555, mode: .ipv4, deadline: deadline))
+        XCTAssertThrowsError(try IP(local: "yo-yo ma", port: 5555, mode: .ipv4))
     }
 
     func testInvalidLocalIPV6() throws {
-        XCTAssertThrowsError(try IP(address: "yo-yo ma", port: 5555, mode: .ipv6, deadline: deadline))
+        XCTAssertThrowsError(try IP(local: "yo-yo ma", port: 5555, mode: .ipv6))
     }
 
     func testRemoteInvalidPortIPV4() throws {
-        XCTAssertThrowsError(try IP(address: "127.0.0.1", port: 70000, mode: .ipv4, deadline: 1.second.fromNow()))
+        XCTAssertThrowsError(try IP(remote: "127.0.0.1", port: 70000, mode: .ipv4, deadline: 1.second.fromNow()))
     }
 
     func testRemoteInvalidPortIPV6() throws {
-        XCTAssertThrowsError(try IP(address: "::1", port: 70000, mode: .ipv6, deadline: 1.second.fromNow()))
+        XCTAssertThrowsError(try IP(remote: "::1", port: 70000, mode: .ipv6, deadline: 1.second.fromNow()))
     }
 }
 

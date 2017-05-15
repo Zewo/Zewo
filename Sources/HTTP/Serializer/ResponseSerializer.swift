@@ -68,7 +68,6 @@ public final class ResponseSerializer {
         
         let bodyStream = ResponseBodyStream(stream, mode: .contentLength(contentLength))
         try write(to: bodyStream, body: response.body, deadline: deadline)
-        try stream.flush(deadline: deadline)
         
         if bodyStream.bytesRemaining > 0 {
             throw ResponseSerializerError.invalidContentLength
@@ -80,13 +79,11 @@ public final class ResponseSerializer {
         let bodyStream = ResponseBodyStream(stream, mode: .chunkedEncoding)
         try write(to: bodyStream, body: response.body, deadline: deadline)
         try stream.write("0\r\n\r\n", deadline: deadline)
-        try stream.flush(deadline: deadline)
     }
     
     @inline(__always)
     private func writeBody(for response: Response, deadline: Deadline) throws {
         try write(to: stream, body: response.body, deadline: deadline)
-        try stream.flush(deadline: deadline)
         try stream.close()
     }
     
@@ -95,7 +92,7 @@ public final class ResponseSerializer {
         switch body {
         case let .readable(readableStream):
             while true {
-                let readBuffer = try readableStream.read(into: buffer, deadline: deadline)
+                let readBuffer = try readableStream.read(buffer, deadline: deadline)
                 
                 guard !readBuffer.isEmpty else {
                     break

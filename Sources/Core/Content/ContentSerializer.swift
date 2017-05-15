@@ -21,7 +21,5 @@ extension ContentSerializer {
         try serializer.serialize(map, bufferSize: bufferSize) { buffer in
             try stream.write(buffer, deadline: deadline)
         }
-        
-        try stream.flush(deadline: deadline)
     }
 }

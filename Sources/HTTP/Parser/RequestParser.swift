@@ -222,7 +222,7 @@ public final class RequestParser {
         while true {
             do {
                 try read(deadline: timeout.fromNow())
-            } catch VeniceError.timeout {
+            } catch VeniceError.deadlineReached {
                 continue
             } catch SystemError.brokenPipe {
                 break
@@ -235,7 +235,7 @@ public final class RequestParser {
     }
     
     func read(deadline: Deadline) throws {
-        let read = try stream.read(into: buffer, deadline: deadline)
+        let read = try stream.read(buffer, deadline: deadline)
         
         if read.isEmpty {
             try stream.close()

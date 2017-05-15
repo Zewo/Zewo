@@ -27,7 +27,14 @@ final class ResponseBodyStream : WritableStream {
     }
 
     func open(deadline: Deadline) throws {}
-    func close() {}
+    
+    func done(deadline: Deadline) throws {
+        try stream.done(deadline: deadline)
+    }
+    
+    func close() throws {
+        try stream.close()
+    }
 
     func write(_ buffer: UnsafeRawBufferPointer, deadline: Deadline) throws {
         guard !buffer.isEmpty else {
@@ -48,9 +55,5 @@ final class ResponseBodyStream : WritableStream {
             try stream.write(buffer, deadline: deadline)
             try stream.write("\r\n", deadline: deadline)
         }
-    }
-
-    func flush(deadline: Deadline) throws {
-        try stream.flush(deadline: deadline)
     }
 }
