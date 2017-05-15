@@ -5,7 +5,7 @@
 #endif
 
 import XCTest
-@testable import POSIX
+@testable import Core
 
 let map: [Int32: SystemError] = [
     EPERM: .operationNotPermitted,
