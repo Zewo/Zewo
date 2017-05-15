@@ -32,7 +32,7 @@ extension URI.Parameters {
 
 extension Int : LosslessStringConvertible {
     public init?(_ parameter: String) {
-        guard let int = Int(parameter) else {
+        guard let int = Int(parameter, radix: 10) else {
             return nil
         }
         
