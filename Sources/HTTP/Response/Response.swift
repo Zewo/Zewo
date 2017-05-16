@@ -74,7 +74,7 @@ extension Response {
         headers: Headers = [:],
         body buffer: BufferRepresentable,
         timeout: Duration
-        ) {
+    ) {
         self.init(
             status: status,
             headers: headers,

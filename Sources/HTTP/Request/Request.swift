@@ -1,5 +1,5 @@
 import Core
-import Foundation
+import Venice
 
 public final class Request : Message {
     public typealias UpgradeConnection = (Response, DuplexStream) throws -> Void
@@ -59,6 +59,41 @@ extension Request {
             version: .oneDotOne,
             body: .readable(stream)
         )
+    }
+    
+    public convenience init(
+        method: Method,
+        uri: URI,
+        headers: Headers = [:],
+        body write: @escaping Body.Write
+    ) {
+        self.init(
+            method: method,
+            uri: uri,
+            headers: headers,
+            version: .oneDotOne,
+            body: .writable(write)
+        )
+    }
+    
+    public convenience init(
+        method: Method,
+        uri: URI,
+        headers: Headers = [:],
+        body buffer: BufferRepresentable,
+        timeout: Duration
+    ) {
+        self.init(
+            method: method,
+            uri: uri,
+            headers: headers,
+            version: .oneDotOne,
+            body: .writable { stream in
+                try stream.write(buffer, deadline: timeout.fromNow())
+            }
+        )
+        
+        contentLength = buffer.bufferSize
     }
 }
 
