@@ -9,7 +9,6 @@ public final class Response : Message {
     public var version: Version
     public var body: Body
     
-    public var content: Content?
     public var storage: Storage = [:]
     
     public var upgradeConnection: UpgradeConnection?
@@ -69,13 +68,13 @@ extension Response {
             body: .writable(write)
         )
     }
-    
+
     public convenience init(
         status: Status,
         headers: Headers = [:],
         body buffer: BufferRepresentable,
         timeout: Duration
-    ) {
+        ) {
         self.init(
             status: status,
             headers: headers,
@@ -84,33 +83,8 @@ extension Response {
                 try stream.write(buffer, deadline: timeout.fromNow())
             }
         )
-        
+
         contentLength = buffer.bufferSize
-    }
-    
-    public convenience init(
-        status: Status,
-        headers: Headers = [:],
-        content: Content
-    ) {
-        self.init(
-            status: status,
-            headers: headers
-        )
-        
-        self.content = content
-    }
-    
-    public convenience init(
-        status: Status,
-        headers: Headers = [:],
-        content representable: ContentRepresentable
-    ) {
-        self.init(
-            status: status,
-            headers: headers,
-            content: representable.content
-        )
     }
 }
 
@@ -150,7 +124,6 @@ extension Response : CustomStringConvertible {
     public var description: String {
         return
             statusLineDescription +
-            headers.description + "\n" +
-            (content?.description ?? "")
+            headers.description
     }
 }
