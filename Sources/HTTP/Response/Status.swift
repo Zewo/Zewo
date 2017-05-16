@@ -90,18 +90,6 @@ extension Status {
     }
 }
 
-extension Status : Hashable {
-    public var hashValue: Int {
-        return statusCode
-    }
-}
-
-extension Status: Equatable {
-    public static func ==(lhs: Status, rhs: Status) -> Bool {
-        return lhs.hashValue == rhs.hashValue
-    }
-}
-
 extension Status {
     public init(statusCode: Int, reasonPhrase: String? = nil) {
         if let reasonPhrase = reasonPhrase {
@@ -383,7 +371,20 @@ extension Status {
     }
 }
 
+extension Status : Hashable {
+    /// :nodoc:
+    public var hashValue: Int {
+        return statusCode
+    }
+    
+    /// :nodoc:
+    public static func == (lhs: Status, rhs: Status) -> Bool {
+        return lhs.hashValue == rhs.hashValue
+    }
+}
+
 extension Status : CustomStringConvertible {
+    /// :nodoc:
     public var description: String {
         return statusCodeString + " " + reasonPhrase
     }

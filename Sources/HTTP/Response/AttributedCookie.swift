@@ -16,7 +16,15 @@ public struct AttributedCookie {
     public var secure: Bool
     public var httpOnly: Bool
 
-    public init(name: String, value: String, expiration: Expiration? = nil, domain: String? = nil, path: String? = nil, secure: Bool = false, httpOnly: Bool = false) {
+    public init(
+        name: String,
+        value: String,
+        expiration: Expiration? = nil,
+        domain: String? = nil,
+        path: String? = nil,
+        secure: Bool = false,
+        httpOnly: Bool = false
+    ) {
         self.name = name
         self.value = value
         self.expiration = expiration
@@ -80,16 +88,19 @@ public struct AttributedCookie {
 }
 
 extension AttributedCookie : Hashable {
+    /// :nodoc:
     public var hashValue: Int {
         return name.hashValue
     }
-}
 
-public func == (lhs: AttributedCookie, rhs: AttributedCookie) -> Bool {
-    return lhs.hashValue == rhs.hashValue
+    /// :nodoc:
+    public static func == (lhs: AttributedCookie, rhs: AttributedCookie) -> Bool {
+        return lhs.hashValue == rhs.hashValue
+    }
 }
 
 extension AttributedCookie : CustomStringConvertible {
+    /// :nodoc:
     public var description: String {
         var string = "\(name)=\(value)"
 
@@ -122,12 +133,12 @@ extension AttributedCookie : CustomStringConvertible {
     }
 }
 
-extension AttributedCookie.Expiration : Equatable {}
-
-public func == (lhs: AttributedCookie.Expiration, rhs: AttributedCookie.Expiration) -> Bool {
-    switch (lhs, rhs) {
-    case let (.maxAge(l), .maxAge(r)): return l == r
-    case let (.expires(l), .expires(r)): return l == r
-    default: return false
+extension AttributedCookie.Expiration : Equatable {
+    public static func == (lhs: AttributedCookie.Expiration, rhs: AttributedCookie.Expiration) -> Bool {
+        switch (lhs, rhs) {
+        case let (.maxAge(l), .maxAge(r)): return l == r
+        case let (.expires(l), .expires(r)): return l == r
+        default: return false
+        }
     }
 }

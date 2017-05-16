@@ -1,11 +1,11 @@
 import Core
 
-public enum RouterError : Error {
+public enum BasicRouterError : Error {
     case notFound
     case methodNotAllowed
 }
 
-extension RouterError : ResponseRepresentable {
+extension BasicRouterError : ResponseRepresentable {
     public var response: Response {
         switch self {
         case .notFound:
@@ -98,7 +98,7 @@ open class BasicRouter {
     private func respond(to request: Request, path: inout Path) throws -> Response {
         if let pathComponent = path.popPathComponent() {
             guard let subrouter = subrouters[pathComponent] else {
-                throw RouterError.notFound
+                throw BasicRouterError.notFound
             }
             
             return try subrouter.respond(to: request, path: &path)
@@ -108,7 +108,7 @@ open class BasicRouter {
             return try respond(request)
         }
         
-        throw RouterError.methodNotAllowed
+        throw BasicRouterError.methodNotAllowed
     }
     
     @inline(__always)

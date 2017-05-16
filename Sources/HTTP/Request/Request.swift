@@ -148,35 +148,17 @@ extension Request {
 extension Request {
     public var accept: [MediaType] {
         get {
-            var acceptedMediaTypes: [MediaType] = []
-            
-            if let acceptString = headers["Accept"] {
-                let acceptedTypesString = acceptString.components(separatedBy: ",")
-                
-                for acceptedTypeString in acceptedTypesString {
-                    let acceptedTypeTokens = acceptedTypeString.components(separatedBy: ";")
-                    
-                    if acceptedTypeTokens.count >= 1 {
-                        let mediaTypeString = acceptedTypeTokens[0].trimmingCharacters(in: .whitespacesAndNewlines)
-                        
-                        if let acceptedMediaType = try? MediaType(string: mediaTypeString) {
-                            acceptedMediaTypes.append(acceptedMediaType)
-                        }
-                    }
-                }
-            }
-            
-            return acceptedMediaTypes
+            return headers["Accept"].map({ MediaType.parse(acceptHeader: $0) }) ?? []
         }
         
         set(accept) {
-            headers["Accept"] = accept.map({$0.type + "/" + $0.subtype}).joined(separator: ", ")
+            headers["Accept"] = accept.map({ $0.type + "/" + $0.subtype }).joined(separator: ", ")
         }
     }
     
     public var cookies: Set<Cookie> {
         get {
-            return headers["Cookie"].flatMap({Set<Cookie>(cookieHeader: $0)}) ?? []
+            return headers["Cookie"].map({ Cookie.parse(cookieHeader: $0) }) ?? []
         }
     }
     
@@ -200,10 +182,12 @@ extension Request {
 }
 
 extension Request : CustomStringConvertible {
+    /// :nodoc:
     public var requestLineDescription: String {
         return method.description + " " + uri.description + " " + version.description + "\n"
     }
     
+    /// :nodoc:
     public var description: String {
         return requestLineDescription + headers.description
     }

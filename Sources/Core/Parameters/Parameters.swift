@@ -1,12 +1,21 @@
 import struct Foundation.UUID
 
 public enum ParametersError : Error {
-    case parameterNotFound(parameterKey: String)
-    case cannotInitializeParameter(type: LosslessStringConvertible.Type, from: String)
-    case cannotInitializeParameters(type: ParametersInitializable.Type, from: URI.Parameters)
+    case valueNotFound(key: String, parameters: URI.Parameters)
+    case cannotInitialize(type: LosslessStringConvertible.Type, parameter: String)
 }
 
-// TODO: Make ParametersError CustomStringConvertible
+extension ParametersError : CustomStringConvertible {
+    /// :nodoc:
+    public var description: String {
+        switch self {
+        case let .valueNotFound(key, parameters):
+            return "Cannot get parameter for key \"\(key)\". Key is not present in parameters \(parameters)."
+        case let .cannotInitialize(type, parameter):
+            return "Cannot initialize type \"\(String(describing: type))\" with parameter \"\(parameter)\"."
+        }
+    }
+}
 
 public protocol ParametersInitializable {
     init(parameters: URI.Parameters) throws
@@ -19,11 +28,11 @@ extension URI.Parameters {
     
     public func get<P : LosslessStringConvertible>(_ parameterKey: String) throws -> P {
         guard let string = parameters[parameterKey] else {
-            throw ParametersError.parameterNotFound(parameterKey: parameterKey)
+            throw ParametersError.valueNotFound(key: parameterKey, parameters: self)
         }
         
         guard let parameter = P(string) else {
-            throw ParametersError.cannotInitializeParameter(type: P.self, from: string)
+            throw ParametersError.cannotInitialize(type: P.self, parameter: string)
         }
         
         return parameter

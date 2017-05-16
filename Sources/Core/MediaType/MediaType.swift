@@ -46,6 +46,26 @@ public struct MediaType {
             parameters: parameters
         )
     }
+    
+    public static func parse(acceptHeader: String) -> [MediaType] {
+        var acceptedMediaTypes: [MediaType] = []
+        
+        let acceptedTypesString = acceptHeader.components(separatedBy: ",")
+        
+        for acceptedTypeString in acceptedTypesString {
+            let acceptedTypeTokens = acceptedTypeString.components(separatedBy: ";")
+            
+            if acceptedTypeTokens.count >= 1 {
+                let mediaTypeString = acceptedTypeTokens[0].trimmingCharacters(in: .whitespacesAndNewlines)
+                
+                if let acceptedMediaType = try? MediaType(string: mediaTypeString) {
+                    acceptedMediaTypes.append(acceptedMediaType)
+                }
+            }
+        }
+        
+        return acceptedMediaTypes
+    }
 
     public func matches(other mediaType: MediaType) -> Bool {
         if type == "*" || mediaType.type == "*" {

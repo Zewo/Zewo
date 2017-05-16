@@ -12,8 +12,8 @@ public enum Method {
 }
 
 extension Method {
-    init(_ rawValue: String) {
-        let method = rawValue.uppercased()
+    init(_ method: String) {
+        let method = method.uppercased()
         switch method {
         case "DELETE":  self = .delete
         case "GET":     self = .get
@@ -29,24 +29,8 @@ extension Method {
     }
 }
 
-extension Method : CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .delete:            return "DELETE"
-        case .get:               return "GET"
-        case .head:              return "HEAD"
-        case .post:              return "POST"
-        case .put:               return "PUT"
-        case .connect:           return "CONNECT"
-        case .options:           return "OPTIONS"
-        case .trace:             return "TRACE"
-        case .patch:             return "PATCH"
-        case .other(let method): return method.uppercased()
-        }
-    }
-}
-
 extension Method : Hashable {
+    /// :nodoc:
     public var hashValue: Int {
         switch self {
         case .delete:            return 0
@@ -61,8 +45,27 @@ extension Method : Hashable {
         case .other(let method): return 9 + method.hashValue
         }
     }
+    
+    /// :nodoc:
+    public static func == (lhs: Method, rhs: Method) -> Bool {
+        return lhs.description == rhs.description
+    }
 }
 
-public func ==(lhs: Method, rhs: Method) -> Bool {
-    return lhs.description == rhs.description
+extension Method : CustomStringConvertible {
+    /// :nodoc:
+    public var description: String {
+        switch self {
+        case .delete:            return "DELETE"
+        case .get:               return "GET"
+        case .head:              return "HEAD"
+        case .post:              return "POST"
+        case .put:               return "PUT"
+        case .connect:           return "CONNECT"
+        case .options:           return "OPTIONS"
+        case .trace:             return "TRACE"
+        case .patch:             return "PATCH"
+        case .other(let method): return method.uppercased()
+        }
+    }
 }

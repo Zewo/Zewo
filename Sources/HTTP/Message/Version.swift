@@ -6,26 +6,25 @@ public struct Version {
         self.major = major
         self.minor = minor
     }
+
+    internal static let oneDotZero = Version(major: 1, minor: 0)
+    internal static let oneDotOne = Version(major: 1, minor: 1)
 }
 
 extension Version : Hashable {
+    /// :nodoc:
     public var hashValue: Int {
         return major ^ minor
     }
-}
 
-extension Version : Equatable {}
-
-public func == (lhs: Version, rhs: Version) -> Bool {
-    return lhs.hashValue == rhs.hashValue
-}
-
-extension Version {
-    public static let oneDotZero = Version(major: 1, minor: 0)
-    public static let oneDotOne = Version(major: 1, minor: 1)
+    /// :nodoc:
+    public static func == (lhs: Version, rhs: Version) -> Bool {
+        return lhs.hashValue == rhs.hashValue
+    }
 }
 
 extension Version : CustomStringConvertible {
+    /// :nodoc:
     public var description: String {
         return "HTTP/" + major.description + "." + minor.description
     }

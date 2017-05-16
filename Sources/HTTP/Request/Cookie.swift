@@ -10,39 +10,40 @@ public struct Cookie {
     }
 }
 
+extension Cookie {
+    public static func parse(cookieHeader: String) -> Set<Cookie> {
+        var cookies: Set<Cookie> = []
+        let tokens = cookieHeader.components(separatedBy: ";")
+        
+        for token in tokens {
+            let cookieTokens = token.components(separatedBy: "=")
+            
+            guard cookieTokens.count == 2 else {
+                return []
+            }
+            
+            cookies.insert(Cookie(name: cookieTokens[0].trimmingCharacters(in: .whitespacesAndNewlines), value: cookieTokens[1].trimmingCharacters(in: .whitespacesAndNewlines)))
+        }
+        
+        return cookies
+    }
+}
+
 extension Cookie : Hashable {
+    /// :nodoc:
     public var hashValue: Int {
         return name.hashValue
     }
-}
 
-extension Cookie : Equatable {}
-
-public func == (lhs: Cookie, rhs: Cookie) -> Bool {
-    return lhs.hashValue == rhs.hashValue
-}
-
-extension Cookie : CustomStringConvertible {
-    public var description: String {
-        return "\(name)=\(value)"
+    /// :nodoc:
+    public static func == (lhs: Cookie, rhs: Cookie) -> Bool {
+        return lhs.hashValue == rhs.hashValue
     }
 }
 
-extension Set where Element == Cookie {
-    public init?(cookieHeader: String) {
-        var cookies = Set<Element>()
-        let tokens = cookieHeader.components(separatedBy: ";")
-
-        for token in tokens {
-            let cookieTokens = token.components(separatedBy: "=")
-
-            guard cookieTokens.count == 2 else {
-                return nil
-            }
-
-            cookies.insert(Cookie(name: cookieTokens[0].trimmingCharacters(in: .whitespacesAndNewlines), value: cookieTokens[1].trimmingCharacters(in: .whitespacesAndNewlines)))
-        }
-
-        self = cookies
+extension Cookie : CustomStringConvertible {
+    /// :nodoc:
+    public var description: String {
+        return "\(name)=\(value)"
     }
 }

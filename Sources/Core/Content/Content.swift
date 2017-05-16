@@ -10,6 +10,7 @@ public enum ContentError : Error {
 }
 
 extension ContentError : CustomStringConvertible {
+    /// :nodoc:
     public var description: String {
         switch self {
         case let .noContent(type):

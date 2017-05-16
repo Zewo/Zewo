@@ -159,15 +159,13 @@ extension Response {
 }
 
 extension Response : CustomStringConvertible {
+    /// :nodoc:
     public var statusLineDescription: String {
-        return
-            "HTTP/" + version.description + " " +
-            status.description + "\n"
+        return version.description + " " + status.description + "\n"
     }
     
+    /// :nodoc:
     public var description: String {
-        return
-            statusLineDescription +
-            headers.description
+        return statusLineDescription + headers.description
     }
 }

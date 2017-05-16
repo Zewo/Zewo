@@ -72,13 +72,8 @@ public struct URI {
     }
 }
 
-extension URI.UserInfo : CustomStringConvertible {
-    public var description: String {
-        return username + ":" + password
-    }
-}
-
 extension URI : CustomStringConvertible {
+    /// :nodoc:
     public var description: String {
         var string = ""
         
@@ -111,5 +106,29 @@ extension URI : CustomStringConvertible {
         }
         
         return string
+    }
+}
+
+extension URI.UserInfo : CustomStringConvertible {
+    /// :nodoc:
+    public var description: String {
+        return username + ":" + password
+    }
+}
+
+extension URI.Parameters : CustomStringConvertible {
+    /// :nodoc:
+    public var description: String {
+        var string = "{"
+        
+        for (offset: index, element: (key: key, value: value)) in parameters.enumerated() {
+            string += key + ": " + value
+            
+            if index < parameters.count - 1 {
+                string += ", "
+            }
+        }
+        
+        return string + "}"
     }
 }
