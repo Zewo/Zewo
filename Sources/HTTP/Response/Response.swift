@@ -89,8 +89,6 @@ extension Response {
     
     public convenience init(
         status: Status,
-        method: Method,
-        uri: URI,
         headers: Headers = [:],
         content: Content,
         contentType: ContentType,
@@ -114,6 +112,23 @@ extension Response {
         self.contentType = contentType.mediaType
         self.contentLength = nil
         self.transferEncoding = "chunked"
+    }
+    
+    public convenience init(
+        status: Status,
+        headers: Headers = [:],
+        content: ContentRepresentable,
+        contentType: ContentType,
+        bufferSize: Int = 2048,
+        timeout: Duration = 5.minutes
+    ) {
+        self.init(
+            status: status,
+            headers: headers,
+            content: content.content,
+            contentType: contentType,
+            timeout: timeout
+        )
     }
 }
 

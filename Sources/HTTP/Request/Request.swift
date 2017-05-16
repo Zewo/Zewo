@@ -124,6 +124,25 @@ extension Request {
         self.contentLength = nil
         self.transferEncoding = "chunked"
     }
+    
+    public convenience init(
+        method: Method,
+        uri: URI,
+        headers: Headers = [:],
+        content: ContentRepresentable,
+        contentType: ContentType,
+        bufferSize: Int = 2048,
+        timeout: Duration = 5.minutes
+    ) {
+        self.init(
+            method: method,
+            uri: uri,
+            headers: headers,
+            content: content.content,
+            contentType: contentType,
+            timeout: timeout
+        )
+    }
 }
 
 extension Request {
