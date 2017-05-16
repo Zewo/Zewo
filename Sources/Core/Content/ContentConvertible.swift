@@ -1,4 +1,4 @@
-`import struct Foundation.Data
+import struct Foundation.Data
 import struct Foundation.UUID
 
 public protocol ContentInitializable {
