@@ -105,11 +105,11 @@ extension Response {
         status: Status,
         headers: Headers = [:],
         content representable: ContentRepresentable
-    ) throws {
-        try self.init(
+    ) {
+        self.init(
             status: status,
             headers: headers,
-            content: representable.content()
+            content: representable.content
         )
     }
 }

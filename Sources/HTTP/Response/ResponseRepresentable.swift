@@ -22,6 +22,12 @@ extension NoContent : ResponseRepresentable {
     }
 }
 
+extension ContentError : ResponseRepresentable {
+    public var response: Response {
+        return Response(status: .badRequest, body: description, timeout: 1.minute)
+    }
+}
+
 extension ParametersError : ResponseRepresentable {
     public var response: Response {
         switch self {

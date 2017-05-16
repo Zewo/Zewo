@@ -138,8 +138,7 @@ extension Request {
         }
         
         guard let content = content else {
-            // TODO: Create a proper error for this.
-            throw ContentError.cannotInitialize(type: C.self, from: .null)
+            throw ContentError.noContent(type: C.self)
         }
         
         return try C(content: content)
