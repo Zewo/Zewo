@@ -95,6 +95,35 @@ extension Request {
         
         contentLength = buffer.bufferSize
     }
+    
+    public convenience init(
+        method: Method,
+        uri: URI,
+        headers: Headers = [:],
+        content: Content,
+        contentType: ContentType,
+        bufferSize: Int = 2048,
+        timeout: Duration = 5.minutes
+    ) {
+        self.init(
+            method: method,
+            uri: uri,
+            headers: headers,
+            version: .oneDotOne,
+            body: .writable { stream in
+                try contentType.serializer.serialize(
+                    content,
+                    stream: stream,
+                    bufferSize: bufferSize,
+                    deadline: timeout.fromNow()
+                )
+            }
+        )
+        
+        self.contentType = contentType.mediaType
+        self.contentLength = nil
+        self.transferEncoding = "chunked"
+    }
 }
 
 extension Request {
