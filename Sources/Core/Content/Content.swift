@@ -243,18 +243,18 @@ extension Content : ExpressibleByStringLiteral {
 
 extension Content : ExpressibleByArrayLiteral {
     /// :nodoc:
-    public init(arrayLiteral elements: Content...) {
-        self = .array(elements)
+    public init(arrayLiteral elements: ContentRepresentable...) {
+        self = .array(elements.map({ $0.content }))
     }
 }
 
 extension Content : ExpressibleByDictionaryLiteral {
     /// :nodoc:
-    public init(dictionaryLiteral elements: (String, Content)...) {
+    public init(dictionaryLiteral elements: (String, ContentRepresentable)...) {
         var dictionary = [String: Content](minimumCapacity: elements.count)
         
         for (key, value) in elements {
-            dictionary[key] = value
+            dictionary[key] = value.content
         }
         
         self = .dictionary(dictionary)
