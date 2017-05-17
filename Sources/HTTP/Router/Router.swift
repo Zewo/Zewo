@@ -46,7 +46,7 @@ open class BasicRouter {
     public typealias Respond = (Request) throws -> Response
     
     fileprivate var subrouters: [String: BasicRouter] = [:]
-    fileprivate var responders: [Method: Respond] = [:]
+    fileprivate var responders: [Request.Method: Respond] = [:]
     
     init() {}
     
@@ -61,7 +61,7 @@ open class BasicRouter {
         return subrouters[path] = route
     }
     
-    public func respond(method: Method, body: @escaping Respond) {
+    public func respond(method: Request.Method, body: @escaping Respond) {
         responders[method] = body
     }
     

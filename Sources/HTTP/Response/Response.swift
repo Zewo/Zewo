@@ -26,6 +26,72 @@ public final class Response : Message {
         self.version = version
         self.body = body
     }
+    
+    public enum Status {
+        case `continue`
+        case switchingProtocols
+        case processing
+        
+        case ok
+        case created
+        case accepted
+        case nonAuthoritativeInformation
+        case noContent
+        case resetContent
+        case partialContent
+        
+        case multipleChoices
+        case movedPermanently
+        case found
+        case seeOther
+        case notModified
+        case useProxy
+        case switchProxy
+        case temporaryRedirect
+        case permanentRedirect
+        
+        case badRequest
+        case unauthorized
+        case paymentRequired
+        case forbidden
+        case notFound
+        case methodNotAllowed
+        case notAcceptable
+        case proxyAuthenticationRequired
+        case requestTimeout
+        case conflict
+        case gone
+        case lengthRequired
+        case preconditionFailed
+        case requestEntityTooLarge
+        case requestURITooLong
+        case unsupportedMediaType
+        case requestedRangeNotSatisfiable
+        case expectationFailed
+        case imATeapot
+        case authenticationTimeout
+        case enhanceYourCalm
+        case unprocessableEntity
+        case locked
+        case failedDependency
+        case preconditionRequired
+        case tooManyRequests
+        case requestHeaderFieldsTooLarge
+        
+        case internalServerError
+        case notImplemented
+        case badGateway
+        case serviceUnavailable
+        case gatewayTimeout
+        case httpVersionNotSupported
+        case variantAlsoNegotiates
+        case insufficientStorage
+        case loopDetected
+        case notExtended
+        case networkAuthenticationRequired
+        
+        case other(statusCode: Int, reasonPhrase: String)
+    }
 }
 
 extension Response {

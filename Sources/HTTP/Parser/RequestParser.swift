@@ -11,7 +11,7 @@ extension RequestParserError : Error, CustomStringConvertible {
     }
 }
 
-extension Method {
+extension Request.Method {
     internal init(code: http_method) {
         switch code {
         case HTTP_DELETE: self = .delete
@@ -328,7 +328,7 @@ public final class RequestParser {
                 let bodyStream = RequestBodyStream(parser: self)
                 
                 let request = Request(
-                    method: Method(code: http_method(rawValue: parser.method)),
+                    method: Request.Method(code: http_method(rawValue: parser.method)),
                     uri: uri,
                     headers: context.headers,
                     version: Version(major: Int(parser.http_major), minor: Int(parser.http_minor)),

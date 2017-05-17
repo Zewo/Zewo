@@ -1,17 +1,4 @@
-public enum Method {
-    case delete
-    case get
-    case head
-    case post
-    case put
-    case connect
-    case options
-    case trace
-    case patch
-    case other(String)
-}
-
-extension Method {
+extension Request.Method {
     init(_ method: String) {
         let method = method.uppercased()
         switch method {
@@ -29,7 +16,7 @@ extension Method {
     }
 }
 
-extension Method : Hashable {
+extension Request.Method : Hashable {
     /// :nodoc:
     public var hashValue: Int {
         switch self {
@@ -47,12 +34,12 @@ extension Method : Hashable {
     }
     
     /// :nodoc:
-    public static func == (lhs: Method, rhs: Method) -> Bool {
+    public static func == (lhs: Request.Method, rhs: Request.Method) -> Bool {
         return lhs.description == rhs.description
     }
 }
 
-extension Method : CustomStringConvertible {
+extension Request.Method : CustomStringConvertible {
     /// :nodoc:
     public var description: String {
         switch self {

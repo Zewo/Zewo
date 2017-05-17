@@ -27,6 +27,19 @@ public final class Request : Message {
         self.version = version
         self.body = body
     }
+    
+    public enum Method {
+        case delete
+        case get
+        case head
+        case post
+        case put
+        case connect
+        case options
+        case trace
+        case patch
+        case other(String)
+    }
 }
 
 extension Request {
