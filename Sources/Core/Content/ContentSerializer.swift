@@ -1,5 +1,10 @@
 import Venice
 
+// TODO: Make CustomStringConvertible and ResponseRepresentable
+public enum ContentSerializerError : Error {
+    case invalidInput
+}
+
 public protocol ContentSerializer {
     init()
     func serialize(_ content: Content, bufferSize: Int, body: (UnsafeRawBufferPointer) throws -> Void) throws

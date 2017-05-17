@@ -39,6 +39,10 @@ public struct MediaType {
         }
 
         let tokens = mediaType.components(separatedBy: "/")
+        
+        guard tokens.count == 2 else {
+            throw MediaTypeError.malformedMediaTypeString
+        }
 
         self.init(
             type: tokens[0].lowercased(),

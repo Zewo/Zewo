@@ -165,6 +165,8 @@ public final class Server {
             } catch {
                 self.logger.error("Error while processing connection.", error: error)
             }
+            
+            try stream.done(deadline: self.closeConnectionTimeout.fromNow())
         }
     }
 
@@ -179,18 +181,15 @@ public final class Server {
             let keepAlive = try serializer.serialize(response, deadline: serializeTimeout.fromNow())
             
             guard keepAlive else {
-                try stream.done(deadline: closeConnectionTimeout.fromNow())
                 break
             }
             
             if let upgrade = response.upgradeConnection {
                 try upgrade(request, stream)
-                try stream.done(deadline: closeConnectionTimeout.fromNow())
                 break
             }
             
             if !request.isKeepAlive {
-                try stream.done(deadline: closeConnectionTimeout.fromNow())
                 break
             }
         }

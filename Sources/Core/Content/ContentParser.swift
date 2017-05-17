@@ -1,5 +1,6 @@
 import Venice
 
+// TODO: Make CustomStringConvertible and ResponseRepresentable
 public enum ContentParserError : Error {
     case invalidInput
 }
