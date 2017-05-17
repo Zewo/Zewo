@@ -8,7 +8,7 @@ public enum Method {
     case options
     case trace
     case patch
-    case other(method: String)
+    case other(String)
 }
 
 extension Method {
@@ -24,7 +24,7 @@ extension Method {
         case "OPTIONS": self = .options
         case "TRACE":   self = .trace
         case "PATCH":   self = .patch
-        default:        self = .other(method: method)
+        default:        self = .other(method)
         }
     }
 }
