@@ -22,14 +22,20 @@ public protocol ParametersInitializable {
 }
 
 extension URI.Parameters {
-    public mutating func set(_ parameter: String, for parameterKey: String) {
-        parameters[parameterKey] = parameter
+    public mutating func set(_ parameter: String, for key: String) {
+        parameters[key] = parameter
     }
     
-    public func get<P : LosslessStringConvertible>(_ parameterKey: String) throws -> P {
-        guard let string = parameters[parameterKey] else {
-            throw ParametersError.valueNotFound(key: parameterKey, parameters: self)
+    public func get(_ key: String) throws -> String {
+        guard let string = parameters[key] else {
+            throw ParametersError.valueNotFound(key: key, parameters: self)
         }
+        
+        return string
+    }
+    
+    public func get<P : LosslessStringConvertible>(_ key: String) throws -> P {
+        let string = try get(key)
         
         guard let parameter = P(string) else {
             throw ParametersError.cannotInitialize(type: P.self, parameter: string)
