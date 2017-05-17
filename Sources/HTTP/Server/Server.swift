@@ -21,45 +21,50 @@ public final class Server {
     public let closeConnectionTimeout: Duration
     
     private let logger: Logger
+    private let header: String
     private let group = Coroutine.Group()
     private let respond: Respond
 
     /// Creates a new HTTP server
     public init(
+        logger: Logger = defaultLogger,
+        header: String = defaultHeader,
         parserBufferSize: Int = 4096,
         serializerBufferSize: Int = 4096,
         parseTimeout: Duration = 5.minutes,
         serializeTimeout: Duration = 5.minutes,
         closeConnectionTimeout: Duration = 1.minute,
-        logAppenders: [LogAppender] = [defaultAppender],
         respond: @escaping Respond
     ) {
+        self.logger = logger
+        self.header = header
         self.parserBufferSize = parserBufferSize
         self.serializerBufferSize = serializerBufferSize
         self.parseTimeout = parseTimeout
         self.serializeTimeout = serializeTimeout
         self.closeConnectionTimeout = closeConnectionTimeout
-        self.logger = Logger(name: "HTTP server", appenders: logAppenders)
         self.respond = respond
     }
     
     /// Creates a new HTTP server
     public convenience init(
+        router: BasicRouter,
+        logger: Logger = defaultLogger,
+        header: String = defaultHeader,
         parserBufferSize: Int = 4096,
         serializerBufferSize: Int = 4096,
         parseTimeout: Duration = 5.minutes,
         serializeTimeout: Duration = 5.minutes,
-        closeConnectionTimeout: Duration = 1.minute,
-        logAppenders: [LogAppender] = [defaultAppender],
-        router: BasicRouter
+        closeConnectionTimeout: Duration = 1.minute
     ) {
         self.init(
+            logger: logger,
+            header: header,
             parserBufferSize: parserBufferSize,
             serializerBufferSize: serializerBufferSize,
             parseTimeout: parseTimeout,
             serializeTimeout: serializeTimeout,
             closeConnectionTimeout: closeConnectionTimeout,
-            logAppenders: logAppenders,
             respond: router.respond
         )
     }
@@ -74,7 +79,6 @@ public final class Server {
         port: Int = 8080,
         backlog: Int = 2048,
         reusePort: Bool = false,
-        header: String = defaultHeader,
         file: String = #file,
         function: String = #function,
         line: Int = #line,
@@ -88,7 +92,6 @@ public final class Server {
         )
         
         log(
-            header: header,
             host: host,
             port: port,
             locationInfo: Logger.LocationInfo(
@@ -126,8 +129,9 @@ public final class Server {
         try group.close()
     }
     
-    private static var defaultAppender: LogAppender {
-        return StandardOutputAppender(name: "HTTP server", levels: [.error, .info, .debug])
+    private static var defaultLogger: Logger {
+        let appender = StandardOutputAppender(name: "HTTP server", levels: [.error, .info])
+        return Logger(name: "HTTP server", appenders: [appender])
     }
     
     private static var defaultHeader: String {
@@ -143,8 +147,8 @@ public final class Server {
     }
     
     @inline(__always)
-    private func log(header: String, host: String, port: Int, locationInfo: Logger.LocationInfo) {
-        var header = header
+    private func log(host: String, port: Int, locationInfo: Logger.LocationInfo) {
+        var header = self.header
         header += "Started HTTP server at \(host), listening on port \(port)."
         logger.info(header, locationInfo: locationInfo)
     }
