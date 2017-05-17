@@ -130,8 +130,7 @@ public final class Server {
     }
     
     private static var defaultLogger: Logger {
-        let appender = StandardOutputAppender(name: "HTTP server", levels: [.error, .info])
-        return Logger(name: "HTTP server", appenders: [appender])
+        return Logger(name: "HTTP server")
     }
     
     private static var defaultHeader: String {
