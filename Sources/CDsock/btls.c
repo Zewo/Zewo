@@ -22,8 +22,6 @@
 
 */
 
-#if defined HAVE_TLS
-
 #include <errno.h>
 #include "libdillimpl.h"
 #include <stdint.h>
@@ -39,7 +37,7 @@
 /* This symbol is secretly exported from libdill. More thinking should be
    done on how to do this kind of thing without breaking the encapsulation. */
 extern const void *tcp_type;
-extern const void *tcp_listener _type;
+extern const void *tcp_listener_type;
 int tcp_fd(int s);
 
 static int btls_init();
@@ -733,6 +731,3 @@ static struct tls_config *btls_configure(uint64_t flags, uint64_t ciphers,
 err:
     return NULL;
 }
-
-#endif
-
