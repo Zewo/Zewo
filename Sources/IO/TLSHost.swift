@@ -49,13 +49,22 @@ public final class TLSHost : Handle, Host {
         var keyPair = btls_kp()
         var certificateLength = 0
         var keyLength = 0
-        let certificate = btls_loadfile(certificatePath, &certificateLength, nil)
-        let key = btls_loadfile(keyPath, &keyLength, nil)
+        
+        guard let certificate = btls_loadfile(certificatePath, &certificateLength, nil) else {
+            switch errno {
+            default:
+                throw SystemError.lastOperationError
+            }
+        }
+        
+        guard let key = btls_loadfile(keyPath, &keyLength, nil) else {
+            switch errno {
+            default:
+                throw SystemError.lastOperationError
+            }
+        }
         
         result = btls_kp(&keyPair, certificate, certificateLength, key, keyLength)
-        
-        certificate?.deallocate(capacity: 1)
-        key?.deallocate(capacity: 1)
         
         guard result != -1 else {
             switch errno {
@@ -72,6 +81,9 @@ public final class TLSHost : Handle, Host {
                 throw SystemError.lastOperationError
             }
         }
+        
+//        certificate.deallocate(capacity: 1)
+//        key.deallocate(capacity: 1)
         
         self.init(handle: result, socket: socket, ip: ip)
     }
@@ -103,7 +115,7 @@ public final class TLSHost : Handle, Host {
     
     public func accept(deadline: Deadline) throws -> DuplexStream {
         var address = ipaddr()
-        var result = tcp_accept(handle, &address, deadline.value)
+        var result = tcp_accept(self.socket, &address, deadline.value)
         
         guard result != -1 else {
             switch errno {
