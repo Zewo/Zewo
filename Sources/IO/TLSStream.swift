@@ -71,7 +71,7 @@ public final class TLSStream : Handle, DuplexStream {
     public func read(
         _ buffer: UnsafeMutableRawBufferPointer,
         deadline: Deadline
-        ) throws -> UnsafeRawBufferPointer {
+    ) throws -> UnsafeRawBufferPointer {
         let result = brecv(handle, buffer.baseAddress, buffer.count, deadline.value)
         
         guard result != -1 else {

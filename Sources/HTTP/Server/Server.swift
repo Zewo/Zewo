@@ -2,8 +2,6 @@ import Core
 import IO
 import Venice
 
-public typealias Respond = (Request) -> Response
-
 public final class Server {
     /// Parser buffer size
     public let parserBufferSize: Int

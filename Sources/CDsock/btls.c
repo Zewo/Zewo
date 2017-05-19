@@ -200,7 +200,7 @@ static ssize_t btls_conn_brecv(struct btls_conn *obj, void *buf, size_t len,
         /* If requested amount of data is large avoid the copy
            and read it directly into user's buffer. */
         if(len >= sizeof(rxbuf->data)) {
-            ssize_t sz = btls_conn_get(obj, buf + pos, len, 1, deadline);
+            ssize_t sz = btls_conn_get(obj, buf + pos, len, 0, deadline);
             if(dsock_slow(sz < 0)) return -1;
             read += sz;
             return read;

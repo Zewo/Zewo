@@ -3,14 +3,6 @@ import Core
 import Foundation
 import Venice
 
-public typealias RequestParserError = http_errno
-
-extension RequestParserError : Error, CustomStringConvertible {
-    public var description: String {
-        return String(cString: http_errno_description(self))
-    }
-}
-
 extension Request.Method {
     internal init(code: http_method) {
         switch code {
@@ -159,81 +151,11 @@ extension URI {
     }
 }
 
-public final class RequestParser {
-    fileprivate enum State: Int {
-        case ready = 1
-        case messageBegin = 2
-        case uri = 3
-        case headerField = 5
-        case headerValue = 6
-        case headersComplete = 7
-        case body = 8
-        case messageComplete = 9
-    }
-    
-    fileprivate class Context {
-        var uri: URI?
-        var headers: Headers = [:]
-        
-        weak var bodyStream: RequestBodyStream?
-        
-        var currentHeaderField: HeaderField?
-        
-        func addValueForCurrentHeaderField(_ value: String) {
-            guard let key = currentHeaderField else {
-                return
-            }
-            
-            if let existing = headers[key] {
-                headers[key] = existing + ", " + value
-            } else {
-                headers[key] = value
-            }
-        }
-    }
-    
-    private let stream: ReadableStream
-    private let bufferSize: Int
-    private let buffer: UnsafeMutableRawBufferPointer
-    
-    private var parser: http_parser
-    private var parserSettings: http_parser_settings
-    
-    private var state: State = .ready
-    private var context = Context()
-    private var bytes: [UInt8] = []
-    
+internal final class RequestParser : Parser {
     private var requests: [Request] = []
     
     public init(stream: ReadableStream, bufferSize: Int = 2048) {
-        self.stream = stream
-        self.bufferSize = bufferSize
-        self.buffer = UnsafeMutableRawBufferPointer.allocate(count: bufferSize)
-        
-        var parser = http_parser()
-        
-        http_parser_init(&parser, HTTP_REQUEST)
-        
-        
-        var parserSettings = http_parser_settings()
-        http_parser_settings_init(&parserSettings)
-        
-        parserSettings.on_message_begin = http_parser_on_message_begin
-        parserSettings.on_url = http_parser_on_url
-        parserSettings.on_header_field = http_parser_on_header_field
-        parserSettings.on_header_value = http_parser_on_header_value
-        parserSettings.on_headers_complete = http_parser_on_headers_complete
-        parserSettings.on_body = http_parser_on_body
-        parserSettings.on_message_complete = http_parser_on_message_complete
-        
-        self.parser = parser
-        self.parserSettings = parserSettings
-        
-        self.parser.data = Unmanaged.passUnretained(self).toOpaque()
-    }
-    
-    deinit {
-        buffer.deallocate()
+        super.init(stream: stream, bufferSize: bufferSize, type: HTTP_REQUEST)
     }
     
     public func parse(deadline: Deadline) throws -> Request {
@@ -246,170 +168,20 @@ public final class RequestParser {
         }
     }
     
-    func read(deadline: Deadline) throws {
-        let read = try stream.read(buffer, deadline: deadline)
-        
-        if read.isEmpty {
-            try stream.close()
+    override func headersComplete(context: Parser.Context, body: Parser.BodyStream) -> Bool {
+        guard let uri = context.uri else {
+            return false
         }
         
-        try parse(read)
+        let request = Request(
+            method: Request.Method(code: http_method(rawValue: parser.method)),
+            uri: uri,
+            headers: context.headers,
+            version: Version(major: Int(parser.http_major), minor: Int(parser.http_minor)),
+            body: .readable(body)
+        )
+        
+        requests.append(request)
+        return true
     }
-    
-    private func parse(_ buffer: UnsafeRawBufferPointer) throws {
-        let final = buffer.isEmpty
-        let needsMessage: Bool
-        
-        switch state {
-        case .ready, .messageComplete:
-            needsMessage = false
-        default:
-            needsMessage = final
-        }
-        
-        let processedCount: Int
-        
-        if final {
-            processedCount = http_parser_execute(&parser, &parserSettings, nil, 0)
-        } else {
-            processedCount = http_parser_execute(
-                &parser,
-                &parserSettings,
-                buffer.baseAddress?.assumingMemoryBound(to: Int8.self),
-                buffer.count
-            )
-        }
-        
-        guard processedCount == buffer.count else {
-            throw RequestParserError(parser.http_errno)
-        }
-        
-        guard !requests.isEmpty || !needsMessage else {
-            throw RequestParserError(HPE_INVALID_EOF_STATE.rawValue)
-        }
-    }
-    
-    fileprivate func process(state newState: State, data: UnsafeRawBufferPointer? = nil) -> Int32 {
-        if state != newState {
-            switch state {
-            case .ready, .messageBegin, .body, .messageComplete:
-                break
-            case .uri:
-                guard let uri = bytes.withUnsafeBytes({ buffer in
-                    return URI(buffer: buffer, isConnect: parser.method == HTTP_CONNECT.rawValue)
-                }) else {
-                    return 1
-                }
-                
-                context.uri = uri
-            case .headerField:
-                bytes.append(0)
-                
-                let string = bytes.withUnsafeBufferPointer { (pointer: UnsafeBufferPointer<UInt8>) -> String in
-                    return String(cString: pointer.baseAddress!)
-                }
-                
-                context.currentHeaderField = HeaderField(string)
-            case .headerValue:
-                bytes.append(0)
-                
-                let string = bytes.withUnsafeBufferPointer { (pointer: UnsafeBufferPointer<UInt8>) -> String in
-                    return String(cString: pointer.baseAddress!)
-                }
-                
-                context.addValueForCurrentHeaderField(string)
-            case .headersComplete:
-                context.currentHeaderField = nil
-                
-                guard let uri = context.uri else {
-                    return 1
-                }
-                
-                let bodyStream = RequestBodyStream(parser: self)
-                
-                let request = Request(
-                    method: Request.Method(code: http_method(rawValue: parser.method)),
-                    uri: uri,
-                    headers: context.headers,
-                    version: Version(major: Int(parser.http_major), minor: Int(parser.http_minor)),
-                    body: .readable(bodyStream)
-                )
-                
-                context.bodyStream = bodyStream
-                requests.append(request)
-            }
-            
-            bytes = []
-            state = newState
-            
-            if state == .messageComplete {
-                context.bodyStream?.complete = true
-                context = Context()
-            }
-        }
-        
-        guard let data = data, !data.isEmpty else {
-            return 0
-        }
-        
-        switch state {
-        case .body:
-            context.bodyStream?.bodyBuffer = data
-        default:
-            bytes.append(contentsOf: data)
-        }
-        
-        return 0
-    }
-}
-
-private func http_parser_on_message_begin(pointer: UnsafeMutablePointer<http_parser>?) -> Int32 {
-    let parser = Unmanaged<RequestParser>.fromOpaque(pointer!.pointee.data).takeUnretainedValue()
-    return parser.process(state: .messageBegin)
-}
-
-private func http_parser_on_url(
-    pointer: UnsafeMutablePointer<http_parser>?,
-    data: UnsafePointer<Int8>?,
-    length: Int
-) -> Int32 {
-    let parser = Unmanaged<RequestParser>.fromOpaque(pointer!.pointee.data).takeUnretainedValue()
-    return parser.process(state: .uri, data: UnsafeRawBufferPointer(start: data, count: length))
-}
-
-private func http_parser_on_header_field(
-    pointer: UnsafeMutablePointer<http_parser>?,
-    data: UnsafePointer<Int8>?,
-    length: Int
-) -> Int32 {
-    let parser = Unmanaged<RequestParser>.fromOpaque(pointer!.pointee.data).takeUnretainedValue()
-    return parser.process(state: .headerField, data: UnsafeRawBufferPointer(start: data, count: length))
-}
-
-private func http_parser_on_header_value(
-    pointer: UnsafeMutablePointer<http_parser>?,
-    data: UnsafePointer<Int8>?,
-    length: Int
-) -> Int32 {
-    let parser = Unmanaged<RequestParser>.fromOpaque(pointer!.pointee.data).takeUnretainedValue()
-    return parser.process(state: .headerValue, data: UnsafeRawBufferPointer(start: data, count: length))
-}
-
-private func http_parser_on_headers_complete(pointer: UnsafeMutablePointer<http_parser>?) -> Int32 {
-    let parser = Unmanaged<RequestParser>.fromOpaque(pointer!.pointee.data).takeUnretainedValue()
-    return parser.process(state: .headersComplete)
-}
-
-private func http_parser_on_body(
-    pointer: UnsafeMutablePointer<http_parser>?,
-    data: UnsafePointer<Int8>?,
-    length: Int
-) -> Int32 {
-    let parser = Unmanaged<RequestParser>.fromOpaque(pointer!.pointee.data).takeUnretainedValue()
-    return parser.process(state: .body, data: UnsafeRawBufferPointer(start: data, count: length))
-}
-
-private func http_parser_on_message_complete(pointer: UnsafeMutablePointer<http_parser>?) -> Int32 {
-    let parser = Unmanaged<RequestParser>.fromOpaque(pointer!.pointee.data).takeUnretainedValue()
-    return parser.process(state: .messageComplete)
 }

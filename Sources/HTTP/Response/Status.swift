@@ -26,10 +26,7 @@ extension Response.Status {
 
 extension Response.Status {
     public init(statusCode: Int, reasonPhrase: String? = nil) {
-        if let reasonPhrase = reasonPhrase {
-            self = .other(statusCode: statusCode, reasonPhrase: reasonPhrase)
-        } else {
-            switch statusCode {
+        switch statusCode {
             case Response.Status.continue.statusCode:                      self = .continue
             case Response.Status.switchingProtocols.statusCode:            self = .switchingProtocols
             case Response.Status.processing.statusCode:                    self = .processing
@@ -92,8 +89,7 @@ extension Response.Status {
             case Response.Status.notExtended.statusCode:                   self = .notExtended
             case Response.Status.networkAuthenticationRequired.statusCode: self = .networkAuthenticationRequired
 
-            default: self = .other(statusCode: statusCode, reasonPhrase: "CUSTOM")
-            }
+            default: self = .other(statusCode: statusCode, reasonPhrase: reasonPhrase ?? "CUSTOM")
         }
     }
 }

@@ -187,11 +187,19 @@ extension Request {
         get {
             return headers["Host"]
         }
+        
+        set(host) {
+            headers["Host"] = host
+        }
     }
     
     public var userAgent: String? {
         get {
             return headers["User-Agent"]
+        }
+        
+        set(userAgent) {
+            headers["User-Agent"] = userAgent
         }
     }
 }
@@ -218,32 +226,5 @@ public enum RequestContentError : Error {
 extension Request {
     public func getParameters<P : ParametersInitializable>() throws -> P {
         return try P(parameters: uri.parameters)
-    }
-    
-    public func getContent(
-        _ contentType: ContentType,
-        deadline: Deadline = 5.minutes.fromNow()
-    ) throws -> Content {
-        guard let mediaType = self.contentType else {
-            throw RequestContentError.noContentTypeHeader
-        }
-        
-        guard mediaType == contentType.mediaType else {
-            throw RequestContentError.unsupportedMediaType
-        }
-        
-        guard let stream = body.readable else {
-            throw RequestContentError.noReadableBody
-        }
-        
-        return try contentType.parser.parse(stream, deadline: deadline)
-    }
-    
-    public func getContent<C : ContentInitializable>(
-        _ contentType: ContentType,
-        deadline: Deadline = 5.minutes.fromNow()
-    ) throws -> C {
-        let content = try getContent(contentType, deadline: deadline)
-        return try C(content: content)
     }
 }
