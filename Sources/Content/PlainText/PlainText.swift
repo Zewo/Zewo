@@ -10,27 +10,19 @@ public struct PlainText {
     }
 }
 
-public protocol PlainTextInitializable : ContentInitializable {
+public protocol PlainTextInitializable {
     init(plainText: PlainText) throws
 }
 
-extension PlainTextInitializable {
-    public init(content: Content) throws {
-        guard let plainText = content as? PlainText else {
-            throw JSONError.outOfBounds(indexPath: [], content: "")
-        }
-        
-        try self.init(content: plainText)
-    }
+public protocol PlainTextRepresentable {
+    func plainText() -> PlainText
 }
 
-public protocol PlainTextRepresentable : ContentRepresentable {
-    var plainText: PlainText { get }
-}
+public protocol PlainTextConvertible : ContentConvertible, PlainTextInitializable, PlainTextRepresentable {}
 
-extension PlainTextRepresentable {
-    public var content: Content {
-        return plainText
+extension PlainTextConvertible {
+    static var contentTypes: ContentTypes<Self> {
+        return [ContentType(Self.init(plainText:), Self.plainText)]
     }
 }
 
@@ -41,7 +33,7 @@ extension PlainText : PlainTextInitializable {
 }
 
 extension PlainText : PlainTextRepresentable {
-    public var plainText: PlainText {
+    public func plainText() -> PlainText {
         return self
     }
 }

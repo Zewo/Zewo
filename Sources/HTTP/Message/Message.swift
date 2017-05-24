@@ -2,6 +2,15 @@ import Core
 import Content
 import Venice
 
+// TODO: Make error CustomStringConvertible and ResponseRepresentable
+public enum MessageContentError : Error {
+    case noReadableBody
+    case noContentTypeHeader
+    case unsupportedMediaType
+    case noDefaultContentType
+    case notContentRepresentable
+}
+
 public typealias Storage = [String: Any]
 
 public protocol Message : class {
@@ -66,28 +75,41 @@ extension Message {
         return headers["Upgrade"]
     }
     
-    public func content<C : Content>(
-        deadline: Deadline = 5.minutes.fromNow()
-    ) throws -> C {
+    public func content<C : Content>(deadline: Deadline = 5.minutes.fromNow()) throws -> C {
         guard let mediaType = self.contentType else {
-            throw RequestContentError.noContentTypeHeader
+            throw MessageContentError.noContentTypeHeader
         }
         
         guard mediaType == C.mediaType else {
-            throw RequestContentError.unsupportedMediaType
+            throw MessageContentError.unsupportedMediaType
         }
         
         guard let readable = body.readable else {
-            throw RequestContentError.noReadableBody
+            throw MessageContentError.noReadableBody
         }
         
         return try C.parse(from: readable, deadline: deadline)
     }
     
-    public func content<C : Content, I : ContentInitializable>(
-        type: C.Type,
-        deadline: Deadline = 5.minutes.fromNow()
-    ) throws -> I {
-        return try I(content: content(deadline: deadline) as C)
+    public func content<C : ContentConvertible>(deadline: Deadline = 5.minutes.fromNow()) throws -> C {
+        guard let mediaType = self.contentType else {
+            throw MessageContentError.noContentTypeHeader
+        }
+        
+        guard let readable = body.readable else {
+            throw MessageContentError.noReadableBody
+        }
+        
+        for contentType in C.contentTypes where contentType.mediaType.matches(other: mediaType) {
+            let content = try contentType.type.parse(from: readable, deadline: deadline)
+            
+            guard let initializer = try contentType.initialize?(content) else {
+                continue
+            }
+            
+            return initializer
+        }
+        
+        throw MessageContentError.unsupportedMediaType
     }
 }

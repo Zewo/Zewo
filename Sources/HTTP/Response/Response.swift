@@ -156,20 +156,67 @@ extension Response {
     public convenience init(
         status: Status,
         headers: Headers = [:],
-        content representable: ContentRepresentable,
+        content: Content,
         timeout: Duration = 5.minutes
     ) {
         self.init(
             status: status,
             headers: headers,
             body: { writable in
-                try representable.content.serialize(to: writable, deadline: timeout.fromNow())
+                try content.serialize(to: writable, deadline: timeout.fromNow())
             }
         )
         
-        self.contentType = type(of: representable.content).mediaType
+        self.contentType = type(of: content).mediaType
         self.contentLength = nil
         self.transferEncoding = "chunked"
+    }
+    
+    public convenience init<C : ContentConvertible>(
+        status: Status,
+        headers: Headers = [:],
+        content: C,
+        contentType mediaType: MediaType,
+        timeout: Duration = 5.minutes
+    ) throws {
+        for contentType in C.contentTypes where contentType.mediaType.matches(other: mediaType) {
+            guard let content = contentType.represent?(content)() else {
+                continue
+            }
+            
+            self.init(
+                status: status,
+                headers: headers,
+                content: content,
+                timeout: timeout
+            )
+            
+            return
+        }
+        
+        throw MessageContentError.unsupportedMediaType
+    }
+    
+    public convenience init<C : ContentConvertible>(
+        status: Status,
+        headers: Headers = [:],
+        content: C,
+        timeout: Duration = 5.minutes
+    ) throws {
+        guard let contentType = C.contentTypes.default else {
+            throw MessageContentError.noDefaultContentType
+        }
+        
+        guard let content = contentType.represent?(content)() else {
+            throw MessageContentError.notContentRepresentable
+        }
+        
+        self.init(
+            status: status,
+            headers: headers,
+            content: content,
+            timeout: timeout
+        )
     }
 }
 

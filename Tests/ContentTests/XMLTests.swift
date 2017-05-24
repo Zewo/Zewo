@@ -1,5 +1,5 @@
 import XCTest
-@testable import Core
+@testable import Content
 import Foundation
 
 public class XMLTests: XCTestCase {
@@ -26,15 +26,6 @@ public class XMLTests: XCTestCase {
         for element in try xml.get("Catalog", "Book") {
             try print(element.get("Author").content)
         }
-    }
-    
-    func testParser() throws {
-        let string =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-        "<ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Owner><ID>cb9bfdc6ad55baa411a245bd9cf2ab7d2504663a95bb21f4e8268d33d9848039</ID><DisplayName>fabiogutierrez</DisplayName></Owner><Buckets><Bucket><Name>pixeoh-api</Name><CreationDate>2017-02-24T17:40:21.000Z</CreationDate></Bucket><Bucket><Name>pixeoh-api-staging</Name><CreationDate>2017-03-02T00:36:52.000Z</CreationDate></Bucket></Buckets></ListAllMyBucketsResult>"
-        
-//        let xml = try XMLParser.parse(string.data(using: .utf8)!, deadline: 1.minute.fromNow())
-//        print(xml)
     }
 }
 

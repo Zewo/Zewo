@@ -88,6 +88,10 @@ public struct URI {
 }
 
 extension URI {
+    public mutating func set(parameter: String, for key: String) {
+        params.parameters[key] = parameter
+    }
+    
     public func parameters<P : ParametersInitializable>() throws -> P {
         return try P(parameters: params)
     }

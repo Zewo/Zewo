@@ -44,29 +44,6 @@ public final class Server {
         self.respond = respond
     }
     
-    /// Creates a new HTTP server
-    public convenience init(
-        router: BasicRouter,
-        logger: Logger = defaultLogger,
-        header: String = defaultHeader,
-        parserBufferSize: Int = 4096,
-        serializerBufferSize: Int = 4096,
-        parseTimeout: Duration = 5.minutes,
-        serializeTimeout: Duration = 5.minutes,
-        closeConnectionTimeout: Duration = 1.minute
-    ) {
-        self.init(
-            logger: logger,
-            header: header,
-            parserBufferSize: parserBufferSize,
-            serializerBufferSize: serializerBufferSize,
-            parseTimeout: parseTimeout,
-            serializeTimeout: serializeTimeout,
-            closeConnectionTimeout: closeConnectionTimeout,
-            respond: router.respond
-        )
-    }
-    
     deinit {
         group.cancel()
     }

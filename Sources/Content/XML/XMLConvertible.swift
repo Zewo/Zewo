@@ -26,18 +26,8 @@ public enum XMLInitializableError: Error, CustomStringConvertible {
     }
 }
 
-public protocol XMLInitializable : ContentInitializable {
+public protocol XMLInitializable {
     init(xml: XML) throws
-}
-
-extension XMLInitializable {
-    public init(content: Content) throws {
-        guard let xml = content as? XML else {
-            throw XMLError.attribute(attribute: "")
-        }
-        
-        try self.init(xml: xml)
-    }
 }
 
 public extension XML {

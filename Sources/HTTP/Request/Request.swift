@@ -120,7 +120,7 @@ extension Request {
         method: Method,
         uri: String,
         headers: Headers = [:],
-        content representable: ContentRepresentable,
+        content: Content,
         timeout: Duration = 5.minutes
     ) throws {
         try self.init(
@@ -128,13 +128,64 @@ extension Request {
             uri: uri,
             headers: headers,
             body: { writable in
-                try representable.content.serialize(to: writable, deadline: timeout.fromNow())
+                try content.serialize(to: writable, deadline: timeout.fromNow())
             }
         )
         
-        self.contentType = type(of: representable.content).mediaType
+        self.contentType = type(of: content).mediaType
         self.contentLength = nil
         self.transferEncoding = "chunked"
+    }
+    
+    public convenience init<C : ContentConvertible>(
+        method: Method,
+        uri: String,
+        headers: Headers = [:],
+        content: C,
+        contentType mediaType: MediaType,
+        timeout: Duration = 5.minutes
+    ) throws {
+        for contentType in C.contentTypes where contentType.mediaType.matches(other: mediaType) {
+            guard let content = contentType.represent?(content)() else {
+                continue
+            }
+            
+            try self.init(
+                method: method,
+                uri: uri,
+                headers: headers,
+                content: content,
+                timeout: timeout
+            )
+            
+            return
+        }
+        
+        throw MessageContentError.unsupportedMediaType
+    }
+    
+    public convenience init<C : ContentConvertible>(
+        method: Method,
+        uri: String,
+        headers: Headers = [:],
+        content: C,
+        timeout: Duration = 5.minutes
+    ) throws {
+        guard let contentType = C.contentTypes.default else {
+            throw MessageContentError.noDefaultContentType
+        }
+        
+        guard let content = contentType.represent?(content)() else {
+            throw MessageContentError.notContentRepresentable
+        }
+        
+        try self.init(
+            method: method,
+            uri: uri,
+            headers: headers,
+            content: content,
+            timeout: timeout
+        )
     }
 }
 
@@ -180,6 +231,28 @@ extension Request {
     }
 }
 
+extension Request {
+    public func negotiate<C : ContentConvertible>(_ content: C) throws -> Content {
+        for contentType in C.contentTypes where contentType.mediaType.matches(any: accept) {
+            guard let content = contentType.represent?(content)() else {
+                continue
+            }
+            
+            return content
+        }
+        
+        guard let contentType = C.contentTypes.default else {
+            throw MessageContentError.noDefaultContentType
+        }
+        
+        guard let content = contentType.represent?(content)() else {
+            throw MessageContentError.notContentRepresentable
+        }
+        
+        return content
+    }
+}
+
 extension Request : CustomStringConvertible {
     /// :nodoc:
     public var requestLineDescription: String {
@@ -190,11 +263,4 @@ extension Request : CustomStringConvertible {
     public var description: String {
         return requestLineDescription + headers.description
     }
-}
-
-// TODO: Make error CustomStringConvertible and ResponseRepresentable
-public enum RequestContentError : Error {
-    case noReadableBody
-    case noContentTypeHeader
-    case unsupportedMediaType
 }

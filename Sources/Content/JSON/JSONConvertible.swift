@@ -2,91 +2,97 @@ import struct Foundation.Data
 import struct Foundation.UUID
 
 public protocol JSONInitializable {
-    init(content: JSON) throws
+    init(json: JSON) throws
 }
 
 public protocol JSONRepresentable {
-    var content: JSON { get }
+    func json() -> JSON
 }
 
-public protocol JSONConvertible : JSONInitializable, JSONRepresentable {}
+public protocol JSONConvertible : ContentConvertible, JSONInitializable, JSONRepresentable {}
 
-extension JSON : JSONConvertible {
-    public var content: JSON {
+extension JSONConvertible {
+    static var contentTypes: ContentTypes<Self> {
+        return [ContentType(Self.init(json:), Self.json)]
+    }
+}
+
+extension JSON : JSONInitializable, JSONRepresentable {
+    public init(json: JSON) throws {
+        self = json
+    }
+    
+    public func json() -> JSON {
         return self
     }
-    
-    public init(content: JSON) throws {
-        self = content
-    }
 }
 
-extension Int : JSONConvertible {
-    public var content: JSON {
+extension Int : JSONInitializable, JSONRepresentable {
+    public init(json: JSON) throws {
+        guard case let .int(value) = json else {
+            throw JSONError.cannotInitialize(type: type(of: self), json: json)
+        }
+        
+        self = value
+    }
+    
+    public func json() -> JSON {
         return .int(self)
     }
-    
-    public init(content: JSON) throws {
-        guard case let .int(value) = content else {
-            throw JSONError.cannotInitialize(type: type(of: self), content: content)
+}
+
+extension Bool : JSONInitializable, JSONRepresentable {
+    public init(json: JSON) throws {
+        guard case let .bool(value) = json else {
+            throw JSONError.cannotInitialize(type: type(of: self), json: json)
         }
         
         self = value
     }
-}
-
-extension Bool : JSONConvertible {
-    public var content: JSON {
+    
+    public func json() -> JSON {
         return .bool(self)
     }
-    
-    public init(content: JSON) throws {
-        guard case let .bool(value) = content else {
-            throw JSONError.cannotInitialize(type: type(of: self), content: content)
+}
+
+extension String : JSONInitializable, JSONRepresentable {
+    public init(json: JSON) throws {
+        guard case let .string(value) = json else {
+            throw JSONError.cannotInitialize(type: type(of: self), json: json)
         }
         
         self = value
     }
-}
-
-extension String : JSONConvertible {
-    public var content: JSON {
+    
+    public func json() -> JSON {
         return .string(self)
     }
-    
-    public init(content: JSON) throws {
-        guard case let .string(value) = content else {
-            throw JSONError.cannotInitialize(type: type(of: self), content: content)
+}
+
+extension Double : JSONInitializable, JSONRepresentable {
+    public init(json: JSON) throws {
+        guard case let .double(value) = json else {
+            throw JSONError.cannotInitialize(type: type(of: self), json: json)
         }
         
         self = value
     }
-}
-
-extension Double : JSONConvertible {
-    public var content: JSON {
+    
+    public func json() -> JSON {
         return .double(self)
     }
-    
-    public init(content: JSON) throws {
-        guard case let .double(value) = content else {
-            throw JSONError.cannotInitialize(type: type(of: self), content: content)
-        }
-        
-        self = value
-    }
 }
 
-extension UUID : JSONConvertible {
-    public var content: JSON {
-        return .string(uuidString)
-    }
-    
-    public init(content: JSON) throws {
-        guard case let .string(value) = content, let uuid = UUID(uuidString: value) else {
-            throw JSONError.cannotInitialize(type: type(of: self), content: content)
+extension UUID : JSONInitializable, JSONRepresentable {
+    public init(json: JSON) throws {
+        guard case let .string(value) = json, let uuid = UUID(uuidString: value) else {
+            throw JSONError.cannotInitialize(type: type(of: self), json: json)
         }
         
         self = uuid
+    }
+    
+    public func json() -> JSON {
+        return .string(uuidString)
     }
 }

@@ -20,10 +20,3 @@ extension ParametersError : CustomStringConvertible {
 public protocol ParametersInitializable {
     init(parameters: URI.Parameters) throws
 }
-
-extension URI.Parameters {
-    public mutating func set(_ parameter: String, for key: String) {
-        parameters[key] = parameter
-    }
-}
-

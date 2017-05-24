@@ -2,11 +2,12 @@ import Foundation
 
 public enum JSONError : Error {
     case noContent(type: JSONInitializable.Type)
-    case cannotInitialize(type: JSONInitializable.Type, content: JSON)
-    case valueNotArray(indexPath: [IndexPathComponentValue], content: JSON)
-    case outOfBounds(indexPath: [IndexPathComponentValue], content: JSON)
-    case valueNotDictionary(indexPath: [IndexPathComponentValue], content: JSON)
-    case valueNotFound(indexPath: [IndexPathComponentValue], content: JSON)
+    case cannotInitializeWithContent(type: JSONInitializable.Type, content: Content.Type)
+    case cannotInitialize(type: JSONInitializable.Type, json: JSON)
+    case valueNotArray(indexPath: [IndexPathComponentValue], json: JSON)
+    case outOfBounds(indexPath: [IndexPathComponentValue], json: JSON)
+    case valueNotDictionary(indexPath: [IndexPathComponentValue], json: JSON)
+    case valueNotFound(indexPath: [IndexPathComponentValue], json: JSON)
 }
 
 extension JSONError : CustomStringConvertible {
@@ -15,16 +16,18 @@ extension JSONError : CustomStringConvertible {
         switch self {
         case let .noContent(type):
             return "Cannot initialize type \"\(String(describing: type))\" with no content."
-        case let .cannotInitialize(type, content):
-            return "Cannot initialize type \"\(String(describing: type))\" with content \(content)."
+        case let .cannotInitialize(type, json):
+            return "Cannot initialize type \"\(String(describing: type))\" with json \(json)."
+        case let .cannotInitializeWithContent(type, content):
+            return "Cannot initialize type \"\(String(describing: type))\" with type \(content)."
         case let .valueNotArray(indexPath, content):
-            return "Cannot get content for index path \"\(indexPath.string)\". Content is not an array \(content)."
+            return "Cannot get json element for index path \"\(indexPath.string)\". Element is not an array \(content)."
         case let .outOfBounds(indexPath, content):
-            return "Cannot get content for index path \"\(indexPath.string)\". Index is out of bounds for content \(content)."
+            return "Cannot get json element for index path \"\(indexPath.string)\". Index is out of bounds for element \(content)."
         case let .valueNotDictionary(indexPath, content):
-            return "Cannot get content for index path \"\(indexPath.string)\". Content is not a dictionary \(content)."
+            return "Cannot get json element for index path \"\(indexPath.string)\". Element is not a dictionary \(content)."
         case let .valueNotFound(indexPath, content):
-            return "Cannot get content for index path \"\(indexPath.string)\". Key is not present in content \(content)."
+            return "Cannot get json element for index path \"\(indexPath.string)\". Key is not present in element \(content)."
         }
     }
 }
@@ -42,13 +45,13 @@ public enum JSON {
 extension JSON {
     /// :nodoc:
     public init<T: JSONRepresentable>(_ value: T?) {
-        self = value?.content ?? .null
+        self = value?.json() ?? .null
     }
     
     /// :nodoc:
     public init<T: JSONRepresentable>(_ values: [T]?) {
         if let values = values {
-            self = .array(values.map({ $0.content }))
+            self = .array(values.map({ $0.json() }))
         } else {
             self = .null
         }
@@ -57,7 +60,7 @@ extension JSON {
     /// :nodoc:
     public init<T: JSONRepresentable>(_ values: [T?]?) {
         if let values = values {
-            self = .array(values.map({ $0?.content ?? .null}))
+            self = .array(values.map({ $0?.json() ?? .null}))
         } else {
             self = .null
         }
@@ -68,7 +71,7 @@ extension JSON {
         if let values = values {
             var dictionary: [String: JSON] = [:]
             
-            for (key, value) in values.map({($0.key, $0.value.content )}) {
+            for (key, value) in values.map({($0.key, $0.value.json() )}) {
                 dictionary[key] = value
             }
             
@@ -83,7 +86,7 @@ extension JSON {
         if let values = values {
             var dictionary: [String: JSON] = [:]
             
-            for (key, value) in values.map({($0.key, $0.value?.content ?? .null)}) {
+            for (key, value) in values.map({($0.key, $0.value?.json() ?? .null)}) {
                 dictionary[key] = value
             }
             
@@ -136,7 +139,7 @@ extension String : IndexPathComponent {
 extension JSON {
     public func get<T : JSONInitializable>(_ indexPath: IndexPathComponent...) throws -> T {
         let content = try get(indexPath)
-        return try T(content: content)
+        return try T(json: content)
     }
     
     public func get(_ indexPath: IndexPathComponent...) throws -> JSON {
@@ -153,21 +156,21 @@ extension JSON {
             switch component.indexPathComponent {
             case let .index(index):
                 guard case let .array(array) = value else {
-                    throw JSONError.valueNotArray(indexPath: visited, content: self)
+                    throw JSONError.valueNotArray(indexPath: visited, json: self)
                 }
                 
                 guard array.indices.contains(index) else {
-                    throw JSONError.outOfBounds(indexPath: visited, content: self)
+                    throw JSONError.outOfBounds(indexPath: visited, json: self)
                 }
                 
                 value = array[index]
             case let .key(key):
                 guard case let .dictionary(dictionary) = value else {
-                    throw JSONError.valueNotDictionary(indexPath: visited, content: self)
+                    throw JSONError.valueNotDictionary(indexPath: visited, json: self)
                 }
                 
                 guard let newValue = dictionary[key] else {
-                    throw JSONError.valueNotFound(indexPath: visited, content: self)
+                    throw JSONError.valueNotFound(indexPath: visited, json: self)
                 }
                 
                 value = newValue
@@ -242,7 +245,7 @@ extension JSON : ExpressibleByStringLiteral {
 extension JSON : ExpressibleByArrayLiteral {
     /// :nodoc:
     public init(arrayLiteral elements: JSONRepresentable...) {
-        self = .array(elements.map({ $0.content }))
+        self = .array(elements.map({ $0.json() }))
     }
 }
 
@@ -252,7 +255,7 @@ extension JSON : ExpressibleByDictionaryLiteral {
         var dictionary = [String: JSON](minimumCapacity: elements.count)
         
         for (key, value) in elements {
-            dictionary[key] = value.content
+            dictionary[key] = value.json()
         }
         
         self = .dictionary(dictionary)
