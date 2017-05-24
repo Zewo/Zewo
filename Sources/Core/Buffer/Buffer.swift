@@ -99,7 +99,7 @@ extension Collection where Iterator.Element == UInt8 {
         var string = ""
         
         for byte in self {
-            if byte <= 9 {
+            if byte < 0x10 {
                 string += "0"
             }
             
