@@ -8,17 +8,27 @@ import Venice
 import Core
 import CLibdill
 
-public final class TCPStream : Handle, DuplexStream {
+public final class TCPStream : DuplexStream {
+    internal typealias Handle = Int32
+    
+    private var handle: Handle
     public var ip: IP
+    private var open: Bool
 
-    init(handle: HandleDescriptor, ip: IP) {
+    internal init(handle: Handle, ip: IP, open: Bool) {
+        self.handle = handle
         self.ip = ip
-        super.init(handle: handle)
+        self.open = open
     }
     
-    public init(ip: IP) {
-        self.ip = ip
-        super.init(handle: -1)
+    public convenience init(ip: IP) {
+        self.init(handle: -1, ip: ip, open: false)
+    }
+
+    deinit {
+        if open {
+            hclose(handle)
+        }
     }
 
     public convenience init(host: String, port: Int, deadline: Deadline) throws {
@@ -27,6 +37,10 @@ public final class TCPStream : Handle, DuplexStream {
     }
 
     public func open(deadline: Deadline) throws {
+        guard !open else {
+            throw SystemError.socketIsAlreadyConnected
+        }
+ 
         var address = ip.address
         let result = tcp_connect(&address, deadline.value)
         
@@ -38,12 +52,14 @@ public final class TCPStream : Handle, DuplexStream {
         }
 
         self.handle = result
+        self.open = true
     }
 
     public func read(
         _ buffer: UnsafeMutableRawBufferPointer,
         deadline: Deadline
     ) throws -> UnsafeRawBufferPointer {
+        try assertOpen()
         let result = brecv(handle, buffer.baseAddress, buffer.count, deadline.value)
         
         guard result != -1 else {
@@ -53,10 +69,11 @@ public final class TCPStream : Handle, DuplexStream {
             }
         }
         
-        return UnsafeRawBufferPointer(buffer).prefix(result)
+        return UnsafeRawBufferPointer(buffer).prefix(upTo: result)
     }
     
     public func write(_ buffer: UnsafeRawBufferPointer, deadline: Deadline) throws {
+        try assertOpen()
         let result = bsend(handle, buffer.baseAddress, buffer.count, deadline.value)
         
         guard result != -1 else {
@@ -67,14 +84,26 @@ public final class TCPStream : Handle, DuplexStream {
         }
     }
     
-    public override func done(deadline: Deadline) throws {
-        let result = tcp_close(handle, deadline.value)
+    public func close(deadline: Deadline) throws {
+        try assertOpen()
+        
+        defer {
+            open = false
+        }
+        
+        let result = hclose(handle)
         
         guard result != -1 else {
             switch errno {
             default:
                 throw SystemError.lastOperationError
             }
+        }
+    }
+    
+    private func assertOpen() throws {
+        guard open else {
+            throw SystemError.socketIsNotConnected
         }
     }
 }

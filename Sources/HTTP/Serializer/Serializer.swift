@@ -9,7 +9,7 @@ public enum SerializerError : Error {
 }
 
 internal class Serializer {
-    final class BodyStream : WritableStream {
+    final class BodyStream : Writable {
         enum Mode {
             case contentLength(Int)
             case chunkedEncoding
@@ -17,26 +17,16 @@ internal class Serializer {
         
         var bytesRemaining = 0
         
-        private let stream: WritableStream
+        private let stream: Writable
         private let mode: Mode
         
-        init(_ stream: WritableStream, mode: Mode) {
+        init(_ stream: Writable, mode: Mode) {
             self.stream = stream
             self.mode = mode
             
             if case let .contentLength(contentLength) = mode {
                 bytesRemaining = contentLength
             }
-        }
-        
-        func open(deadline: Deadline) throws {}
-        
-        func done(deadline: Deadline) throws {
-            try stream.done(deadline: deadline)
-        }
-        
-        func close() throws {
-            try stream.close()
         }
         
         func write(_ buffer: UnsafeRawBufferPointer, deadline: Deadline) throws {
@@ -61,11 +51,11 @@ internal class Serializer {
         }
     }
     
-    internal let stream: WritableStream
+    internal let stream: Writable
     private let bufferSize: Int
     private let buffer: UnsafeMutableRawBufferPointer
     
-    internal init(stream: WritableStream, bufferSize: Int) {
+    internal init(stream: Writable, bufferSize: Int) {
         self.stream = stream
         self.bufferSize = bufferSize
         self.buffer = UnsafeMutableRawBufferPointer.allocate(count: bufferSize)
@@ -75,7 +65,7 @@ internal class Serializer {
         buffer.deallocate()
     }
     
-    internal func serializeHeaders(for message: Message, deadline: Deadline) throws {
+    internal func serializeHeaders(_ message: Message, deadline: Deadline) throws {
         var header = ""
         
         for (name, value) in message.headers.headers {
@@ -90,20 +80,20 @@ internal class Serializer {
         try stream.write(header, deadline: deadline)
     }
     
-    internal func serializeBody(for message: Message, deadline: Deadline) throws {
+    internal func serializeBody(_ message: Message, deadline: Deadline) throws {
         if let contentLength = message.contentLength {
-            try writeBody(for: message, contentLength: contentLength, deadline: deadline)
+            try writeBody(message, contentLength: contentLength, deadline: deadline)
         }
         
         if message.isChunkEncoded {
-            try writeChunkEncodedBody(for: message, deadline: deadline)
+            try writeChunkEncodedBody(message, deadline: deadline)
         }
         
         try write(to: stream, body: message.body, deadline: deadline)
     }
     
     @inline(__always)
-    private func writeBody(for message: Message, contentLength: Int, deadline: Deadline) throws {
+    private func writeBody(_ message: Message, contentLength: Int, deadline: Deadline) throws {
         guard contentLength != 0 else {
             return
         }
@@ -121,27 +111,27 @@ internal class Serializer {
     }
     
     @inline(__always)
-    private func writeChunkEncodedBody(for message: Message, deadline: Deadline) throws {
+    private func writeChunkEncodedBody(_ message: Message, deadline: Deadline) throws {
         let bodyStream = BodyStream(stream, mode: .chunkedEncoding)
         try write(to: bodyStream, body: message.body, deadline: deadline)
         try stream.write("0\r\n\r\n", deadline: deadline)
     }
     
     @inline(__always)
-    private func write(to writableStream: WritableStream, body: Body, deadline: Deadline) throws {
+    private func write(to writable: Writable, body: Body, deadline: Deadline) throws {
         switch body {
-        case let .readable(readableStream):
+        case let .readable(readable):
             while true {
-                let readBuffer = try readableStream.read(buffer, deadline: deadline)
+                let read = try readable.read(buffer, deadline: deadline)
                 
-                guard !readBuffer.isEmpty else {
+                guard !read.isEmpty else {
                     break
                 }
                 
-                try writableStream.write(readBuffer, deadline: deadline)
+                try writable.write(read, deadline: deadline)
             }
         case let .writable(write):
-            try write(writableStream)
+            try write(writable)
         }
     }
 }

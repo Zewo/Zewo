@@ -12,18 +12,22 @@ import CDsock
 // TODO: Create TCP errors
 public enum TLSError : Error {}
 
-public final class TLSHost : Handle, Host {
+public final class TLSHost : Host {
+    private typealias Handle = Int32
+    private typealias Socket = Int32
+
+    private let handle: Handle
+    private let socket: Socket
     public let ip: IP
-    private let socket: Int32
     
-    init(handle: HandleDescriptor, socket: Int32, ip: IP) {
-        self.ip = ip
+    private init(handle: Handle, socket: Socket, ip: IP) {
+        self.handle = handle
         self.socket = socket
-        super.init(handle: handle)
+        self.ip = ip
     }
     
     deinit {
-        try? close()
+        hclose(handle)
     }
     
     public convenience init(
@@ -134,6 +138,6 @@ public final class TLSHost : Handle, Host {
             }
         }
         
-        return TLSStream(handle: result, socket: socket, ip: IP(address: &address))
+        return TLSStream(handle: result, socket: socket, ip: IP(address: &address), open: true)
     }
 }

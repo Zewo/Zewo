@@ -6,7 +6,7 @@ import Venice
 internal final class ResponseParser : Parser {
     private var responses: [Response] = []
     
-    internal init(stream: ReadableStream, bufferSize: Int = 2048) {
+    internal init(stream: Readable, bufferSize: Int = 2048) {
         super.init(stream: stream, bufferSize: bufferSize, type: HTTP_RESPONSE)
     }
     

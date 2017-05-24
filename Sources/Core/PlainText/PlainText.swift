@@ -1,42 +1,79 @@
+import Venice
 import struct Foundation.Data
 
-extension ContentType {
-    public static var plainText: ContentType {
-        return ContentType(
-            mediaType: .plainText,
-            parser: PlainTextParser.self,
-            serializer: PlainTextSerializer.self
-        )
+public struct PlainText {
+    public let description: String
+    
+    public init(_ description: String) {
+        self.description = description
     }
 }
 
-public struct PlainTextParser : ContentParser {
-    public init() {}
-    
-    @discardableResult
-    public func parse(_ buffer: UnsafeRawBufferPointer) throws -> Content? {
-        guard let string = String(data: Data(buffer), encoding: .utf8) else {
-            return nil
+public protocol PlainTextInitializable : ContentInitializable {
+    init(plainText: PlainText) throws
+}
+
+extension PlainTextInitializable {
+    public init(content: Content) throws {
+        guard let plainText = content as? PlainText else {
+            throw JSONError.outOfBounds(indexPath: [], content: "")
         }
         
-        return .string(string)
+        try self.init(content: plainText)
     }
 }
 
-public struct PlainTextSerializer : ContentSerializer {
-    public init() {}
+public protocol PlainTextRepresentable : ContentRepresentable {
+    var plainText: PlainText { get }
+}
+
+extension PlainTextRepresentable {
+    public var content: Content {
+        return plainText
+    }
+}
+
+extension PlainText : PlainTextInitializable {
+    public init(plainText: PlainText) throws {
+        self = plainText
+    }
+}
+
+extension PlainText : PlainTextRepresentable {
+    public var plainText: PlainText {
+        return self
+    }
+}
+
+extension PlainText : CustomStringConvertible {}
+
+extension PlainText : Content {
+    public static var mediaType: MediaType = .plainText
     
-    public func serialize(
-        _ content: Content,
-        bufferSize: Int,
-        body: (UnsafeRawBufferPointer) throws -> Void
-    ) throws {
-        guard case let .string(string) = content else {
-            throw ContentSerializerError.invalidInput
+    public static func parse(from readable: Readable, deadline: Deadline) throws -> PlainText {
+        var bytes: [UInt8] = []
+        
+        let buffer = UnsafeMutableRawBufferPointer.allocate(count: 2048)
+        
+        defer {
+            buffer.deallocate()
         }
         
-        try string.withBuffer { buffer in
-            try body(buffer)
+        while true {
+            let read = try readable.read(buffer, deadline: deadline)
+            
+            guard !read.isEmpty else {
+                break
+            }
+            
+            bytes.append(contentsOf: read)
         }
+        
+        bytes += [0]
+        return PlainText(String(cString: bytes))
+    }
+    
+    public func serialize(to writable: Writable, deadline: Deadline) throws {
+        try writable.write(description, deadline: deadline)
     }
 }

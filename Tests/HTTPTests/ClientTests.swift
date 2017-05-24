@@ -1,17 +1,14 @@
 import XCTest
-import Venice
 import Core
-import struct Foundation.URL
-@testable import HTTP
+import HTTP
 
 public class ClientTests: XCTestCase {
-    let deadline: Deadline = .never
-    
     func testClient() throws {
-        let client = try Client(url: "https://api.github.com")
-        let response = try client.get("/zen")
-        let body: String = try response.getContent(.plainText)
-        print(body)
+        let client = try Client(uri: "https://api.github.com")
+        let request = try Request(method: .get, uri: "/zen")
+        let response = try client.send(request)
+        let zen: PlainText = try response.content()
+        print(zen)
     }
 }
 

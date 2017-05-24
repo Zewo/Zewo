@@ -12,7 +12,7 @@ extension ParserError : Error, CustomStringConvertible {
 }
 
 internal class Parser {
-    final class BodyStream : ReadableStream {
+    final class BodyStream : Readable {
         var complete = false
         var bodyBuffer = UnsafeRawBufferPointer(start: nil, count: 0)
         
@@ -21,10 +21,6 @@ internal class Parser {
         public init(parser: Parser) {
             self.parser = parser
         }
-        
-        func open(deadline: Deadline) throws {}
-        func done(deadline: Deadline) throws {}
-        func close() throws {}
         
         func read(
             _ buffer: UnsafeMutableRawBufferPointer,
@@ -48,7 +44,7 @@ internal class Parser {
             
             let bytesRead = min(bodyBuffer.count, buffer.count)
             memcpy(baseAddress, bodyBaseAddress, bytesRead)
-            bodyBuffer = bodyBuffer.suffix(bytesRead)
+            bodyBuffer = bodyBuffer.suffix(from: bytesRead)
             
             return UnsafeRawBufferPointer(start: baseAddress, count: bytesRead)
         }
@@ -87,7 +83,7 @@ internal class Parser {
         }
     }
     
-    private let stream: ReadableStream
+    private let stream: Readable
     private let bufferSize: Int
     private let buffer: UnsafeMutableRawBufferPointer
     
@@ -98,7 +94,7 @@ internal class Parser {
     private var context = Context()
     private var bytes: [UInt8] = []
     
-    public init(stream: ReadableStream, bufferSize: Int = 2048, type: http_parser_type) {
+    public init(stream: Readable, bufferSize: Int = 2048, type: http_parser_type) {
         self.stream = stream
         self.bufferSize = bufferSize
         self.buffer = UnsafeMutableRawBufferPointer.allocate(count: bufferSize)
@@ -135,11 +131,6 @@ internal class Parser {
     
     func read(deadline: Deadline) throws {
         let read = try stream.read(buffer, deadline: deadline)
-        
-        if read.isEmpty {
-            try stream.close()
-        }
-        
         try parse(read)
     }
     

@@ -69,6 +69,10 @@ open class BasicRouter {
         respond(method: .get, body: body)
     }
     
+    public func head(body: @escaping Respond) {
+        respond(method: .head, body: body)
+    }
+    
     public func post(body: @escaping Respond) {
         respond(method: .post, body: body)
     }
@@ -83,6 +87,18 @@ open class BasicRouter {
     
     public func delete(body: @escaping Respond) {
         respond(method: .delete, body: body)
+    }
+    
+    public func trace(body: @escaping Respond) {
+        respond(method: .trace, body: body)
+    }
+    
+    public func options(body: @escaping Respond) {
+        respond(method: .options, body: body)
+    }
+    
+    public func connect(body: @escaping Respond) {
+        respond(method: .connect, body: body)
     }
     
     public func respond(to request: Request) -> Response {

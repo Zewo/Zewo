@@ -11,16 +11,19 @@ import CLibdill
 // TODO: Create TCP errors
 public enum TCPError : Error {}
 
-public final class TCPHost : Handle, Host {
+public final class TCPHost : Host {
+    private typealias Handle = Int32
+
+    private let handle: Handle
     public let ip: IP
 
-    init(handle: HandleDescriptor, ip: IP) {
+    private init(handle: Handle, ip: IP) {
+        self.handle = handle
         self.ip = ip
-        super.init(handle: handle)
     }
     
     deinit {
-        try? close()
+        hclose(handle)
     }
 
     public convenience init(ip: IP, backlog: Int, reusePort: Bool) throws {
@@ -67,6 +70,6 @@ public final class TCPHost : Handle, Host {
             }
         }
 
-        return TCPStream(handle: result, ip: IP(address: &address))
+        return TCPStream(handle: result, ip: IP(address: &address), open: true)
     }
 }

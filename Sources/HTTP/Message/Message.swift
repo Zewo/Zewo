@@ -65,30 +65,28 @@ extension Message {
         return headers["Upgrade"]
     }
     
-    public func getContent(
-        _ contentType: ContentType,
+    public func content<C : Content>(
         deadline: Deadline = 5.minutes.fromNow()
-    ) throws -> Content {
+    ) throws -> C {
         guard let mediaType = self.contentType else {
             throw RequestContentError.noContentTypeHeader
         }
         
-        guard mediaType == contentType.mediaType else {
+        guard mediaType == C.mediaType else {
             throw RequestContentError.unsupportedMediaType
         }
         
-        guard let stream = body.readable else {
+        guard let readable = body.readable else {
             throw RequestContentError.noReadableBody
         }
         
-        return try contentType.parser.parse(stream, deadline: deadline)
+        return try C.parse(from: readable, deadline: deadline)
     }
     
-    public func getContent<C : ContentInitializable>(
-        _ contentType: ContentType,
+    public func content<C : Content, I : ContentInitializable>(
+        type: C.Type,
         deadline: Deadline = 5.minutes.fromNow()
-    ) throws -> C {
-        let content = try getContent(contentType, deadline: deadline)
-        return try C(content: content)
+    ) throws -> I {
+        return try I(content: content(deadline: deadline) as C)
     }
 }

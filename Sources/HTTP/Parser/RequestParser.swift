@@ -154,7 +154,7 @@ extension URI {
 internal final class RequestParser : Parser {
     private var requests: [Request] = []
     
-    public init(stream: ReadableStream, bufferSize: Int = 2048) {
+    public init(stream: Readable, bufferSize: Int = 2048) {
         super.init(stream: stream, bufferSize: bufferSize, type: HTTP_REQUEST)
     }
     

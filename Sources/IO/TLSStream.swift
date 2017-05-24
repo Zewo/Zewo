@@ -9,20 +9,30 @@ import Core
 import CLibdill
 import CDsock
 
-public final class TLSStream : Handle, DuplexStream {
-    public var ip: IP
-    private var socket: Int32
+public final class TLSStream : DuplexStream {
+    internal typealias Handle = Int32
+    internal typealias Socket = Int32
     
-    init(handle: HandleDescriptor, socket: Int32, ip: IP) {
-        self.ip = ip
+    private var handle: Handle
+    private var socket: Socket
+    public var ip: IP
+    private var open: Bool
+    
+    internal init(handle: Handle, socket: Socket, ip: IP, open: Bool) {
+        self.handle = handle
         self.socket = socket
-        super.init(handle: handle)
+        self.ip = ip
+        self.open = open
     }
     
-    public init(ip: IP) {
-        self.ip = ip
-        self.socket = -1
-        super.init(handle: -1)
+    deinit {
+        if open {
+            hclose(handle)
+        }
+    }
+    
+    public convenience init(ip: IP) {
+        self.init(handle: -1, socket: -1, ip: ip, open: false)
     }
     
     public convenience init(host: String, port: Int, deadline: Deadline) throws {
@@ -31,6 +41,10 @@ public final class TLSStream : Handle, DuplexStream {
     }
     
     public func open(deadline: Deadline) throws {
+        guard !open else {
+            throw SystemError.socketIsAlreadyConnected
+        }
+        
         var address = ip.address
         var result = tcp_connect(&address, deadline.value)
         
@@ -66,12 +80,14 @@ public final class TLSStream : Handle, DuplexStream {
         
         self.handle = result
         self.socket = socket
+        self.open = true
     }
     
     public func read(
         _ buffer: UnsafeMutableRawBufferPointer,
         deadline: Deadline
     ) throws -> UnsafeRawBufferPointer {
+        try assertOpen()
         let result = brecv(handle, buffer.baseAddress, buffer.count, deadline.value)
         
         guard result != -1 else {
@@ -81,10 +97,11 @@ public final class TLSStream : Handle, DuplexStream {
             }
         }
         
-        return UnsafeRawBufferPointer(buffer).prefix(result)
+        return UnsafeRawBufferPointer(buffer.prefix(result))
     }
     
     public func write(_ buffer: UnsafeRawBufferPointer, deadline: Deadline) throws {
+        try assertOpen()
         let result = bsend(handle, buffer.baseAddress, buffer.count, deadline.value)
         
         guard result != -1 else {
@@ -92,6 +109,29 @@ public final class TLSStream : Handle, DuplexStream {
             default:
                 throw SystemError.lastOperationError
             }
+        }
+    }
+    
+    public func close(deadline: Deadline) throws {
+        try assertOpen()
+        
+        defer {
+            open = false
+        }
+        
+        let result = hclose(handle)
+        
+        guard result != -1 else {
+            switch errno {
+            default:
+                throw SystemError.lastOperationError
+            }
+        }
+    }
+    
+    private func assertOpen() throws {
+        guard open else {
+            throw SystemError.socketIsNotConnected
         }
     }
 }

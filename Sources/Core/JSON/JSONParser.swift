@@ -10,7 +10,7 @@ public struct JSONParserError : Error, CustomStringConvertible {
     public let description: String
 }
 
-public final class JSONParser : ContentParser {
+public final class JSONParser {
     public struct Options : OptionSet {
         public let rawValue: Int
         public static let allowComments = Options(rawValue: 1 << 0)
@@ -24,7 +24,7 @@ public final class JSONParser : ContentParser {
         }
     }
     
-    public static func parse(_ bytes: UnsafeRawBufferPointer, options: Options = []) throws -> Content {
+    public static func parse(_ bytes: UnsafeRawBufferPointer, options: Options = []) throws -> JSON {
         let parser = JSONParser(options: options)
         try parser.parse(bytes)
         return try parser.finish()
@@ -32,13 +32,13 @@ public final class JSONParser : ContentParser {
     
     public let options: Options
     
-    fileprivate var state: JSONMapParserState = JSONMapParserState(dictionary: true)
-    fileprivate var stack: [JSONMapParserState] = []
+    fileprivate var state: JSONParserState = JSONParserState(dictionary: true)
+    fileprivate var stack: [JSONParserState] = []
     
     fileprivate let bufferCapacity = 8*1024
     fileprivate let buffer = UnsafeMutablePointer<CChar>.allocate(capacity: 8 * 1024)
     
-    fileprivate var result: Content? = nil
+    fileprivate var result: JSON? = nil
     
     fileprivate var handle: yajl_handle?
     
@@ -71,7 +71,7 @@ public final class JSONParser : ContentParser {
     }
     
     @discardableResult
-    public func parse(_ bytes: UnsafeRawBufferPointer) throws -> Content? {
+    public func parse(_ bytes: UnsafeRawBufferPointer) throws -> JSON? {
         let final = bytes.isEmpty
         
         guard result == nil else {
@@ -129,7 +129,7 @@ public final class JSONParser : ContentParser {
         return result
     }
     
-    public func finish() throws -> Content {
+    public func finish() throws -> JSON {
         let empty = UnsafeRawBufferPointer(start: nil, count: 0)
         
         guard let result = try self.parse(empty) else {
@@ -161,7 +161,7 @@ public final class JSONParser : ContentParser {
     
     fileprivate func startMap() -> Int32 {
         stack.append(state)
-        state = JSONMapParserState(dictionary: true)
+        state = JSONParserState(dictionary: true)
         return 1
     }
     
@@ -183,7 +183,7 @@ public final class JSONParser : ContentParser {
     
     fileprivate func startArray() -> Int32 {
         stack.append(state)
-        state = JSONMapParserState(dictionary: false)
+        state = JSONParserState(dictionary: false)
         return 1
     }
     
@@ -199,11 +199,11 @@ public final class JSONParser : ContentParser {
     }
 }
 
-fileprivate struct JSONMapParserState {
+fileprivate struct JSONParserState {
     let isDictionary: Bool
     var dictionaryKey: String = ""
     
-    var content: Content {
+    var content: JSON {
         if isDictionary {
             return .dictionary(dictionary)
         } else {
@@ -211,13 +211,13 @@ fileprivate struct JSONMapParserState {
         }
     }
     
-    private var dictionary: [String: Content]
-    private var array: [Content]
+    private var dictionary: [String: JSON]
+    private var array: [JSON]
     
     init(dictionary: Bool) {
         self.isDictionary = dictionary
         if dictionary {
-            self.dictionary = Dictionary<String, Content>(minimumCapacity: 32)
+            self.dictionary = Dictionary<String, JSON>(minimumCapacity: 32)
             self.array = []
         } else {
             self.dictionary = [:]
@@ -276,7 +276,7 @@ fileprivate struct JSONMapParserState {
         return 1
     }
     
-    mutating func append(_ value: Content) -> Int32 {
+    mutating func append(_ value: JSON) -> Int32 {
         if isDictionary {
             dictionary[dictionaryKey] = value
         } else {

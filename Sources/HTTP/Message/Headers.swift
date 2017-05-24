@@ -77,6 +77,10 @@ public struct Headers {
     public init(_ headers: [HeaderField: String]) {
         self.headers = headers
     }
+    
+    public var fields: [HeaderField] {
+        return Array(headers.keys)
+    }
 }
 
 extension Headers {

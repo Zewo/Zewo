@@ -1,3 +1,9 @@
+import struct Foundation.URLComponents
+
+public enum URIError : Error {
+    case invalidURI
+}
+
 /**
  The generic URI [syntax](https://tools.ietf.org/html/rfc3986#section-1) consists of a hierarchical sequence of
  components referred to as the `scheme`, `userInfo`, `host`, `port`, `path`, `query`, and
@@ -12,9 +18,6 @@
  scheme  user info           host    port    path       query  fragment
  ```
  */
-
-import struct Foundation.URL
-
 public struct URI {
     public var scheme: String?
     public var userInfo: UserInfo?
@@ -26,7 +29,7 @@ public struct URI {
     
     public var parameters: Parameters
     
-    public init(
+    internal init(
         scheme: String? = nil,
         userInfo: UserInfo? = nil,
         host: String? = nil,
@@ -42,14 +45,14 @@ public struct URI {
         self.path = path
         self.query = query
         self.fragment = fragment
-
-        if let query = query {
+        
+        if let query = query?.removingPercentEncoding {
             self.parameters = Parameters(query: query)
         } else {
             self.parameters = Parameters()
         }
     }
-
+    
     public struct Parameters {
         var parameters: [String: String]
 
@@ -77,7 +80,7 @@ public struct URI {
         public var username: String
         public var password: String?
         
-        public init(username: String, password: String?) {
+        internal init(username: String, password: String?) {
             self.username = username
             self.password = password
         }
@@ -90,31 +93,36 @@ extension URI : CustomStringConvertible {
         var string = ""
         
         if let scheme = scheme {
-            string += "\(scheme)://"
+            string += scheme
+            string += "://"
         }
         
         if let userInfo = userInfo {
-            string += "\(userInfo)@"
+            string += userInfo.description
+            string += "@"
         }
         
         if let host = host {
-            string += "\(host)"
+            string += host
         }
         
         if let port = port {
-            string += ":\(port)"
+            string += ":"
+            string += port.description
         }
         
         if let path = path {
-            string += "\(path)"
+            string += path
         }
         
         if let query = query {
-            string += "\(query)"
+            string += "?"
+            string += query
         }
         
         if let fragment = fragment {
-            string += "#\(fragment)"
+            string += "#"
+            string += fragment
         }
         
         return string
@@ -122,26 +130,29 @@ extension URI : CustomStringConvertible {
 }
 
 extension URI {
-
-    public init(url: URL) {
-
-        let userInfo: UserInfo?
-
-        if let username = url.user {
-            userInfo = UserInfo(username: username, password: url.password)
-        } else {
-            userInfo = nil
+    /// Creates an `URI` from a string.
+    public init(_ string: String) throws {
+        guard let url = URLComponents(string: string) else {
+            throw URIError.invalidURI
         }
-
-        self.init(
-            scheme: url.scheme,
-            userInfo: userInfo,
-            host: url.host,
-            port: url.port,
-            path: url.path,
-            query: url.query,
-            fragment: url.fragment
-        )
+        
+        self.scheme = url.scheme
+        
+        self.userInfo = url.percentEncodedUser.map {
+            UserInfo(username: $0, password: url.percentEncodedPassword)
+        }
+        
+        self.host = url.percentEncodedHost
+        self.port = url.port
+        self.path = url.percentEncodedPath
+        self.query = url.percentEncodedQuery
+        self.fragment = url.percentEncodedFragment
+        
+        if let query = url.query {
+            self.parameters = Parameters(query: query)
+        } else {
+            self.parameters = Parameters()
+        }
     }
 }
 

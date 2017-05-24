@@ -31,15 +31,15 @@ public final class Request : Message {
     }
     
     public enum Method {
-        case delete
         case get
         case head
         case post
         case put
-        case connect
+        case patch
+        case delete
         case options
         case trace
-        case patch
+        case connect
         case other(String)
     }
 }
@@ -47,29 +47,34 @@ public final class Request : Message {
 extension Request {
     public convenience init(
         method: Method,
-        url: URL,
+        uri: String,
         headers: Headers = [:]
-    ) {
+    ) throws {
         self.init(
             method: method,
-            uri: URI(url: url),
+            uri: try URI(uri),
             headers: headers,
             version: .oneDotOne,
             body: .empty
         )
         
-        contentLength = 0
+        switch method {
+        case .get, .head, .options, .connect, .trace:
+            break
+        default:
+            contentLength = 0
+        }
     }
     
     public convenience init(
         method: Method,
-        url: URL,
+        uri: String,
         headers: Headers = [:],
-        body stream: ReadableStream
-    ) {
+        body stream: Readable
+    ) throws {
         self.init(
             method: method,
-            uri: URI(url: url),
+            uri: try URI(uri),
             headers: headers,
             version: .oneDotOne,
             body: .readable(stream)
@@ -78,13 +83,13 @@ extension Request {
     
     public convenience init(
         method: Method,
-        url: URL,
+        uri: String,
         headers: Headers = [:],
         body write: @escaping Body.Write
-    ) {
+    ) throws {
         self.init(
             method: method,
-            uri: URI(url: url),
+            uri: try URI(uri),
             headers: headers,
             version: .oneDotOne,
             body: .writable(write)
@@ -93,17 +98,16 @@ extension Request {
     
     public convenience init(
         method: Method,
-        url: URL,
+        uri: String,
         headers: Headers = [:],
         body buffer: BufferRepresentable,
-        timeout: Duration
-    ) {
-        self.init(
+        timeout: Duration = 5.minutes
+    ) throws {
+        try self.init(
             method: method,
-            uri: URI(url: url),
+            uri: uri,
             headers: headers,
-            version: .oneDotOne,
-            body: .writable { stream in
+            body: { stream in
                 try stream.write(buffer, deadline: timeout.fromNow())
             }
         )
@@ -113,50 +117,23 @@ extension Request {
     
     public convenience init(
         method: Method,
-        url: URL,
+        uri: String,
         headers: Headers = [:],
-        content: Content,
-        contentType: ContentType,
-        bufferSize: Int = 2048,
+        content representable: ContentRepresentable,
         timeout: Duration = 5.minutes
-    ) {
-        self.init(
+    ) throws {
+        try self.init(
             method: method,
-            uri: URI(url: url),
+            uri: uri,
             headers: headers,
-            version: .oneDotOne,
-            body: .writable { stream in
-                try contentType.serializer.serialize(
-                    content,
-                    stream: stream,
-                    bufferSize: bufferSize,
-                    deadline: timeout.fromNow()
-                )
+            body: { writable in
+                try representable.content.serialize(to: writable, deadline: timeout.fromNow())
             }
         )
         
-        self.contentType = contentType.mediaType
+        self.contentType = type(of: representable.content).mediaType
         self.contentLength = nil
         self.transferEncoding = "chunked"
-    }
-    
-    public convenience init(
-        method: Method,
-        url: URL,
-        headers: Headers = [:],
-        content: ContentRepresentable,
-        contentType: ContentType,
-        bufferSize: Int = 2048,
-        timeout: Duration = 5.minutes
-    ) {
-        self.init(
-            method: method,
-            url: url,
-            headers: headers,
-            content: content.content,
-            contentType: contentType,
-            timeout: timeout
-        )
     }
 }
 
@@ -171,15 +148,13 @@ extension Request {
         }
     }
     
-    public var cookies: Set<Cookie> {
-        get {
-            return headers["Cookie"].map({ Cookie.parse(cookieHeader: $0) }) ?? []
-        }
-    }
-    
     public var authorization: String? {
         get {
             return headers["Authorization"]
+        }
+        
+        set(authorization) {
+            headers["Authorization"] = authorization
         }
     }
     

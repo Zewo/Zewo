@@ -4,14 +4,14 @@ public protocol ResponseRepresentable {
     var response: Response { get }
 }
 
-extension ContentError : ResponseRepresentable {
+extension JSONError : ResponseRepresentable {
     public var response: Response {
-        return Response(status: .badRequest, body: description, timeout: 5.minutes)
+        return Response(status: .badRequest, content: PlainText(description))
     }
 }
 
 extension ParametersError : ResponseRepresentable {
     public var response: Response {
-        return Response(status: .badRequest, body: description, timeout: 5.minutes)
+        return Response(status: .badRequest, content: PlainText(description))
     }
 }

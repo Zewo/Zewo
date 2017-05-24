@@ -10,10 +10,12 @@ let package = Package(
         Target(name: "CDsock"),
         
         Target(name: "Core", dependencies: ["CYAJL"]),
+        Target(name: "Crypto", dependencies: ["Core"]),
         Target(name: "IO", dependencies: ["Core", "CDsock"]),
         Target(name: "HTTP", dependencies: ["IO", "CHTTPParser"]),
     ],
     dependencies: [
-        .Package(url: "https://github.com/Zewo/Venice.git", majorVersion: 0, minor: 17),
+        .Package(url: "https://github.com/Zewo/Venice.git", majorVersion: 0, minor: 18),
+        .Package(url: "https://github.com/formbound/COpenSSL.git", majorVersion: 0, minor: 1),
     ]
 )

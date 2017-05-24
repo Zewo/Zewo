@@ -4,12 +4,12 @@ import Venice
 import struct Foundation.URL
 
 public enum ClientError : Error {
-    case invalidURL
-    case hostRequired
+    case schemeRequired
     case invalidScheme
+    case hostRequired
 }
 
-public final class Client {
+open class Client {
     fileprivate struct Connection {
         let stream: DuplexStream
         let serializer: RequestSerializer
@@ -61,28 +61,31 @@ public final class Client {
     
     /// Creates a new HTTP client
     public init(
-        url: URL,
+        uri: String,
         logger: Logger = defaultLogger,
         configuration: Configuration = .default
     ) throws {
+        let uri = try URI(uri)
         var secure = true
         
-        if let scheme = url.scheme {
-            switch scheme {
-            case "https":
-                secure = true
-            case "http":
-                secure = false
-            default:
-                throw ClientError.invalidScheme
-            }
+        guard let scheme = uri.scheme else {
+            throw ClientError.schemeRequired
         }
         
-        guard let host = url.host else {
+        switch scheme {
+        case "https":
+            secure = true
+        case "http":
+            secure = false
+        default:
+            throw ClientError.invalidScheme
+        }
+        
+        guard let host = uri.host else {
             throw ClientError.hostRequired
         }
         
-        let port = url.port ?? (secure ? 443 : 80)
+        let port = uri.port ?? (secure ? 443 : 80)
         
         self.host = host
         self.port = port
@@ -126,24 +129,17 @@ public final class Client {
         }
     }
     
-    /// Creates a new HTTP client
-    public convenience init(
-        url: String,
-        logger: Logger = defaultLogger,
-        configuration: Configuration = .default
-    ) throws {
-        guard let url = URL(string: url) else {
-            throw ClientError.invalidURL
-        }
-        
-        try self.init(url: url, logger: logger, configuration: configuration)
+    deinit {
+        pool.close()
     }
     
     private static var defaultLogger: Logger {
         return Logger(name: "HTTP client")
     }
     
-    func send(_ request: Request) throws -> Response {
+    public func send(_ request: Request) throws -> Response {
+        var retryCount = 0
+        
         loop: while true {
             let connection = try pool.borrow(deadline: configuration.borrowTimeout.fromNow())
             
@@ -151,8 +147,13 @@ public final class Client {
             let parser = connection.parser
             let serializer = connection.serializer
             
-            request.host = host + ":" + port.description
-            request.userAgent = "Zewo"
+            if request.host == nil {
+                request.host = host + ":" + port.description
+            }
+            
+            if request.userAgent == nil {
+                request.userAgent = "Zewo"
+            }
             
             do {
                 try serializer.serialize(
@@ -166,7 +167,7 @@ public final class Client {
                 
                 if let upgrade = request.upgradeConnection {
                     try upgrade(response, stream)
-                    try stream.done(deadline: configuration.closeConnectionTimeout.fromNow())
+                    try stream.close(deadline: configuration.closeConnectionTimeout.fromNow())
                     pool.dispose(connection)
                 } else {
                     pool.return(connection)
@@ -175,6 +176,12 @@ public final class Client {
                 return response
             } catch {
                 pool.dispose(connection)
+                retryCount += 1
+                
+                guard retryCount < 10 else {
+                    throw error
+                }
+                
                 continue loop
             }
         }
@@ -202,6 +209,14 @@ fileprivate class Pool {
         for _ in 0 ..< size.lowerBound {
             let connection = try create()
             self.available.append(connection)
+        }
+    }
+    
+    fileprivate func close() {
+        let deadline = 30.seconds.fromNow()
+        
+        for connection in available {
+            try? connection.stream.close(deadline: deadline)
         }
     }
     

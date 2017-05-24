@@ -1,9 +1,9 @@
 import Core
 
 public enum Body {
-    public typealias Write = (WritableStream) throws -> Void
+    public typealias Write = (Writable) throws -> Void
     
-    case readable(ReadableStream)
+    case readable(Readable)
     case writable(Write)
 }
 
@@ -23,10 +23,10 @@ extension Body {
         }
     }
     
-    public var readable: ReadableStream? {
+    public var readable: Readable? {
         switch self {
-        case let .readable(stream):
-            return stream
+        case let .readable(readable):
+            return readable
         default:
             return nil
         }

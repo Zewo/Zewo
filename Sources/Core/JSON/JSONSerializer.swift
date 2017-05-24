@@ -15,7 +15,7 @@ public struct JSONSerializerError : Error, CustomStringConvertible {
     }
 }
 
-public final class JSONSerializer : ContentSerializer {
+public final class JSONSerializer {
     private var ordering: Bool
     private var buffer: String = ""
     private var bufferSize: Int = 0
@@ -35,15 +35,15 @@ public final class JSONSerializer : ContentSerializer {
         yajl_gen_free(handle)
     }
 
-    public func serialize(_ map: Content, bufferSize: Int = 4096, body: (UnsafeRawBufferPointer) throws -> Void) throws {
+    public func serialize(_ json: JSON, bufferSize: Int = 4096, body: (UnsafeRawBufferPointer) throws -> Void) throws {
         yajl_gen_reset(handle, nil)
         self.bufferSize = bufferSize
-        try generate(map, body: body)
+        try generate(json, body: body)
         try write(body: body)
     }
 
-    private func generate(_ value: Content, body: (UnsafeRawBufferPointer) throws -> Void) throws {
-        switch value {
+    private func generate(_ json: JSON, body: (UnsafeRawBufferPointer) throws -> Void) throws {
+        switch json {
         case .null:
             try generateNull()
         case .bool(let bool):
@@ -58,15 +58,13 @@ public final class JSONSerializer : ContentSerializer {
             try generate(array, body: body)
         case .dictionary(let dictionary):
             try generate(dictionary, body: body)
-        default:
-            throw JSONSerializerError(reason: "Illegal type")
         }
 
         try write(highwater: bufferSize, body: body)
     }
 
     private func generate(
-        _ dictionary: [String: Content],
+        _ dictionary: [String: JSON],
         body: (UnsafeRawBufferPointer
     ) throws -> Void) throws {
         var status = yajl_gen_status_ok
@@ -90,7 +88,7 @@ public final class JSONSerializer : ContentSerializer {
         try check(status: status)
     }
 
-    private func generate(_ array: [Content], body: (UnsafeRawBufferPointer) throws -> Void) throws {
+    private func generate(_ array: [JSON], body: (UnsafeRawBufferPointer) throws -> Void) throws {
         var status = yajl_gen_status_ok
 
         status = yajl_gen_array_open(handle)

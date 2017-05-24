@@ -112,13 +112,13 @@ extension Response {
     public convenience init(
         status: Status,
         headers: Headers = [:],
-        body stream: ReadableStream
+        body readable: Readable
     ) {
         self.init(
             status: status,
             headers: headers,
             version: .oneDotOne,
-            body: .readable(stream)
+            body: .readable(readable)
         )
     }
     
@@ -139,13 +139,12 @@ extension Response {
         status: Status,
         headers: Headers = [:],
         body buffer: BufferRepresentable,
-        timeout: Duration
+        timeout: Duration = 5.minutes
     ) {
         self.init(
             status: status,
             headers: headers,
-            version: .oneDotOne,
-            body: .writable { stream in
+            body: { stream in
                 try stream.write(buffer, deadline: timeout.fromNow())
             }
         )
@@ -156,71 +155,20 @@ extension Response {
     public convenience init(
         status: Status,
         headers: Headers = [:],
-        content: Content,
-        contentType: ContentType,
-        bufferSize: Int = 2048,
+        content representable: ContentRepresentable,
         timeout: Duration = 5.minutes
     ) {
         self.init(
             status: status,
             headers: headers,
-            version: .oneDotOne,
-            body: .writable { stream in
-                try contentType.serializer.serialize(
-                    content,
-                    stream: stream,
-                    bufferSize: bufferSize,
-                    deadline: timeout.fromNow()
-                )
+            body: { writable in
+                try representable.content.serialize(to: writable, deadline: timeout.fromNow())
             }
         )
         
-        self.contentType = contentType.mediaType
+        self.contentType = type(of: representable.content).mediaType
         self.contentLength = nil
         self.transferEncoding = "chunked"
-    }
-    
-    public convenience init(
-        status: Status,
-        headers: Headers = [:],
-        content: ContentRepresentable,
-        contentType: ContentType,
-        bufferSize: Int = 2048,
-        timeout: Duration = 5.minutes
-    ) {
-        self.init(
-            status: status,
-            headers: headers,
-            content: content.content,
-            contentType: contentType,
-            timeout: timeout
-        )
-    }
-}
-
-extension Response {
-    public var cookies: Set<AttributedCookie> {
-        get {
-            var cookies = Set<AttributedCookie>()
-
-            for header in cookieHeaders {
-                if let cookie = AttributedCookie(header) {
-                    cookies.insert(cookie)
-                }
-            }
-            
-            return cookies
-        }
-        
-        set(cookies) {
-            var cookieHeaders = Set<String>()
-            
-            for cookie in cookies {
-                cookieHeaders.insert(cookie.description)
-            }
-            
-            self.cookieHeaders = cookieHeaders
-        }
     }
 }
 

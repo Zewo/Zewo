@@ -3,14 +3,14 @@ import Venice
 
 internal final class ResponseSerializer : Serializer {
     internal func serialize(_ response: Response, deadline: Deadline) throws -> Bool {
-        try serializeStatusLine(for: response, deadline: deadline)
-        try serializeHeaders(for: response, deadline: deadline)
-        try serializeBody(for: response, deadline: deadline)
+        try serializeStatusLine(response, deadline: deadline)
+        try serializeHeaders(response, deadline: deadline)
+        try serializeBody(response, deadline: deadline)
         return response.contentLength != nil || response.isChunkEncoded
     }
     
     @inline(__always)
-    private func serializeStatusLine(for response: Response, deadline: Deadline) throws {
+    private func serializeStatusLine(_ response: Response, deadline: Deadline) throws {
         var header = response.version.description
         header += " "
         header += response.status.description

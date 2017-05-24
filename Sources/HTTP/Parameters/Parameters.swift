@@ -45,22 +45,3 @@ extension URI.Parameters {
     }
 }
 
-extension Int : LosslessStringConvertible {
-    public init?(_ parameter: String) {
-        guard let int = Int(parameter, radix: 10) else {
-            return nil
-        }
-        
-        self = int
-    }
-}
-
-extension UUID : LosslessStringConvertible {
-    public init?(_ parameter: String) {
-        guard let uuid = UUID(uuidString: parameter) else {
-            return nil
-        }
-        
-        self = uuid
-    }
-}

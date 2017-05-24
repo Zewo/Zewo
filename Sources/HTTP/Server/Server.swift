@@ -68,7 +68,7 @@ public final class Server {
     }
     
     deinit {
-        try? group.close()
+        group.cancel()
     }
 
     /// Start server
@@ -112,7 +112,7 @@ public final class Server {
                 logger.info("Too many open files while accepting connections. Retrying in 10 seconds.")
                 try Coroutine.wakeUp(10.seconds.fromNow())
                 continue
-            } catch VeniceError.canceled {
+            } catch VeniceError.canceledCoroutine {
                 break
             } catch {
                 logger.error("Error while accepting connections.", error: error)
@@ -124,7 +124,7 @@ public final class Server {
     /// Stop server
     public func stop() throws {
         self.logger.info("Stopping HTTP server.")
-        try group.close()
+        group.cancel()
     }
     
     private static var defaultLogger: Logger {
@@ -161,13 +161,13 @@ public final class Server {
                 return
             } catch SystemError.connectionResetByPeer {
                 return
-            } catch VeniceError.canceled {
+            } catch VeniceError.canceledCoroutine {
                 return
             } catch {
                 self.logger.error("Error while processing connection.", error: error)
             }
             
-            try stream.done(deadline: self.closeConnectionTimeout.fromNow())
+            try stream.close(deadline: self.closeConnectionTimeout.fromNow())
         }
     }
 
