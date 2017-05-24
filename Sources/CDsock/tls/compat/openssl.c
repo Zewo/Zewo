@@ -24,6 +24,10 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <ctype.h>
+
+int SSL_CTX_load_verify_locations(SSL_CTX *ctx, const char *CAfile,
+                                  const char *CApath);
 
 int SSL_CTX_load_verify_mem(SSL_CTX *ctx, void *buf, int len)
 {

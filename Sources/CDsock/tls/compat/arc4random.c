@@ -66,6 +66,7 @@ static inline void _rs_forkdetect(void);
 #include "arc4random.h"
 
 int	getentropy(void *buf, size_t len);
+void explicit_bzero(void *buf, size_t len);
 
 static inline void _rs_rekey(u_char *dat, size_t datlen);
 
