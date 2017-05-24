@@ -23,6 +23,7 @@
 
 import Foundation
 import Venice
+import Core
 
 public enum XMLParserError : Error {
     case invalidXML

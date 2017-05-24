@@ -1,4 +1,5 @@
 import Venice
+import Core
 
 public protocol Content {
     static var mediaType: MediaType { get }

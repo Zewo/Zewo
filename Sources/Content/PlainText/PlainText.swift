@@ -1,4 +1,5 @@
 import Venice
+import Core
 import struct Foundation.Data
 
 public struct PlainText {

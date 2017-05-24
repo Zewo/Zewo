@@ -1,4 +1,5 @@
 import Venice
+import Core
 
 extension JSON : Content {
     public static var mediaType: MediaType = .json

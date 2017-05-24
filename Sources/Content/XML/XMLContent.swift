@@ -1,4 +1,5 @@
 import Venice
+import Core
 
 extension XML : Content {
     public static var mediaType: MediaType = .xml
