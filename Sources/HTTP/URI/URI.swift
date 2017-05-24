@@ -27,7 +27,7 @@ public struct URI {
     public var query:  String?
     public var fragment: String?
     
-    public var parameters: Parameters
+    fileprivate var params: Parameters
     
     internal init(
         scheme: String? = nil,
@@ -47,9 +47,9 @@ public struct URI {
         self.fragment = fragment
         
         if let query = query?.removingPercentEncoding {
-            self.parameters = Parameters(query: query)
+            self.params = Parameters(query: query)
         } else {
-            self.parameters = Parameters()
+            self.params = Parameters()
         }
     }
     
@@ -84,6 +84,30 @@ public struct URI {
             self.username = username
             self.password = password
         }
+    }
+}
+
+extension URI {
+    public func parameters<P : ParametersInitializable>() throws -> P {
+        return try P(parameters: params)
+    }
+    
+    public func parameter(_ key: String) throws -> String {
+        guard let string = params.parameters[key] else {
+            throw ParametersError.valueNotFound(key: key, parameters: params)
+        }
+        
+        return string
+    }
+    
+    public func parameter<P : LosslessStringConvertible>(_ key: String) throws -> P {
+        let string = try parameter(key)
+        
+        guard let parameter = P(string) else {
+            throw ParametersError.cannotInitialize(type: P.self, parameter: string)
+        }
+        
+        return parameter
     }
 }
 
@@ -149,9 +173,9 @@ extension URI {
         self.fragment = url.percentEncodedFragment
         
         if let query = url.query {
-            self.parameters = Parameters(query: query)
+            self.params = Parameters(query: query)
         } else {
-            self.parameters = Parameters()
+            self.params = Parameters()
         }
     }
 }

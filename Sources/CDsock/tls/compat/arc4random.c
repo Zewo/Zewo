@@ -65,6 +65,8 @@ static inline int _rs_allocate(struct _rs **, struct _rsx **);
 static inline void _rs_forkdetect(void);
 #include "arc4random.h"
 
+int	getentropy(void *buf, size_t len);
+
 static inline void _rs_rekey(u_char *dat, size_t datlen);
 
 static inline void
@@ -82,9 +84,7 @@ _rs_init(u_char *buf, size_t n)
 	chacha_ivsetup(&rsx->rs_chacha, buf + KEYSZ);
 }
 
-static void
-_rs_stir(void)
-{
+static void _rs_stir(void) {
 	u_char rnd[KEYSZ + IVSZ];
 
 	if (getentropy(rnd, sizeof rnd) == -1)

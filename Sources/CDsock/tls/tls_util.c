@@ -154,7 +154,7 @@ tls_load_file(const char *name, size_t *len, char *password)
 
  done:
 	*len = size;
-	return (buf);
+	return (uint8_t *)(buf);
 
  fail:
 	free(buf);

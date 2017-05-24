@@ -59,8 +59,10 @@ tls_server_alpn_cb(SSL *ssl, const unsigned char **out, unsigned char *outlen,
 {
 	struct tls *ctx = arg;
 
-	if (SSL_select_next_proto((unsigned char**)out, outlen,
-	    ctx->config->alpn, ctx->config->alpn_len, in, inlen) ==
+	if (SSL_select_next_proto(
+        (unsigned char**)out, outlen,
+	    (const unsigned char*)ctx->config->alpn,
+        ctx->config->alpn_len, in, inlen) ==
 	    OPENSSL_NPN_NEGOTIATED)
 		return (SSL_TLSEXT_ERR_OK);
 

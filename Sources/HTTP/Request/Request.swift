@@ -197,9 +197,3 @@ public enum RequestContentError : Error {
     case noContentTypeHeader
     case unsupportedMediaType
 }
-
-extension Request {
-    public func getParameters<P : ParametersInitializable>() throws -> P {
-        return try P(parameters: uri.parameters)
-    }
-}

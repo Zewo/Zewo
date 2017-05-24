@@ -25,23 +25,5 @@ extension URI.Parameters {
     public mutating func set(_ parameter: String, for key: String) {
         parameters[key] = parameter
     }
-    
-    public func get(_ key: String) throws -> String {
-        guard let string = parameters[key] else {
-            throw ParametersError.valueNotFound(key: key, parameters: self)
-        }
-        
-        return string
-    }
-    
-    public func get<P : LosslessStringConvertible>(_ key: String) throws -> P {
-        let string = try get(key)
-        
-        guard let parameter = P(string) else {
-            throw ParametersError.cannotInitialize(type: P.self, parameter: string)
-        }
-        
-        return parameter
-    }
 }
 
