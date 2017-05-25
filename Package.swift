@@ -8,10 +8,11 @@ let package = Package(
         Target(name: "CHTTPParser"),
         Target(name: "CYAJL"),
         Target(name: "CDsock"),
+        Target(name: "CArgon2"),
         
         Target(name: "Core"),
         Target(name: "Content", dependencies: ["CYAJL", "Core"]),
-        Target(name: "Crypto", dependencies: ["Core"]),
+        Target(name: "Crypto", dependencies: ["Core", "CArgon2"]),
         Target(name: "IO", dependencies: ["Core", "CDsock"]),
         Target(name: "HTTP", dependencies: ["Content", "IO", "CHTTPParser"]),
     ],

@@ -3,3 +3,4 @@ Sources/CDNS/* linguist-vendored
 Sources/CHTTPParser/* linguist-vendored
 Sources/CYAJL/* linguist-vendored
 Sources/CDsock/* linguist-vendored
+Sources/CArgon2/* linguist-vendored
