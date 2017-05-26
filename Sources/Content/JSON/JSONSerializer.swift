@@ -56,8 +56,8 @@ public final class JSONSerializer {
             try generate(string)
         case .array(let array):
             try generate(array, body: body)
-        case .dictionary(let dictionary):
-            try generate(dictionary, body: body)
+        case .object(let object):
+            try generate(object, body: body)
         }
 
         try write(highwater: bufferSize, body: body)

@@ -1,11 +1,128 @@
 import Core
 import Foundation
 
-public struct HeaderField {
-    public let string: String
+public struct Headers {
+    fileprivate var headers: [Field: String]
     
-    public init(_ string: String) {
-        self.string = string
+    public init(_ headers: [Field: String]) {
+        self.headers = headers
+    }
+    
+    public var fields: [Field] {
+        return Array(headers.keys)
+    }
+    
+    public struct Field {
+        public let original: String
+        
+        public init(_ original: String) {
+            self.original = original
+        }
+    }
+
+}
+
+extension Headers {
+    public static var empty: Headers {
+        return Headers()
+    }
+}
+
+extension Headers : ExpressibleByDictionaryLiteral {
+    public init(dictionaryLiteral elements: (Field, String)...) {
+        var headers: [Field: String] = [:]
+        
+        for (key, value) in elements {
+            headers[key] = value
+        }
+        
+        self.headers = headers
+    }
+}
+
+extension Headers : Sequence {
+    public func makeIterator() -> DictionaryIterator<Field, String> {
+        return headers.makeIterator()
+    }
+    
+    public var count: Int {
+        return headers.count
+    }
+    
+    public var isEmpty: Bool {
+        return headers.isEmpty
+    }
+    
+    public subscript(field: Field) -> String? {
+        get {
+            return headers[field]
+        }
+        
+        set(header) {
+            headers[field] = header
+        }
+    }
+    
+    public subscript(field: String) -> String? {
+        get {
+            return self[Field(field)]
+        }
+        
+        set(header) {
+            self[Field(field)] = header
+        }
+    }
+}
+
+extension Headers : CustomStringConvertible {
+    public var description: String {
+        var string = ""
+        
+        for (header, value) in headers {
+            string += "\(header): \(value)\n"
+        }
+        
+        return string
+    }
+}
+
+extension Headers : Equatable {
+    public static func == (lhs: Headers, rhs: Headers) -> Bool {
+        return lhs.headers == rhs.headers
+    }
+}
+
+extension Headers.Field : Hashable {
+    public var hashValue: Int {
+        return original.hashValue
+    }
+    
+    public static func == (lhs: Headers.Field, rhs: Headers.Field) -> Bool {
+        if lhs.original == rhs.original {
+            return true
+        }
+        
+        return lhs.original.caseInsensitiveCompare(rhs.original)
+    }
+}
+
+extension Headers.Field : ExpressibleByStringLiteral {
+    public init(stringLiteral string: String) {
+        self.init(string)
+    }
+    
+    public init(extendedGraphemeClusterLiteral string: String){
+        self.init(string)
+    }
+    
+    public init(unicodeScalarLiteral string: String){
+        self.init(string)
+    }
+}
+
+extension Headers.Field : CustomStringConvertible {
+    public var description: String {
+        return original
     }
 }
 
@@ -35,120 +152,4 @@ extension String {
         
         return true
     }
-}
-
-extension HeaderField : Hashable {
-    public var hashValue: Int {
-        return string.hashValue
-    }
-    
-    public static func == (lhs: HeaderField, rhs: HeaderField) -> Bool {
-        if lhs.string == rhs.string {
-            return true
-        }
-        
-        return lhs.string.caseInsensitiveCompare(rhs.string)
-    }
-}
-
-extension HeaderField : ExpressibleByStringLiteral {
-    public init(stringLiteral string: String) {
-        self.init(string)
-    }
-    
-    public init(extendedGraphemeClusterLiteral string: String){
-        self.init(string)
-    }
-    
-    public init(unicodeScalarLiteral string: String){
-        self.init(string)
-    }
-}
-
-extension HeaderField : CustomStringConvertible {
-    public var description: String {
-        return string
-    }
-}
-
-public struct Headers {
-    public var headers: [HeaderField: String]
-    
-    public init(_ headers: [HeaderField: String]) {
-        self.headers = headers
-    }
-    
-    public var fields: [HeaderField] {
-        return Array(headers.keys)
-    }
-}
-
-extension Headers {
-    public static var empty: Headers {
-        return Headers()
-    }
-}
-
-extension Headers : ExpressibleByDictionaryLiteral {
-    public init(dictionaryLiteral elements: (HeaderField, String)...) {
-        var headers: [HeaderField: String] = [:]
-        
-        for (key, value) in elements {
-            headers[key] = value
-        }
-        
-        self.headers = headers
-    }
-}
-
-extension Headers : Sequence {
-    public func makeIterator() -> DictionaryIterator<HeaderField, String> {
-        return headers.makeIterator()
-    }
-    
-    public var count: Int {
-        return headers.count
-    }
-    
-    public var isEmpty: Bool {
-        return headers.isEmpty
-    }
-    
-    public subscript(field: HeaderField) -> String? {
-        get {
-            return headers[field]
-        }
-        
-        set(header) {
-            headers[field] = header
-        }
-    }
-    
-    public subscript(field: String) -> String? {
-        get {
-            return self[HeaderField(field)]
-        }
-        
-        set(header) {
-            self[HeaderField(field)] = header
-        }
-    }
-}
-
-extension Headers : CustomStringConvertible {
-    public var description: String {
-        var string = ""
-        
-        for (header, value) in headers {
-            string += "\(header): \(value)\n"
-        }
-        
-        return string
-    }
-}
-
-extension Headers : Equatable {}
-
-public func == (lhs: Headers, rhs: Headers) -> Bool {
-    return lhs.headers == rhs.headers
 }

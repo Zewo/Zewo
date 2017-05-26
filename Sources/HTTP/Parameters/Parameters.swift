@@ -20,3 +20,23 @@ extension ParametersError : CustomStringConvertible {
 public protocol ParametersInitializable {
     init(parameters: URI.Parameters) throws
 }
+
+extension URI.Parameters {
+    public func get(_ key: String) throws -> String {
+        guard let string = parameters[key] else {
+            throw ParametersError.valueNotFound(key: key, parameters: self)
+        }
+        
+        return string
+    }
+    
+    public func get<P : LosslessStringConvertible>(_ key: String) throws -> P {
+        let string = try get(key)
+        
+        guard let parameter = P(string) else {
+            throw ParametersError.cannotInitialize(type: P.self, parameter: string)
+        }
+        
+        return parameter
+    }
+}

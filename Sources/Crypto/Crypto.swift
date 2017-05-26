@@ -1,9 +1,9 @@
 import Core
-import COpenSSL
 import CArgon2
+import COpenSSL
 
 public struct Crypto {
-    public static func hmacSHA256(
+    public static func hs256(
         _ string: String,
         key: UnsafeRawBufferPointer,
         buffer: UnsafeMutableRawBufferPointer
@@ -34,17 +34,17 @@ public struct Crypto {
         return UnsafeRawBufferPointer(buffer.prefix(upTo: Int(bufferCount)))
     }
 
-    public static func hmacSHA256(
+    public static func hs256(
         _ string: String,
         key: BufferRepresentable,
         buffer: UnsafeMutableRawBufferPointer
     ) -> UnsafeRawBufferPointer {
         return key.withBuffer {
-            hmacSHA256(string, key: $0, buffer: buffer)
+            hs256(string, key: $0, buffer: buffer)
         }
     }
 
-    public static func hmacSHA256<B : BufferInitializable>(
+    public static func hs256<B : BufferInitializable>(
         _ string: String,
         key: BufferRepresentable
     ) -> B {
@@ -54,7 +54,7 @@ public struct Crypto {
             buffer.deallocate()
         }
         
-        return B(hmacSHA256(string, key: key, buffer: buffer))
+        return B(hs256(string, key: key, buffer: buffer))
     }
 
     public static func sha256(
@@ -115,5 +115,65 @@ public struct Crypto {
         }
         
         return String(cString: encoded + [0])
+    }
+    
+    public static func base64Encode(
+        input: UnsafeRawBufferPointer,
+        buffer: UnsafeMutableRawBufferPointer
+    ) {
+        let b64 = BIO_new(BIO_f_base64())
+        let bio = BIO_new(BIO_s_mem())
+        
+        defer {
+            BIO_free(b64)
+        }
+        
+        BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL)
+        BIO_push(b64, bio)
+        
+        var result = BIO_write(b64, input.baseAddress, Int32(input.count))
+        BIO_ctrl(b64, BIO_CTRL_FLUSH, 0, nil)
+        
+        guard result > 0 else {
+            // throw error
+            return
+        }
+        
+        result = BIO_read(bio, buffer.baseAddress, Int32(buffer.count))
+        
+        guard result > 0 else {
+            // throw error
+            return
+        }
+    }
+
+    public static func base64Decode(
+        input: UnsafeRawBufferPointer,
+        buffer: UnsafeMutableRawBufferPointer
+    ) {
+        let b64 = BIO_new(BIO_f_base64())
+        let bio = BIO_new(BIO_s_mem())
+        
+        defer {
+            BIO_free(b64)
+        }
+        
+        BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL)
+        BIO_push(b64, bio)
+        
+        var result = BIO_write(bio, input.baseAddress, Int32(input.count))
+        BIO_ctrl(bio, BIO_CTRL_FLUSH, 0, nil)
+        
+        guard result > 0 else {
+            // throw error
+            return
+        }
+        
+        result = BIO_read(b64, buffer.baseAddress, Int32(buffer.count))
+        
+        guard result > 0 else {
+            // throw error
+            return
+        }
     }
 }

@@ -28,6 +28,7 @@ public final class Response : Message {
         self.body = body
     }
     
+    // TODO: Check http://www.iana.org/assignments/http-status-codes
     public enum Status {
         case `continue`
         case switchingProtocols
@@ -194,7 +195,7 @@ extension Response {
             return
         }
         
-        throw MessageContentError.unsupportedMediaType
+        throw MessageError.unsupportedMediaType
     }
     
     public convenience init<C : ContentConvertible>(
@@ -204,17 +205,31 @@ extension Response {
         timeout: Duration = 5.minutes
     ) throws {
         guard let contentType = C.contentTypes.default else {
-            throw MessageContentError.noDefaultContentType
+            throw MessageError.noDefaultContentType
         }
         
         guard let content = contentType.represent?(content)() else {
-            throw MessageContentError.notContentRepresentable
+            throw MessageError.notContentRepresentable
         }
         
         self.init(
             status: status,
             headers: headers,
             content: content,
+            timeout: timeout
+        )
+    }
+    
+    public convenience init<C : Content & ContentConvertible>(
+        status: Status,
+        headers: Headers = [:],
+        content: C,
+        timeout: Duration = 5.minutes
+    ) throws {
+        self.init(
+            status: status,
+            headers: headers,
+            content: content as Content,
             timeout: timeout
         )
     }

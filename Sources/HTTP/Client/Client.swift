@@ -56,15 +56,10 @@ open class Client {
     
     private let host: String
     private let port: Int
-    private let logger: Logger
     private let pool: Pool
     
     /// Creates a new HTTP client
-    public init(
-        uri: String,
-        logger: Logger = defaultLogger,
-        configuration: Configuration = .default
-    ) throws {
+    public init(uri: String, configuration: Configuration = .default) throws {
         let uri = try URI(uri)
         var secure = true
         
@@ -89,7 +84,6 @@ open class Client {
         
         self.host = host
         self.port = port
-        self.logger = logger
         self.configuration = configuration
         
         self.pool = try Pool(size: configuration.poolSize) {
@@ -131,10 +125,6 @@ open class Client {
     
     deinit {
         pool.close()
-    }
-    
-    private static var defaultLogger: Logger {
-        return Logger(name: "HTTP client")
     }
     
     public func send(_ request: Request) throws -> Response {

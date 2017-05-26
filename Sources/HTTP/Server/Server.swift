@@ -18,14 +18,12 @@ public final class Server {
     /// Close connection timeout
     public let closeConnectionTimeout: Duration
     
-    private let logger: Logger
     private let header: String
     private let group = Coroutine.Group()
     private let respond: Respond
 
     /// Creates a new HTTP server
     public init(
-        logger: Logger = defaultLogger,
         header: String = defaultHeader,
         parserBufferSize: Int = 4096,
         serializerBufferSize: Int = 4096,
@@ -34,7 +32,6 @@ public final class Server {
         closeConnectionTimeout: Duration = 1.minute,
         respond: @escaping Respond
     ) {
-        self.logger = logger
         self.header = header
         self.parserBufferSize = parserBufferSize
         self.serializerBufferSize = serializerBufferSize
@@ -86,13 +83,13 @@ public final class Server {
             do {
                 try accept(host)
             } catch SystemError.tooManyOpenFiles {
-                logger.info("Too many open files while accepting connections. Retrying in 10 seconds.")
+                Logger.info("Too many open files while accepting connections. Retrying in 10 seconds.")
                 try Coroutine.wakeUp(10.seconds.fromNow())
                 continue
             } catch VeniceError.canceledCoroutine {
                 break
             } catch {
-                logger.error("Error while accepting connections.", error: error)
+                Logger.error("Error while accepting connections.", error: error)
                 throw error
             }
         }
@@ -100,12 +97,8 @@ public final class Server {
     
     /// Stop server
     public func stop() throws {
-        self.logger.info("Stopping HTTP server.")
+        Logger.info("Stopping HTTP server.")
         group.cancel()
-    }
-    
-    private static var defaultLogger: Logger {
-        return Logger(name: "HTTP server")
     }
     
     private static var defaultHeader: String {
@@ -124,7 +117,7 @@ public final class Server {
     private func log(host: String, port: Int, locationInfo: Logger.LocationInfo) {
         var header = self.header
         header += "Started HTTP server at \(host), listening on port \(port)."
-        logger.info(header, locationInfo: locationInfo)
+        Logger.info(header, locationInfo: locationInfo)
     }
     
     @inline(__always)
@@ -141,7 +134,7 @@ public final class Server {
             } catch VeniceError.canceledCoroutine {
                 return
             } catch {
-                self.logger.error("Error while processing connection.", error: error)
+                Logger.error("Error while processing connection.", error: error)
             }
             
             try stream.close(deadline: self.closeConnectionTimeout.fromNow())

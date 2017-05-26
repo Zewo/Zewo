@@ -1,23 +1,41 @@
 import struct Foundation.Data
 import struct Foundation.UUID
 
-public protocol JSONInitializable {
+public protocol JSONInitializable : ContentConvertible {
     init(json: JSON) throws
 }
 
-public protocol JSONRepresentable {
-    func json() -> JSON
-}
-
-public protocol JSONConvertible : ContentConvertible, JSONInitializable, JSONRepresentable {}
-
-extension JSONConvertible {
-    static var contentTypes: ContentTypes<Self> {
-        return [ContentType(Self.init(json:), Self.json)]
+extension JSONInitializable {
+    public static var contentTypes: ContentTypes<Self> {
+        return [
+            ContentType(Self.init(json:))
+        ]
     }
 }
 
-extension JSON : JSONInitializable, JSONRepresentable {
+public protocol JSONRepresentable : ContentConvertible {
+    func json() -> JSON
+}
+
+extension JSONRepresentable {
+    public static var contentTypes: ContentTypes<Self> {
+        return [
+            ContentType(Self.json)
+        ]
+    }
+}
+
+public protocol JSONConvertible : JSONInitializable, JSONRepresentable {}
+
+extension JSONConvertible {
+    public static var contentTypes: ContentTypes<Self> {
+        return [
+            ContentType(Self.init(json:), Self.json)
+        ]
+    }
+}
+
+extension JSON : JSONConvertible {
     public init(json: JSON) throws {
         self = json
     }
@@ -27,7 +45,7 @@ extension JSON : JSONInitializable, JSONRepresentable {
     }
 }
 
-extension Int : JSONInitializable, JSONRepresentable {
+extension Int : JSONConvertible {
     public init(json: JSON) throws {
         guard case let .int(value) = json else {
             throw JSONError.cannotInitialize(type: type(of: self), json: json)
@@ -41,7 +59,7 @@ extension Int : JSONInitializable, JSONRepresentable {
     }
 }
 
-extension Bool : JSONInitializable, JSONRepresentable {
+extension Bool : JSONConvertible {
     public init(json: JSON) throws {
         guard case let .bool(value) = json else {
             throw JSONError.cannotInitialize(type: type(of: self), json: json)
@@ -55,7 +73,7 @@ extension Bool : JSONInitializable, JSONRepresentable {
     }
 }
 
-extension String : JSONInitializable, JSONRepresentable {
+extension String : JSONConvertible {
     public init(json: JSON) throws {
         guard case let .string(value) = json else {
             throw JSONError.cannotInitialize(type: type(of: self), json: json)
@@ -69,7 +87,7 @@ extension String : JSONInitializable, JSONRepresentable {
     }
 }
 
-extension Double : JSONInitializable, JSONRepresentable {
+extension Double : JSONConvertible {
     public init(json: JSON) throws {
         guard case let .double(value) = json else {
             throw JSONError.cannotInitialize(type: type(of: self), json: json)
@@ -83,7 +101,7 @@ extension Double : JSONInitializable, JSONRepresentable {
     }
 }
 
-extension UUID : JSONInitializable, JSONRepresentable {
+extension UUID : JSONConvertible {
     public init(json: JSON) throws {
         guard case let .string(value) = json, let uuid = UUID(uuidString: value) else {
             throw JSONError.cannotInitialize(type: type(of: self), json: json)

@@ -18,13 +18,7 @@ public protocol PlainTextRepresentable {
     func plainText() -> PlainText
 }
 
-public protocol PlainTextConvertible : ContentConvertible, PlainTextInitializable, PlainTextRepresentable {}
-
-extension PlainTextConvertible {
-    static var contentTypes: ContentTypes<Self> {
-        return [ContentType(Self.init(plainText:), Self.plainText)]
-    }
-}
+public protocol PlainTextConvertible : PlainTextInitializable, PlainTextRepresentable {}
 
 extension PlainText : PlainTextInitializable {
     public init(plainText: PlainText) throws {

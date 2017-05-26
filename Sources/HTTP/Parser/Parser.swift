@@ -66,7 +66,7 @@ internal class Parser {
         var uri: URI?
         var status: Response.Status? = nil
         var headers: Headers = [:]
-        var currentHeaderField: HeaderField?
+        var currentHeaderField: Headers.Field?
         
         weak var bodyStream: BodyStream?
         
@@ -198,7 +198,7 @@ internal class Parser {
                     return String(cString: pointer.baseAddress!)
                 }
                 
-                context.currentHeaderField = HeaderField(string)
+                context.currentHeaderField = Headers.Field(string)
             case .headerValue:
                 bytes.append(0)
                 

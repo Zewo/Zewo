@@ -1,6 +1,8 @@
 import Venice
 
+/// Representation of a type which binary data can be read from.
 public protocol Readable {
+    /// Read binary data into `buffer` timing out at `deadline`.
     func read(
         _ buffer: UnsafeMutableRawBufferPointer,
         deadline: Deadline
@@ -22,7 +24,9 @@ public protocol ReadableStream : Readable {
     func close(deadline: Deadline) throws
 }
 
+/// Representation of a type which binary data can be written to.
 public protocol Writable {
+    /// Read `buffer` timing out at `deadline`.
     func write(_ buffer: UnsafeRawBufferPointer, deadline: Deadline) throws
 }
 

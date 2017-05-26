@@ -46,12 +46,12 @@ public extension XML {
     }
     
     func get<T: XMLInitializable>(_ indexPath: IndexPathComponent...) throws -> T {
-        let element: XML = try get(indexPath)
+        let element: XML = try _get(indexPath as [IndexPathComponent])
         return try T(xml: element)
     }
     
     func get<T: XMLInitializable>(_ indexPath: IndexPathComponent...) -> T? {
-        guard let element = try? get(indexPath) as XML else {
+        guard let element = try? _get(indexPath as [IndexPathComponent]) as XML else {
             return nil
         }
         
@@ -59,7 +59,7 @@ public extension XML {
     }
     
     func get<T: XMLInitializable>(_ indexPath: IndexPathComponent...) throws -> [T] {
-        return try get(indexPath).map({ try T(xml: $0) })
+        return try _get(indexPath as [IndexPathComponent]).map({ try T(xml: $0) })
     }
 }
 

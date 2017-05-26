@@ -88,7 +88,7 @@ public struct URI {
 }
 
 extension URI {
-    public mutating func set(parameter: String, for key: String) {
+    public mutating func set(parameter: String, key: String) {
         params.parameters[key] = parameter
     }
     
@@ -97,21 +97,11 @@ extension URI {
     }
     
     public func parameter(_ key: String) throws -> String {
-        guard let string = params.parameters[key] else {
-            throw ParametersError.valueNotFound(key: key, parameters: params)
-        }
-        
-        return string
+        return try params.get(key)
     }
     
     public func parameter<P : LosslessStringConvertible>(_ key: String) throws -> P {
-        let string = try parameter(key)
-        
-        guard let parameter = P(string) else {
-            throw ParametersError.cannotInitialize(type: P.self, parameter: string)
-        }
-        
-        return parameter
+        return try params.get(key)
     }
 }
 

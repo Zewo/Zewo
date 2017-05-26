@@ -11,6 +11,13 @@ public protocol Content {
     func serialize(to writable: Writable, deadline: Deadline) throws
 }
 
+extension Content {
+    public static func parse(_ buffer: UnsafeRawBufferPointer, deadline: Deadline) throws -> Self {
+        let readable = BufferReadable(buffer: buffer)
+        return try parse(from: readable, deadline: deadline)
+    }
+}
+
 public protocol ContentConvertible {
     static var contentTypes: ContentTypes<Self> { get }
 }

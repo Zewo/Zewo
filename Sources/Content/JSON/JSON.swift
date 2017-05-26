@@ -1,9 +1,9 @@
 import Foundation
 
 public enum JSONError : Error {
-    case noContent(type: JSONInitializable.Type)
-    case cannotInitializeWithContent(type: JSONInitializable.Type, content: Content.Type)
-    case cannotInitialize(type: JSONInitializable.Type, json: JSON)
+    case noContent(type: Any.Type)
+    case cannotInitializeWithContent(type: Any.Type, content: Content.Type)
+    case cannotInitialize(type: Any.Type, json: JSON)
     case valueNotArray(indexPath: [IndexPathComponentValue], json: JSON)
     case outOfBounds(indexPath: [IndexPathComponentValue], json: JSON)
     case valueNotDictionary(indexPath: [IndexPathComponentValue], json: JSON)
@@ -39,7 +39,7 @@ public enum JSON {
     case int(Int)
     case string(String)
     case array([JSON])
-    case dictionary([String: JSON])
+    case object([String: JSON])
 }
 
 extension JSON {
@@ -75,7 +75,7 @@ extension JSON {
                 dictionary[key] = value
             }
             
-            self = .dictionary(dictionary)
+            self = .object(dictionary)
         } else {
             self = .null
         }
@@ -90,7 +90,7 @@ extension JSON {
                 dictionary[key] = value
             }
             
-            self = .dictionary(dictionary)
+            self = .object(dictionary)
         } else {
             self = .null
         }
@@ -138,15 +138,15 @@ extension String : IndexPathComponent {
 
 extension JSON {
     public func get<T : JSONInitializable>(_ indexPath: IndexPathComponent...) throws -> T {
-        let content = try get(indexPath)
+        let content = try _get(indexPath as [IndexPathComponent])
         return try T(json: content)
     }
     
     public func get(_ indexPath: IndexPathComponent...) throws -> JSON {
-        return try get(indexPath)
+        return try _get(indexPath as [IndexPathComponent])
     }
     
-    private func get(_ indexPath: [IndexPathComponent]) throws -> JSON {
+    private func _get(_ indexPath: [IndexPathComponent]) throws -> JSON {
         var value = self
         var visited: [IndexPathComponentValue] = []
         
@@ -165,7 +165,7 @@ extension JSON {
                 
                 value = array[index]
             case let .key(key):
-                guard case let .dictionary(dictionary) = value else {
+                guard case let .object(dictionary) = value else {
                     throw JSONError.valueNotDictionary(indexPath: visited, json: self)
                 }
                 
@@ -191,7 +191,7 @@ extension JSON : Equatable {
         case let (.string(l), .string(r)) where l == r: return true
         case let (.double(l), .double(r)) where l == r: return true
         case let (.array(l), .array(r)) where l == r: return true
-        case let (.dictionary(l), .dictionary(r)) where l == r: return true
+        case let (.object(l), .object(r)) where l == r: return true
         default: return false
         }
     }
@@ -244,21 +244,21 @@ extension JSON : ExpressibleByStringLiteral {
 
 extension JSON : ExpressibleByArrayLiteral {
     /// :nodoc:
-    public init(arrayLiteral elements: JSONRepresentable...) {
+    public init(arrayLiteral elements: JSON...) {
         self = .array(elements.map({ $0.json() }))
     }
 }
 
 extension JSON : ExpressibleByDictionaryLiteral {
     /// :nodoc:
-    public init(dictionaryLiteral elements: (String, JSONRepresentable)...) {
+    public init(dictionaryLiteral elements: (String, JSON)...) {
         var dictionary = [String: JSON](minimumCapacity: elements.count)
         
         for (key, value) in elements {
             dictionary[key] = value.json()
         }
         
-        self = .dictionary(dictionary)
+        self = .object(dictionary)
     }
 }
 
@@ -300,7 +300,7 @@ extension JSON : CustomStringConvertible {
             case .int(let number): return String(number)
             case .string(let string): return escape(string)
             case .array(let array): return serialize(array: array)
-            case .dictionary(let dictionary): return serialize(dictionary: dictionary)
+            case .object(let dictionary): return serialize(dictionary: dictionary)
             }
         }
         

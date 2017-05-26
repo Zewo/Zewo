@@ -14,6 +14,7 @@ let package = Package(
         Target(name: "Content", dependencies: ["CYAJL", "Core"]),
         Target(name: "Crypto", dependencies: ["Core", "CArgon2"]),
         Target(name: "IO", dependencies: ["Core", "CDsock"]),
+        Target(name: "JWT", dependencies: ["Crypto", "Content"]),
         Target(name: "HTTP", dependencies: ["Content", "IO", "CHTTPParser"]),
     ],
     dependencies: [

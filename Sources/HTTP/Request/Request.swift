@@ -2,8 +2,6 @@ import Core
 import Content
 import Venice
 
-import struct Foundation.URL
-
 public final class Request : Message {
     public typealias UpgradeConnection = (Response, DuplexStream) throws -> Void
     
@@ -161,7 +159,7 @@ extension Request {
             return
         }
         
-        throw MessageContentError.unsupportedMediaType
+        throw MessageError.unsupportedMediaType
     }
     
     public convenience init<C : ContentConvertible>(
@@ -172,11 +170,11 @@ extension Request {
         timeout: Duration = 5.minutes
     ) throws {
         guard let contentType = C.contentTypes.default else {
-            throw MessageContentError.noDefaultContentType
+            throw MessageError.noDefaultContentType
         }
         
         guard let content = contentType.represent?(content)() else {
-            throw MessageContentError.notContentRepresentable
+            throw MessageError.notContentRepresentable
         }
         
         try self.init(
@@ -190,6 +188,10 @@ extension Request {
 }
 
 extension Request {
+    public var path: String {
+        return uri.path!
+    }
+    
     public var accept: [MediaType] {
         get {
             return headers["Accept"].map({ MediaType.parse(acceptHeader: $0) }) ?? []
@@ -242,11 +244,11 @@ extension Request {
         }
         
         guard let contentType = C.contentTypes.default else {
-            throw MessageContentError.noDefaultContentType
+            throw MessageError.noDefaultContentType
         }
         
         guard let content = contentType.represent?(content)() else {
-            throw MessageContentError.notContentRepresentable
+            throw MessageError.notContentRepresentable
         }
         
         return content

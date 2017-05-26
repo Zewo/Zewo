@@ -106,15 +106,15 @@ public final class XML {
     }
     
     public func get(_ indexPath: IndexPathComponent...) throws -> XML {
-        return try get(indexPath)
+        return try _get(indexPath as [IndexPathComponent])
     }
     
     public func get(_ indexPath: IndexPathComponent...) throws -> [XML] {
-        return try get(indexPath)
+        return try _get(indexPath as [IndexPathComponent])
     }
     
-    func get(_ indexPath: [IndexPathComponent]) throws -> XML {
-        let elements: [XML] = try get(indexPath)
+    internal func _get(_ indexPath: [IndexPathComponent]) throws -> XML {
+        let elements: [XML] = try _get(indexPath)
         
         guard elements.count == 1, let element = elements.first else {
             throw XMLError.valueNotFound(indexPath: [], content: "")
@@ -123,7 +123,7 @@ public final class XML {
         return element
     }
     
-    func get(_ indexPath: [IndexPathComponent]) throws -> [XML] {
+    internal func _get(_ indexPath: [IndexPathComponent]) throws -> [XML] {
         var value = [self]
         var single = true
         var visited: [IndexPathComponentValue] = []

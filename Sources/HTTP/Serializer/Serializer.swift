@@ -68,8 +68,8 @@ internal class Serializer {
     internal func serializeHeaders(_ message: Message, deadline: Deadline) throws {
         var header = ""
         
-        for (name, value) in message.headers.headers {
-            header += name.string
+        for (name, value) in message.headers {
+            header += name.description
             header += ": "
             header += value
             header += "\r\n"

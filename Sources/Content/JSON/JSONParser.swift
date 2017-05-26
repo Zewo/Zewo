@@ -114,9 +114,9 @@ public final class JSONParser {
         }
         
         if stack.count == 0 || final {
-            switch state.content {
-            case .dictionary(let value):
-                result = value["root"]
+            switch state.json {
+            case .object(let object):
+                result = object["root"]
             default:
                 break
             }
@@ -176,7 +176,7 @@ public final class JSONParser {
         }
         
         var previousState = stack.removeLast()
-        let result: Int32 = previousState.append(state.content)
+        let result: Int32 = previousState.append(state.json)
         state = previousState
         return result
     }
@@ -193,7 +193,7 @@ public final class JSONParser {
         }
         
         var previousState = stack.removeLast()
-        let result: Int32 = previousState.append(state.content)
+        let result: Int32 = previousState.append(state.json)
         state = previousState
         return result
     }
@@ -203,24 +203,24 @@ fileprivate struct JSONParserState {
     let isDictionary: Bool
     var dictionaryKey: String = ""
     
-    var content: JSON {
+    var json: JSON {
         if isDictionary {
-            return .dictionary(dictionary)
+            return .object(object)
         } else {
             return .array(array)
         }
     }
     
-    private var dictionary: [String: JSON]
+    private var object: [String: JSON]
     private var array: [JSON]
     
     init(dictionary: Bool) {
         self.isDictionary = dictionary
         if dictionary {
-            self.dictionary = Dictionary<String, JSON>(minimumCapacity: 32)
+            self.object = Dictionary<String, JSON>(minimumCapacity: 32)
             self.array = []
         } else {
-            self.dictionary = [:]
+            self.object = [:]
             self.array = []
             self.array.reserveCapacity(32)
         }
@@ -228,7 +228,7 @@ fileprivate struct JSONParserState {
     
     mutating func append(_ value: Bool) -> Int32 {
         if isDictionary {
-            dictionary[dictionaryKey] = .bool(value)
+            object[dictionaryKey] = .bool(value)
         } else {
             array.append(.bool(value))
         }
@@ -238,7 +238,7 @@ fileprivate struct JSONParserState {
     
     mutating func append(_ value: Int64) -> Int32 {
         if isDictionary {
-            dictionary[self.dictionaryKey] = .int(Int(value))
+            object[self.dictionaryKey] = .int(Int(value))
         } else {
             array.append(.int(Int(value)))
         }
@@ -248,7 +248,7 @@ fileprivate struct JSONParserState {
     
     mutating func append(_ value: Double) -> Int32 {
         if isDictionary {
-            dictionary[dictionaryKey] = .double(value)
+            object[dictionaryKey] = .double(value)
         } else {
             array.append(.double(value))
         }
@@ -258,7 +258,7 @@ fileprivate struct JSONParserState {
     
     mutating func append(_ value: String) -> Int32 {
         if isDictionary {
-            dictionary[dictionaryKey] = .string(value)
+            object[dictionaryKey] = .string(value)
         } else {
             array.append(.string(value))
         }
@@ -268,7 +268,7 @@ fileprivate struct JSONParserState {
     
     mutating func appendNull() -> Int32 {
         if isDictionary {
-            dictionary[dictionaryKey] = .null
+            object[dictionaryKey] = .null
         } else {
             array.append(.null)
         }
@@ -278,7 +278,7 @@ fileprivate struct JSONParserState {
     
     mutating func append(_ value: JSON) -> Int32 {
         if isDictionary {
-            dictionary[dictionaryKey] = value
+            object[dictionaryKey] = value
         } else {
             array.append(value)
         }

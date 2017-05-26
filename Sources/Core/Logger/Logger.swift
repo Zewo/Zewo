@@ -5,7 +5,6 @@
 #endif
 
 public protocol LogAppender {
-    var name: String { get }
     var levels: Logger.Level { get }
     func append(event: Logger.Event)
 }
@@ -31,7 +30,6 @@ public struct Logger {
         public let locationInfo: LocationInfo
         public let timestamp: Int
         public let level: Logger.Level
-        public let logger: Logger
         public var message: Any?
         public var error: Error?
     }
@@ -55,20 +53,13 @@ public struct Logger {
         }
     }
 
-    public let name: String
-    public let appenders: [LogAppender]
-
-    public init(name: String = "Logger", appenders: [LogAppender] = [StandardOutputAppender()]) {
-        self.appenders = appenders
-        self.name = name
-    }
+    public static var appenders: [LogAppender] = [StandardOutputAppender()]
     
-    public func log(level: Level, item: Any?, error: Error? = nil, locationInfo: LocationInfo) {
+    private static func log(level: Level, item: Any?, error: Error? = nil, locationInfo: LocationInfo) {
         let event = Event(
             locationInfo: locationInfo,
-            timestamp: timestamp,
+            timestamp: getTimestamp(),
             level: level,
-            logger: self,
             message: item,
             error: error
         )
@@ -78,7 +69,7 @@ public struct Logger {
         }
     }
     
-    public func log(
+    private static func log(
         level: Level,
         item: Any?,
         error: Error? = nil,
@@ -100,7 +91,7 @@ public struct Logger {
         )
     }
 
-    public func trace(
+    public static func trace(
         _ item: Any?,
         error: Error? = nil,
         file: String = #file,
@@ -119,7 +110,7 @@ public struct Logger {
         )
     }
     
-    public func trace(
+    public static func trace(
         _ item: Any?,
         error: Error? = nil,
         locationInfo: LocationInfo
@@ -132,7 +123,7 @@ public struct Logger {
         )
     }
 
-    public func debug(
+    public static func debug(
         _ item: Any?,
         error: Error? = nil,
         file: String = #file,
@@ -151,7 +142,7 @@ public struct Logger {
         )
     }
     
-    public func debug(
+    public static func debug(
         _ item: Any?,
         error: Error? = nil,
         locationInfo: LocationInfo
@@ -164,7 +155,7 @@ public struct Logger {
         )
     }
 
-    public func info(
+    public static func info(
         _ item: Any?,
         error: Error? = nil,
         file: String = #file,
@@ -183,7 +174,7 @@ public struct Logger {
         )
     }
     
-    public func info(
+    public static func info(
         _ item: Any?,
         error: Error? = nil,
         locationInfo: LocationInfo
@@ -196,7 +187,7 @@ public struct Logger {
         )
     }
 
-    public func warning(
+    public static func warning(
         _ item: Any?,
         error: Error? = nil,
         file: String = #file,
@@ -215,7 +206,7 @@ public struct Logger {
         )
     }
     
-    public func warning(
+    public static func warning(
         _ item: Any?,
         error: Error? = nil,
         locationInfo: LocationInfo
@@ -228,7 +219,7 @@ public struct Logger {
         )
     }
 
-    public func error(
+    public static func error(
         _ item: Any?,
         error: Error? = nil,
         file: String = #file,
@@ -247,7 +238,7 @@ public struct Logger {
         )
     }
     
-    public func error(
+    public static func error(
         _ item: Any?,
         error: Error? = nil,
         locationInfo: LocationInfo
@@ -260,7 +251,7 @@ public struct Logger {
         )
     }
 
-    public func fatal(
+    public static func fatal(
         _ item: Any?,
         error: Error? = nil,
         file: String = #file,
@@ -279,7 +270,7 @@ public struct Logger {
         )
     }
     
-    public func fatal(
+    public static func fatal(
         _ item: Any?,
         error: Error? = nil,
         locationInfo: LocationInfo
@@ -292,10 +283,40 @@ public struct Logger {
         )
     }
 
-    private var timestamp: Int {
+    private static func getTimestamp() -> Int {
         var time: timeval = timeval(tv_sec: 0, tv_usec: 0)
         gettimeofday(&time, nil)
         return time.tv_sec
+    }
+}
+
+extension Logger.Level : CustomStringConvertible {
+    public var description: String {
+        if self == .trace {
+            return "TRACE"
+        }
+        
+        if self == .debug {
+            return "DEBUG"
+        }
+        
+        if self == .info {
+            return "INFO"
+        }
+        
+        if self == .warning {
+            return "WARNING"
+        }
+        
+        if self == .error {
+            return "ERROR"
+        }
+        
+        if self == .fatal {
+            return "FATAL"
+        }
+        
+        return ""
     }
 }
 

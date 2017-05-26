@@ -3,12 +3,14 @@ import Content
 import Venice
 
 // TODO: Make error CustomStringConvertible and ResponseRepresentable
-public enum MessageContentError : Error {
+public enum MessageError : Error {
     case noReadableBody
     case noContentTypeHeader
     case unsupportedMediaType
     case noDefaultContentType
     case notContentRepresentable
+    case valueNotFound(key: String)
+    case incompatibleType(requestedType: Any.Type, actualType: Any.Type)
 }
 
 public typealias Storage = [String: Any]
@@ -21,6 +23,22 @@ public protocol Message : class {
 }
 
 extension Message {
+    public func set(_ value: Any?, key: String) {
+        storage[key] = value
+    }
+    
+    public func get<T>(_ key: String) throws -> T {
+        guard let value = storage[key] else  {
+            throw MessageError.valueNotFound(key: key)
+        }
+        
+        guard let castedValue = value as? T else {
+            throw MessageError.incompatibleType(requestedType: T.self, actualType: type(of: value))
+        }
+        
+        return castedValue
+    }
+    
     public var contentType: MediaType? {
         get {
             return headers["Content-Type"].flatMap({try? MediaType(string: $0)})
@@ -77,15 +95,15 @@ extension Message {
     
     public func content<C : Content>(deadline: Deadline = 5.minutes.fromNow()) throws -> C {
         guard let mediaType = self.contentType else {
-            throw MessageContentError.noContentTypeHeader
+            throw MessageError.noContentTypeHeader
         }
         
         guard mediaType == C.mediaType else {
-            throw MessageContentError.unsupportedMediaType
+            throw MessageError.unsupportedMediaType
         }
         
         guard let readable = body.readable else {
-            throw MessageContentError.noReadableBody
+            throw MessageError.noReadableBody
         }
         
         return try C.parse(from: readable, deadline: deadline)
@@ -93,11 +111,11 @@ extension Message {
     
     public func content<C : ContentConvertible>(deadline: Deadline = 5.minutes.fromNow()) throws -> C {
         guard let mediaType = self.contentType else {
-            throw MessageContentError.noContentTypeHeader
+            throw MessageError.noContentTypeHeader
         }
         
         guard let readable = body.readable else {
-            throw MessageContentError.noReadableBody
+            throw MessageError.noReadableBody
         }
         
         for contentType in C.contentTypes where contentType.mediaType.matches(other: mediaType) {
@@ -110,6 +128,6 @@ extension Message {
             return initializer
         }
         
-        throw MessageContentError.unsupportedMediaType
+        throw MessageError.unsupportedMediaType
     }
 }

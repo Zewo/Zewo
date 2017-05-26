@@ -2,14 +2,14 @@ import Core
 
 public enum Body {
     public typealias Write = (Writable) throws -> Void
-    
+   
     case readable(Readable)
     case writable(Write)
 }
 
 extension Body {
     public static var empty: Body {
-        return .writable({ _ in })
+        return .readable(BufferReadable.empty)
     }
 }
 
