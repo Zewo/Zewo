@@ -97,45 +97,6 @@ extension JSON {
     }
 }
 
-public enum IndexPathComponentValue {
-    case index(Int)
-    case key(String)
-}
-
-extension IndexPathComponentValue : CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case let .index(index):
-            return index.description
-        case let .key(key):
-            return key
-        }
-    }
-}
-
-extension Array where Element == IndexPathComponentValue {
-    fileprivate var string: String {
-        return map({ $0.description }).joined(separator: ".")
-    }
-}
-
-/// Can be represented as `IndexPathValue`.
-public protocol IndexPathComponent {
-    var indexPathComponent: IndexPathComponentValue { get }
-}
-
-extension Int : IndexPathComponent {
-    public var indexPathComponent: IndexPathComponentValue {
-        return .index(self)
-    }
-}
-
-extension String : IndexPathComponent {
-    public var indexPathComponent: IndexPathComponentValue {
-        return .key(self)
-    }
-}
-
 extension JSON {
     public func get<T : JSONInitializable>(_ indexPath: IndexPathComponent...) throws -> T {
         let content = try _get(indexPath as [IndexPathComponent])

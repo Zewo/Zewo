@@ -173,15 +173,43 @@ extension Response {
         self.transferEncoding = "chunked"
     }
     
-    public convenience init<C : ContentConvertible>(
+    public convenience init<C : ContentRepresentable>(
+        status: Status,
+        headers: Headers = [:],
+        content representable: C,
+        timeout: Duration = 5.minutes
+    ) {
+        self.init(
+            status: status,
+            headers: headers,
+            content: representable.content,
+            timeout: timeout
+        )
+    }
+    
+    public convenience init<C : Content & ContentRepresentable>(
         status: Status,
         headers: Headers = [:],
         content: C,
+        timeout: Duration = 5.minutes
+    ) {
+        self.init(
+            status: status,
+            headers: headers,
+            content: content as Content,
+            timeout: timeout
+        )
+    }
+    
+    public convenience init<C : ContentRepresentable>(
+        status: Status,
+        headers: Headers = [:],
+        content representable: C,
         contentType mediaType: MediaType,
         timeout: Duration = 5.minutes
     ) throws {
-        for contentType in C.contentTypes where contentType.mediaType.matches(other: mediaType) {
-            guard let content = contentType.represent?(content)() else {
+        for contentType in C.supportedTypes where contentType.mediaType.matches(other: mediaType) {
+            guard let content = try? representable.content(for: mediaType) else {
                 continue
             }
             
@@ -196,42 +224,6 @@ extension Response {
         }
         
         throw MessageError.unsupportedMediaType
-    }
-    
-    public convenience init<C : ContentConvertible>(
-        status: Status,
-        headers: Headers = [:],
-        content: C,
-        timeout: Duration = 5.minutes
-    ) throws {
-        guard let contentType = C.contentTypes.default else {
-            throw MessageError.noDefaultContentType
-        }
-        
-        guard let content = contentType.represent?(content)() else {
-            throw MessageError.notContentRepresentable
-        }
-        
-        self.init(
-            status: status,
-            headers: headers,
-            content: content,
-            timeout: timeout
-        )
-    }
-    
-    public convenience init<C : Content & ContentConvertible>(
-        status: Status,
-        headers: Headers = [:],
-        content: C,
-        timeout: Duration = 5.minutes
-    ) throws {
-        self.init(
-            status: status,
-            headers: headers,
-            content: content as Content,
-            timeout: timeout
-        )
     }
 }
 

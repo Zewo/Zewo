@@ -1,6 +1,7 @@
 import Foundation
 
-public enum XMLInitializableError: Error, CustomStringConvertible {
+public enum XMLInitializableError : Error, CustomStringConvertible {
+    // TODO: Reavaliate these
     case implementationIsMissing(method: String)
     case nodeIsInvalid(node: XML)
     case nodeHasNoValue
@@ -35,7 +36,10 @@ public extension XML {
         let attribute = try getAttribute(name)
         
         guard let value = A(attribute) else {
-            throw XMLError.attribute(attribute: "")
+            throw XMLInitializableError.attributeDeserializationFailed(
+                type: String(describing: A.self),
+                attribute: name
+            )
         }
         
         return value
@@ -65,13 +69,13 @@ public extension XML {
 
 extension String : XMLInitializable {
     public init(xml: XML) throws {
-        self = xml.content
+        self = xml.contents
     }
 }
 
 extension Int : XMLInitializable {
     public init(xml: XML) throws {
-        guard let value = Int(xml.content) else {
+        guard let value = Int(xml.contents) else {
             throw XMLInitializableError.typeConversionFailed(type: "Int", element: xml)
         }
         
@@ -81,7 +85,7 @@ extension Int : XMLInitializable {
 
 extension Double : XMLInitializable {
     public init(xml: XML) throws {
-        guard let value = Double(xml.content) else {
+        guard let value = Double(xml.contents) else {
             throw XMLInitializableError.typeConversionFailed(type: "Double", element: xml)
         }
         
@@ -91,7 +95,7 @@ extension Double : XMLInitializable {
 
 extension Float : XMLInitializable {
     public init(xml: XML) throws {
-        guard let value = Float(xml.content) else {
+        guard let value = Float(xml.contents) else {
             throw XMLInitializableError.typeConversionFailed(type: "Float", element: xml)
         }
         
@@ -101,7 +105,7 @@ extension Float : XMLInitializable {
 
 extension Bool : XMLInitializable {
     public init(xml: XML) throws {
-        guard let value = Bool(xml.content) else {
+        guard let value = Bool(xml.contents) else {
             throw XMLInitializableError.typeConversionFailed(type: "Float", element: xml)
         }
         

@@ -10,12 +10,40 @@ public struct PlainText {
     }
 }
 
-public protocol PlainTextInitializable {
+public protocol PlainTextInitializable : ContentInitializable {
     init(plainText: PlainText) throws
 }
 
-public protocol PlainTextRepresentable {
+extension PlainTextInitializable {
+    public init(content: Content) throws {
+        guard let plainText = content as? PlainText else {
+            throw ContentError.unsupportedType
+        }
+        
+        try self.init(plainText: plainText)
+    }
+}
+
+public protocol PlainTextRepresentable : ContentRepresentable {
     func plainText() -> PlainText
+}
+
+extension PlainTextRepresentable {
+    public static var supportedTypes: [Content.Type] {
+        return [PlainText.self]
+    }
+    
+    public var content: Content {
+        return plainText()
+    }
+    
+    public func content(for mediaType: MediaType) throws -> Content {
+        guard PlainText.mediaType.matches(other: mediaType) else {
+            throw ContentError.unsupportedType
+        }
+        
+        return plainText()
+    }
 }
 
 public protocol PlainTextConvertible : PlainTextInitializable, PlainTextRepresentable {}

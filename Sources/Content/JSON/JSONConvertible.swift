@@ -1,37 +1,53 @@
 import struct Foundation.Data
 import struct Foundation.UUID
 
-public protocol JSONInitializable : ContentConvertible {
+public protocol JSONInitializable : ContentInitializable {
     init(json: JSON) throws
 }
 
 extension JSONInitializable {
-    public static var contentTypes: ContentTypes<Self> {
-        return [
-            ContentType(Self.init(json:))
-        ]
+    public static var supportedTypes: [Content.Type] {
+        return [JSON.self]
     }
 }
 
-public protocol JSONRepresentable : ContentConvertible {
+extension JSONInitializable {
+    public init(content: Content) throws {
+        guard let json = content as? JSON else {
+            throw ContentError.unsupportedType
+        }
+        
+        try self.init(json: json)
+    }
+}
+
+public protocol JSONRepresentable : ContentRepresentable {
     func json() -> JSON
 }
 
 extension JSONRepresentable {
-    public static var contentTypes: ContentTypes<Self> {
-        return [
-            ContentType(Self.json)
-        ]
+    public static var supportedTypes: [Content.Type] {
+        return [JSON.self]
+    }
+    
+    public var content: Content {
+        return json()
+    }
+    
+    public func content(for mediaType: MediaType) throws -> Content {
+        guard JSON.mediaType.matches(other: mediaType) else {
+            throw ContentError.unsupportedType
+        }
+        
+        return json()
     }
 }
 
 public protocol JSONConvertible : JSONInitializable, JSONRepresentable {}
 
 extension JSONConvertible {
-    public static var contentTypes: ContentTypes<Self> {
-        return [
-            ContentType(Self.init(json:), Self.json)
-        ]
+    public static var supportedTypes: [Content.Type] {
+        return [JSON.self]
     }
 }
 
@@ -112,5 +128,29 @@ extension UUID : JSONConvertible {
     
     public func json() -> JSON {
         return .string(uuidString)
+    }
+}
+
+// TODO: Implement this with conditional conformance when Swift provides it.
+extension Array : JSONInitializable {
+    public init(json: JSON) throws {
+        guard case let .array(array) = json else {
+            throw JSONError.cannotInitialize(type: type(of: self), json: json)
+        }
+        
+        guard let initializable = Element.self as? JSONInitializable.Type else {
+            throw JSONError.cannotInitialize(type: type(of: self), json: json)
+        }
+        
+        var this = Array()
+        this.reserveCapacity(array.count)
+        
+        for element in array {
+            if let value = try initializable.init(json: element) as? Element {
+                this.append(value)
+            }
+        }
+        
+        self = this
     }
 }

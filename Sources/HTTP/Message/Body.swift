@@ -1,4 +1,11 @@
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin.C
+#endif
+
 import Core
+import Venice
 
 public enum Body {
     public typealias Write = (Writable) throws -> Void
@@ -9,7 +16,7 @@ public enum Body {
 
 extension Body {
     public static var empty: Body {
-        return .readable(BufferReadable.empty)
+        return .readable(ReadableBuffer.empty)
     }
 }
 
@@ -32,6 +39,17 @@ extension Body {
         }
     }
     
+    public func convertedToReadable() throws -> Readable {
+        switch self {
+        case let .readable(readable):
+            return readable
+        case let .writable(write):
+            let writable = WritableBuffer()
+            try write(writable)
+            return ReadableBytes(writable.buffer)
+        }
+    }
+    
     public var isWritable: Bool {
         switch self {
         case .writable: return true
@@ -46,5 +64,32 @@ extension Body {
         default:
             return nil
         }
+    }
+}
+
+fileprivate final class ReadableBytes : Readable {
+    var buffer: ArraySlice<UInt8>
+    
+    fileprivate init(_ buffer: [UInt8]) {
+        self.buffer = ArraySlice<UInt8>(buffer)
+    }
+    
+    fileprivate func read(
+        _ buffer: UnsafeMutableRawBufferPointer,
+        deadline: Deadline
+    ) throws -> UnsafeRawBufferPointer {
+        guard !buffer.isEmpty && !self.buffer.isEmpty else {
+            return UnsafeRawBufferPointer(start: nil, count: 0)
+        }
+        
+        let readCount = min(buffer.count, self.buffer.count)
+        
+        _ = self.buffer.withUnsafeBytes {
+            memcpy(buffer.baseAddress, $0.baseAddress, readCount)
+        }
+        
+        let read = buffer.prefix(readCount)
+        self.buffer = self.buffer.suffix(from: readCount)
+        return UnsafeRawBufferPointer(read)
     }
 }

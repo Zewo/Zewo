@@ -10,11 +10,11 @@ public enum ClientError : Error {
 }
 
 open class Client {
-    fileprivate struct Connection {
-        let stream: DuplexStream
-        let serializer: RequestSerializer
-        let parser: ResponseParser
-    }
+    fileprivate typealias Connection = (
+        stream: DuplexStream,
+        serializer: RequestSerializer,
+        parser: ResponseParser
+    )
     
     public struct Configuration {
         /// Pool size
@@ -61,6 +61,33 @@ open class Client {
     /// Creates a new HTTP client
     public init(uri: String, configuration: Configuration = .default) throws {
         let uri = try URI(uri)
+        let (host, port, secure) = try Client.extract(uri: uri)
+        
+        self.host = host
+        self.port = port
+        self.configuration = configuration
+        
+        self.pool = try Pool(size: configuration.poolSize) {
+            let (stream, serializer, parser) = try Client.connection(
+                host: host,
+                port: port,
+                secure: secure,
+                configuration: configuration
+            )
+            
+            return Connection(
+                stream: stream,
+                serializer: serializer,
+                parser: parser
+            )
+        }
+    }
+    
+    deinit {
+        pool.close()
+    }
+    
+    private static func extract(uri: URI) throws -> (String, Int, Bool) {
         var secure = true
         
         guard let scheme = uri.scheme else {
@@ -82,68 +109,112 @@ open class Client {
         
         let port = uri.port ?? (secure ? 443 : 80)
         
-        self.host = host
-        self.port = port
-        self.configuration = configuration
+        return (host, port, secure)
+    }
+    
+    private static func connection(
+        host: String,
+        port: Int,
+        secure: Bool,
+        configuration: Configuration
+    ) throws -> (DuplexStream, RequestSerializer, ResponseParser) {
+        let stream: DuplexStream
         
-        self.pool = try Pool(size: configuration.poolSize) {
-            let stream: DuplexStream
-            
-            if secure {
-                stream = try TLSStream(
-                    host: host,
-                    port: port,
-                    deadline: configuration.addressResolutionTimeout.fromNow()
-                )
-            } else {
-                stream = try TCPStream(
-                    host: host,
-                    port: port,
-                    deadline: configuration.addressResolutionTimeout.fromNow()
-                )
-            }
-            
-            try stream.open(deadline: configuration.connectionTimeout.fromNow())
-            
-            let serializer = RequestSerializer(
-                stream: stream,
-                bufferSize: configuration.serializerBufferSize
+        if secure {
+            stream = try TLSStream(
+                host: host,
+                port: port,
+                deadline: configuration.addressResolutionTimeout.fromNow()
             )
-            
-            let parser = ResponseParser(
-                stream: stream,
-                bufferSize: configuration.parserBufferSize
+        } else {
+            stream = try TCPStream(
+                host: host,
+                port: port,
+                deadline: configuration.addressResolutionTimeout.fromNow()
             )
-            
-            return Connection(
-                stream: stream,
-                serializer: serializer,
-                parser: parser
-            )
+        }
+        
+        try stream.open(deadline: configuration.connectionTimeout.fromNow())
+        
+        let serializer = RequestSerializer(
+            stream: stream,
+            bufferSize: configuration.serializerBufferSize
+        )
+        
+        let parser = ResponseParser(
+            stream: stream,
+            bufferSize: configuration.parserBufferSize
+        )
+        
+        return (stream, serializer, parser)
+    }
+    
+    private static func configureHeaders(
+        request: Request,
+        host: String,
+        port: Int,
+        closeConnection: Bool = false
+    ) {
+        if request.host == nil {
+            request.host = host + ":" + port.description
+        }
+        
+        if request.userAgent == nil {
+            request.userAgent = "Zewo"
+        }
+        
+        if closeConnection {
+            request.connection = "close"
         }
     }
     
-    deinit {
-        pool.close()
+    public static func send(_ request: Request, configuration: Configuration = .default) throws -> Response {
+        let (host, port, secure) = try extract(uri: request.uri)
+        
+        let (stream, serializer, parser) = try connection(
+            host: host,
+            port: port,
+            secure: secure,
+            configuration: configuration
+        )
+        
+        configureHeaders(
+            request: request,
+            host: host,
+            port: port,
+            closeConnection: true
+        )
+        
+        try serializer.serialize(
+            request,
+            deadline: configuration.serializeTimeout.fromNow()
+        )
+        
+        let response = try parser.parse(
+            deadline: configuration.parseTimeout.fromNow()
+        )
+        
+        if let upgrade = request.upgradeConnection {
+            try upgrade(response, stream)
+        }
+        
+        try stream.close(deadline: configuration.closeConnectionTimeout.fromNow())
+        return response
     }
     
     public func send(_ request: Request) throws -> Response {
         var retryCount = 0
         
         loop: while true {
-            let connection = try pool.borrow(deadline: configuration.borrowTimeout.fromNow())
+            let connection = try pool.borrow(
+                deadline: configuration.borrowTimeout.fromNow()
+            )
             
             let stream = connection.stream
-            let parser = connection.parser
             let serializer = connection.serializer
+            let parser = connection.parser
             
-            if request.host == nil {
-                request.host = host + ":" + port.description
-            }
-            
-            if request.userAgent == nil {
-                request.userAgent = "Zewo"
-            }
+            Client.configureHeaders(request: request, host: host, port: port)
             
             do {
                 try serializer.serialize(

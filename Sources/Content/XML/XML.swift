@@ -1,34 +1,27 @@
 public enum XMLError : Error {
-    case attribute(attribute: String)
-    case attributeValue(attribute: String, value: String)
-    case key(key: String)
-    case index(index: Int)
-    case initialization(instance: AnyObject)
-
     case noContent(type: XMLInitializable.Type)
-    case cannotInitialize(type: XMLInitializable.Type, content: JSON)
-    case valueNotArray(indexPath: [IndexPathComponentValue], content: JSON)
-    case outOfBounds(indexPath: [IndexPathComponentValue], content: JSON)
-    case valueNotDictionary(indexPath: [IndexPathComponentValue], content: JSON)
-    case valueNotFound(indexPath: [IndexPathComponentValue], content: JSON)
+    case cannotInitialize(type: XMLInitializable.Type, xml: XML)
+    case valueNotArray(indexPath: [IndexPathComponentValue], xml: XML)
+    case outOfBounds(indexPath: [IndexPathComponentValue], xml: XML)
+    case valueNotDictionary(indexPath: [IndexPathComponentValue], xml: XML)
+    case valueNotFound(indexPath: [IndexPathComponentValue], xml: XML)
 }
 
 extension XMLError : CustomStringConvertible {
     public var description: String {
         switch self {
-        case let .attribute(attribute):
-            return "XML Attribute Error: Missing attribute [\"\(attribute)\"]"
-        case let .attributeValue(attribute, value):
-            return "XML Attribute Error: Missing attribute [\"\(attribute)\"] with value [\"\(value)\"]"
-        case let .key(key):
-            return "XML Element Error: Incorrect key [\"\(key)\"]"
-        case let .index(index):
-            return "XML Element Error: Incorrect index [\"\(index)\"]"
-        case let .initialization(instance):
-            return "XML Indexer Error: initialization with Object [\"\(instance)\"]"
-            
-        default:
-            fatalError("implement")
+        case let .noContent(type):
+            return "Cannot initialize type \"\(String(describing: type))\" with no content."
+        case let .cannotInitialize(type, xml):
+            return "Cannot initialize type \"\(String(describing: type))\" with xml \(xml)."
+        case let .valueNotArray(indexPath, content):
+            return "Cannot get xml element for index path \"\(indexPath.string)\". Element is not an array \(content)."
+        case let .outOfBounds(indexPath, content):
+            return "Cannot get xml element for index path \"\(indexPath.string)\". Index is out of bounds for element \(content)."
+        case let .valueNotDictionary(indexPath, content):
+            return "Cannot get xml element for index path \"\(indexPath.string)\". Element is not a dictionary \(content)."
+        case let .valueNotFound(indexPath, content):
+            return "Cannot get xml element for index path \"\(indexPath.string)\". Key is not present in element \(content)."
         }
     }
 }
@@ -77,23 +70,15 @@ public final class XML {
     
     public func getAttribute(_ name: String) throws -> String {
         guard let attribute = attributes[name] else {
-            throw XMLError.valueNotFound(indexPath: [], content: "")
+            throw XMLError.valueNotFound(indexPath: [.key(name)], xml: self)
         }
         
         return attribute
     }
     
-    public var content: String {
+    public var contents: String {
         var string = ""
         
-        for content in contents {
-            string += content
-        }
-        
-        return string
-    }
-    
-    private var contents: [String] {
         var contents: [String] = []
         
         for child in children {
@@ -102,7 +87,11 @@ public final class XML {
             }
         }
         
-        return contents
+        for content in contents {
+            string += content
+        }
+        
+        return string
     }
     
     public func get(_ indexPath: IndexPathComponent...) throws -> XML {
@@ -117,7 +106,10 @@ public final class XML {
         let elements: [XML] = try _get(indexPath)
         
         guard elements.count == 1, let element = elements.first else {
-            throw XMLError.valueNotFound(indexPath: [], content: "")
+            throw XMLError.valueNotFound(
+                indexPath: indexPath.map({ $0.indexPathComponent }),
+                xml: self
+            )
         }
         
         return element
@@ -135,7 +127,7 @@ public final class XML {
             case let .index(index):
                 if single, value.count == 1, let element = value.first {
                     guard element.elements.indices.contains(index) else {
-                        throw XMLError.outOfBounds(indexPath: visited, content: "")
+                        throw XMLError.outOfBounds(indexPath: visited, xml: self)
                     }
                     
                     value = [element.elements[index]]
@@ -144,7 +136,7 @@ public final class XML {
                 }
                 
                 guard value.indices.contains(index) else {
-                    throw XMLError.outOfBounds(indexPath: visited, content: "")
+                    throw XMLError.outOfBounds(indexPath: visited, xml: self)
                 }
                 
                 value = [value[index]]
@@ -152,16 +144,10 @@ public final class XML {
             case let .key(key):
                 guard value.count == 1, let element = value.first else {
                     // More than one result
-                    throw XMLError.valueNotFound(indexPath: visited, content: "")
-                }
-                
-                let elements = element.getElements(named: key)
-                
-                guard !elements.isEmpty else {
-                    throw XMLError.valueNotFound(indexPath: visited, content: "")
+                    throw XMLError.valueNotFound(indexPath: visited, xml: self)
                 }
             
-                value = elements
+                value = element.getElements(named: key)
                 single = false
             }
         }
@@ -235,7 +221,7 @@ extension XML : CustomStringConvertible {
             return string
         }
         
-        guard !content.isEmpty else {
+        guard !contents.isEmpty else {
             return "<\(name)\(attributes)/>"
             
         }

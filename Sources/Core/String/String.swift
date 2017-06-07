@@ -1,5 +1,19 @@
 import Foundation
 
+extension CharacterSet {
+    public static var urlAllowed: CharacterSet {
+        let uppercaseAlpha = CharacterSet(charactersIn: "A" ... "Z")
+        let lowercaseAlpha = CharacterSet(charactersIn: "a" ... "z")
+        let numeric = CharacterSet(charactersIn: "0" ... "9")
+        let symbols: CharacterSet = ["_", "-", "~", "."]
+        
+        return uppercaseAlpha
+            .union(lowercaseAlpha)
+            .union(numeric)
+            .union(symbols)
+    }
+}
+
 extension String {
     public func trimmed() -> String {
         let regex = try! NSRegularExpression(pattern: "  +", options: .caseInsensitive)

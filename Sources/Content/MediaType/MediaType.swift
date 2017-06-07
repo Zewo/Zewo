@@ -147,6 +147,8 @@ extension MediaType : Equatable {
 }
 
 public extension MediaType {
+    /// Any media type (*/*).
+    static let any = MediaType(type: "*", subtype: "*")
     /// Plain text media type.
     static let plainText = MediaType(type: "text", subtype: "plain", parameters: ["charset": "utf-8"])
     /// HTML media type.

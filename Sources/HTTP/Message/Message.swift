@@ -74,7 +74,13 @@ extension Message {
     }
 
     public var connection: String? {
-        return headers["Connection"]
+        get {
+            return headers["Connection"]
+        }
+        
+        set(connection) {
+            headers["Connection"] = connection
+        }
     }
 
     public var isKeepAlive: Bool {
@@ -94,6 +100,43 @@ extension Message {
     }
     
     public func content<C : Content>(deadline: Deadline = 5.minutes.fromNow()) throws -> C {
+        return try _content(deadline: deadline)
+    }
+    
+    public func content<C : ContentInitializable>(
+        deadline: Deadline = 5.minutes.fromNow()
+    ) throws -> C {
+        guard let mediaType = self.contentType else {
+            throw MessageError.noContentTypeHeader
+        }
+        
+        guard let readable = try? body.convertedToReadable() else {
+            throw MessageError.noReadableBody
+        }
+        
+        var lastError: Error = MessageError.unsupportedMediaType
+        
+        for contentType in C.supportedTypes where contentType.mediaType.matches(other: mediaType) {
+            let content = try contentType.parse(from: readable, deadline: deadline)
+            
+            do {
+                return try C(content: content)
+            } catch {
+                lastError = error
+                continue
+            }
+        }
+        
+        throw lastError
+    }
+    
+    public func content<C : Content & ContentInitializable>(
+        deadline: Deadline = 5.minutes.fromNow()
+    ) throws -> C {
+        return try _content()
+    }
+    
+    public func _content<C : Content>(deadline: Deadline = 5.minutes.fromNow()) throws -> C {
         guard let mediaType = self.contentType else {
             throw MessageError.noContentTypeHeader
         }
@@ -102,32 +145,10 @@ extension Message {
             throw MessageError.unsupportedMediaType
         }
         
-        guard let readable = body.readable else {
+        guard let readable = try? body.convertedToReadable() else {
             throw MessageError.noReadableBody
         }
         
         return try C.parse(from: readable, deadline: deadline)
-    }
-    
-    public func content<C : ContentConvertible>(deadline: Deadline = 5.minutes.fromNow()) throws -> C {
-        guard let mediaType = self.contentType else {
-            throw MessageError.noContentTypeHeader
-        }
-        
-        guard let readable = body.readable else {
-            throw MessageError.noReadableBody
-        }
-        
-        for contentType in C.contentTypes where contentType.mediaType.matches(other: mediaType) {
-            let content = try contentType.type.parse(from: readable, deadline: deadline)
-            
-            guard let initializer = try contentType.initialize?(content) else {
-                continue
-            }
-            
-            return initializer
-        }
-        
-        throw MessageError.unsupportedMediaType
     }
 }

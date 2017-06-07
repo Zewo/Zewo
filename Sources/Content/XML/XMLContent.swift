@@ -13,3 +13,22 @@ extension XML : Content {
         try writable.write(description, deadline: deadline)
     }
 }
+
+// TODO: Implement this in XMLRepresentable
+extension XML {
+    public static var supportedTypes: [Content.Type] {
+        return [XML.self]
+    }
+    
+    public var content: Content {
+        return self
+    }
+    
+    public func content(for mediaType: MediaType) throws -> Content {
+        guard PlainText.mediaType.matches(other: mediaType) else {
+            throw ContentError.unsupportedType
+        }
+        
+        return self
+    }
+}
