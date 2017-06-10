@@ -93,8 +93,13 @@ fileprivate final class ReadableBytes : Readable {
             return
         }
         
-        let read = buffer.prefix(readCount)
+        #if swift(>=3.2)
+            let read = UnsafeRawBufferPointer(rebasing: buffer.prefix(readCount))
+        #else
+            let read = UnsafeRawBufferPointer(buffer.prefix(readCount))
+        #endif
+        
         self.buffer = self.buffer.suffix(from: readCount)
-        return UnsafeRawBufferPointer(read)
+        return read
     }
 }

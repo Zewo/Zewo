@@ -1,5 +1,6 @@
 import Core
-import Content
+import IO
+import Media
 import Venice
 
 public final class Response : Message {
@@ -11,9 +12,7 @@ public final class Response : Message {
     public var body: Body
     
     public var storage: Storage = [:]
-    
     public var upgradeConnection: UpgradeConnection?
-    
     public var cookieHeaders: Set<String> = []
     
     public init(

@@ -44,7 +44,12 @@ internal class Parser {
             
             let bytesRead = min(bodyBuffer.count, buffer.count)
             memcpy(baseAddress, bodyBaseAddress, bytesRead)
-            bodyBuffer = bodyBuffer.suffix(from: bytesRead)
+            
+            #if swift(>=3.2)
+                bodyBuffer = UnsafeRawBufferPointer(rebasing: bodyBuffer.suffix(from: bytesRead))
+            #else
+                bodyBuffer = bodyBuffer.suffix(from: bytesRead)
+            #endif
             
             return UnsafeRawBufferPointer(start: baseAddress, count: bytesRead)
         }

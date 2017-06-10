@@ -4,10 +4,10 @@ public enum JSONError : Error {
     case noContent(type: Any.Type)
     case cannotInitializeWithContent(type: Any.Type, content: Content.Type)
     case cannotInitialize(type: Any.Type, json: JSON)
-    case valueNotArray(indexPath: [IndexPathComponentValue], json: JSON)
-    case outOfBounds(indexPath: [IndexPathComponentValue], json: JSON)
-    case valueNotDictionary(indexPath: [IndexPathComponentValue], json: JSON)
-    case valueNotFound(indexPath: [IndexPathComponentValue], json: JSON)
+    case valueNotArray(indexPath: [IndexPathComponent], json: JSON)
+    case outOfBounds(indexPath: [IndexPathComponent], json: JSON)
+    case valueNotDictionary(indexPath: [IndexPathComponent], json: JSON)
+    case valueNotFound(indexPath: [IndexPathComponent], json: JSON)
 }
 
 extension JSONError : CustomStringConvertible {
@@ -171,12 +171,12 @@ extension JSON {
     
     private func _get(_ indexPath: [IndexPathComponent]) throws -> JSON {
         var value = self
-        var visited: [IndexPathComponentValue] = []
+        var visited: [IndexPathComponent] = []
         
         for component in indexPath {
-            visited.append(component.indexPathComponent)
+            visited.append(component)
             
-            switch component.indexPathComponent {
+            switch component {
             case let .index(index):
                 guard case let .array(array) = value else {
                     throw JSONError.valueNotArray(indexPath: visited, json: self)

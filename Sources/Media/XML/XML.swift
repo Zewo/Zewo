@@ -1,10 +1,10 @@
 public enum XMLError : Error {
     case noContent(type: XMLInitializable.Type)
     case cannotInitialize(type: XMLInitializable.Type, xml: XML)
-    case valueNotArray(indexPath: [IndexPathComponentValue], xml: XML)
-    case outOfBounds(indexPath: [IndexPathComponentValue], xml: XML)
-    case valueNotDictionary(indexPath: [IndexPathComponentValue], xml: XML)
-    case valueNotFound(indexPath: [IndexPathComponentValue], xml: XML)
+    case valueNotArray(indexPath: [IndexPathComponent], xml: XML)
+    case outOfBounds(indexPath: [IndexPathComponent], xml: XML)
+    case valueNotDictionary(indexPath: [IndexPathComponent], xml: XML)
+    case valueNotFound(indexPath: [IndexPathComponent], xml: XML)
 }
 
 extension XMLError : CustomStringConvertible {
@@ -107,7 +107,7 @@ public final class XML {
         
         guard elements.count == 1, let element = elements.first else {
             throw XMLError.valueNotFound(
-                indexPath: indexPath.map({ $0.indexPathComponent }),
+                indexPath: indexPath,
                 xml: self
             )
         }
@@ -118,12 +118,12 @@ public final class XML {
     internal func _get(_ indexPath: [IndexPathComponent]) throws -> [XML] {
         var value = [self]
         var single = true
-        var visited: [IndexPathComponentValue] = []
+        var visited: [IndexPathComponent] = []
         
         loop: for component in indexPath {
-            visited.append(component.indexPathComponent)
+            visited.append(component)
             
-            switch component.indexPathComponent {
+            switch component {
             case let .index(index):
                 if single, value.count == 1, let element = value.first {
                     guard element.elements.indices.contains(index) else {

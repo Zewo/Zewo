@@ -115,11 +115,11 @@ extension JSON {
                     while let component = components.first {
                         components.remove(at: components.startIndex)
                         
-                        if let _ = try? schema.get(component) as [String: JSON] {
-                            schema = try! schema.get(component) as JSON
+                        if let _ = try? schema.get(.key(component)) as [String: JSON] {
+                            schema = try! schema.get(.key(component)) as JSON
                             continue
-                        } else if let _ = try? schema.get(component) as [[String: JSON]] {
-                            let schemas = try! schema.get(component) as [JSON]
+                        } else if let _ = try? schema.get(.key(component)) as [[String: JSON]] {
+                            let schemas = try! schema.get(.key(component)) as [JSON]
                             
                             if let component = components.first, let index = Int(component) {
                                 components.remove(at: components.startIndex)

@@ -10,8 +10,8 @@ let package = Package(
         
         Target(name: "Core"),
         Target(name: "IO", dependencies: ["Core"]),
-        Target(name: "Content", dependencies: ["CYAJL", "Core"]),
-        Target(name: "HTTP", dependencies: ["Content", "IO", "CHTTPParser"]),
+        Target(name: "Media", dependencies: ["CYAJL", "Core"]),
+        Target(name: "HTTP", dependencies: ["Media", "IO", "CHTTPParser"]),
     ],
     dependencies: [
         .Package(url: "https://github.com/Zewo/Venice.git", majorVersion: 0, minor: 19),

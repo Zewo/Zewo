@@ -27,9 +27,16 @@ public final class ReadableBuffer : Readable {
         
         let readCount = min(buffer.count, self.buffer.count)
         memcpy(destination, origin, readCount)
-        let read = buffer.prefix(readCount)
-        self.buffer = self.buffer.suffix(from: readCount)
-        return UnsafeRawBufferPointer(read)
+        
+        #if swift(>=3.2)
+            let read = UnsafeRawBufferPointer(rebasing: buffer.prefix(readCount))
+            self.buffer = UnsafeRawBufferPointer(rebasing: self.buffer.suffix(from: readCount))
+        #else
+            let read = UnsafeRawBufferPointer(buffer.prefix(readCount))
+            self.buffer = self.buffer.suffix(from: readCount)
+        #endif
+        
+        return read
     }
 }
 

@@ -1,5 +1,5 @@
 import XCTest
-@testable import Content
+@testable import Media
 import Foundation
 
 public class JSONTests: XCTestCase {

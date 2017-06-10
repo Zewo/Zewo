@@ -1,5 +1,5 @@
 import Core
-import Content
+import Media
 import Venice
 
 // TODO: Make error CustomStringConvertible and ResponseRepresentable

@@ -1,5 +1,5 @@
 import XCTest
-import Content
+import Media
 import HTTP
 
 public class ClientTests: XCTestCase {
