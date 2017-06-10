@@ -18,7 +18,7 @@ let package = Package(
     ],
     dependencies: [
         .Package(url: "https://github.com/Zewo/Venice.git", majorVersion: 0, minor: 19),
-        .Package(url: "https://github.com/Zewo/CLibtls.git", majorVersion: 2),
-        .Package(url: "https://github.com/Zewo/CBtls.git", majorVersion: 0, minor: 5),
+        .Package(url: "https://github.com/Zewo/CLibreSSL.git", majorVersion: 3),
+        .Package(url: "https://github.com/Zewo/CBtls.git", majorVersion: 1),
     ]
 )
