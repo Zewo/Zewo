@@ -18,13 +18,13 @@ public class XMLTests: XCTestCase {
             ]),
         ])
         
-        try print(xml.get("Catalog", "Book", 1, "Author").content)
-        try print(xml.get("Catalog", 0, "Book", 1, "Author", 0).content)
+        try print(xml.get("Catalog", "Book", 1, "Author").contents)
+        try print(xml.get("Catalog", 0, "Book", 1, "Author", 0).contents)
         try print(xml.get("Catalog", "Book", 1).getAttribute("id") ?? "nope")
-        try print(xml.get("Catalog", "Book").withAttribute("id", equalTo: "b")?.get("Author").content ?? "nope")
+        try print(xml.get("Catalog", "Book").withAttribute("id", equalTo: "b")?.get("Author").contents ?? "nope")
         
         for element in try xml.get("Catalog", "Book") {
-            try print(element.get("Author").content)
+            try print(element.get("Author").contents)
         }
     }
 }

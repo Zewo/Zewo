@@ -226,7 +226,7 @@ extension XML : CustomStringConvertible {
             
         }
         
-        return "<\(name)\(attributes)>\(content)</\(name)>"
+        return "<\(name)\(attributes)>\(contents)</\(name)>"
     }
 }
 

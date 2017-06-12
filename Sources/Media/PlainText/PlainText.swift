@@ -10,40 +10,12 @@ public struct PlainText {
     }
 }
 
-public protocol PlainTextInitializable : ContentInitializable {
+public protocol PlainTextInitializable {
     init(plainText: PlainText) throws
 }
 
-extension PlainTextInitializable {
-    public init(content: Content) throws {
-        guard let plainText = content as? PlainText else {
-            throw ContentError.unsupportedType
-        }
-        
-        try self.init(plainText: plainText)
-    }
-}
-
-public protocol PlainTextRepresentable : ContentRepresentable {
+public protocol PlainTextRepresentable {
     func plainText() -> PlainText
-}
-
-extension PlainTextRepresentable {
-    public static var supportedTypes: [Content.Type] {
-        return [PlainText.self]
-    }
-    
-    public var content: Content {
-        return plainText()
-    }
-    
-    public func content(for mediaType: MediaType) throws -> Content {
-        guard PlainText.mediaType.matches(other: mediaType) else {
-            throw ContentError.unsupportedType
-        }
-        
-        return plainText()
-    }
 }
 
 public protocol PlainTextConvertible : PlainTextInitializable, PlainTextRepresentable {}
@@ -62,7 +34,7 @@ extension PlainText : PlainTextRepresentable {
 
 extension PlainText : CustomStringConvertible {}
 
-extension PlainText : Content {
+extension PlainText {
     public static var mediaType: MediaType = .plainText
     
     public static func parse(from readable: Readable, deadline: Deadline) throws -> PlainText {

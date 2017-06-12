@@ -114,84 +114,28 @@ extension Request {
         contentLength = buffer.bufferSize
     }
     
-    private convenience init(
+    public convenience init<C : Content>(
         method: Method,
         uri: String,
         headers: Headers = [:],
-        content: Content,
+        content: C,
+        contentType mediaType: MediaType,
         timeout: Duration = 5.minutes
     ) throws {
+        let coder = try C.coders.coder(for: mediaType)
+        
         try self.init(
             method: method,
             uri: uri,
             headers: headers,
             body: { writable in
-                try content.serialize(to: writable, deadline: timeout.fromNow())
+                try coder.encode(content, to: writable, deadline: timeout.fromNow())
             }
         )
         
-        self.contentType = type(of: content).mediaType
+        self.contentType = type(of: coder).mediaType
         self.contentLength = nil
         self.transferEncoding = "chunked"
-    }
-    
-    public convenience init<C : ContentRepresentable>(
-        method: Method,
-        uri: String,
-        headers: Headers = [:],
-        content representable: C,
-        timeout: Duration = 5.minutes
-    ) throws {
-        try self.init(
-            method: method,
-            uri: uri,
-            headers: headers,
-            content: representable.content,
-            timeout: timeout
-        )
-    }
-    
-    public convenience init<C : Content & ContentRepresentable>(
-        method: Method,
-        uri: String,
-        headers: Headers = [:],
-        content: C,
-        timeout: Duration = 5.minutes
-    ) throws {
-        try self.init(
-            method: method,
-            uri: uri,
-            headers: headers,
-            content: content as Content,
-            timeout: timeout
-        )
-    }
-    
-    public convenience init<C : ContentRepresentable>(
-        method: Method,
-        uri: String,
-        headers: Headers = [:],
-        content representable: C,
-        contentType mediaType: MediaType,
-        timeout: Duration = 5.minutes
-    ) throws {
-        for contentType in C.supportedTypes where contentType.mediaType.matches(other: mediaType) {
-            guard let content = try? representable.content(for: mediaType) else {
-                continue
-            }
-            
-            try self.init(
-                method: method,
-                uri: uri,
-                headers: headers,
-                content: content,
-                timeout: timeout
-            )
-            
-            return
-        }
-        
-        throw MessageError.unsupportedMediaType
     }
 }
 
@@ -238,22 +182,6 @@ extension Request {
         set(userAgent) {
             headers["User-Agent"] = userAgent
         }
-    }
-}
-
-extension Request {
-    public func negotiate<C : ContentRepresentable>(
-        _ representable: C
-    ) throws -> Content {
-        for contentType in C.supportedTypes where contentType.mediaType.matches(any: accept) {
-            guard let content = try? representable.content(for: contentType.mediaType) else {
-                continue
-            }
-            
-            return content
-        }
-        
-        throw ContentError.unsupportedType
     }
 }
 

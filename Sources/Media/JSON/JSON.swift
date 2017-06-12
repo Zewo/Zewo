@@ -2,7 +2,6 @@ import Foundation
 
 public enum JSONError : Error {
     case noContent(type: Any.Type)
-    case cannotInitializeWithContent(type: Any.Type, content: Content.Type)
     case cannotInitialize(type: Any.Type, json: JSON)
     case valueNotArray(indexPath: [IndexPathComponent], json: JSON)
     case outOfBounds(indexPath: [IndexPathComponent], json: JSON)
@@ -18,8 +17,6 @@ extension JSONError : CustomStringConvertible {
             return "Cannot initialize type \"\(String(describing: type))\" with no content."
         case let .cannotInitialize(type, json):
             return "Cannot initialize type \"\(String(describing: type))\" with json \(json)."
-        case let .cannotInitializeWithContent(type, content):
-            return "Cannot initialize type \"\(String(describing: type))\" with type \(content)."
         case let .valueNotArray(indexPath, content):
             return "Cannot get json element for index path \"\(indexPath.string)\". Element is not an array \(content)."
         case let .outOfBounds(indexPath, content):

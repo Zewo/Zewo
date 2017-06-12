@@ -30,21 +30,6 @@ extension A : Equatable {
 }
 
 public class JSONTests : XCTestCase {
-    func testEncoding() throws {
-        let a = A(
-            a: 42,
-            b: nil,
-            c: [4.2],
-            d: ["foo": 6.9],
-            e: B(f: 23)
-        )
-        
-        let json = try JSON.encode(a)
-        let b: A = try JSON.decode(json)
-        
-        XCTAssertEqual(a, b)
-    }
-    
     func testJSONSchema() throws {
         let schema = JSON.Schema([
             "type": "object",

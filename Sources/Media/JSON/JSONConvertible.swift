@@ -1,55 +1,15 @@
 import struct Foundation.Data
 import struct Foundation.UUID
 
-public protocol JSONInitializable : ContentInitializable {
+public protocol JSONInitializable {
     init(json: JSON) throws
 }
 
-extension JSONInitializable {
-    public static var supportedTypes: [Content.Type] {
-        return [JSON.self]
-    }
-}
-
-extension JSONInitializable {
-    public init(content: Content) throws {
-        guard let json = content as? JSON else {
-            throw ContentError.unsupportedType
-        }
-        
-        try self.init(json: json)
-    }
-}
-
-public protocol JSONRepresentable : ContentRepresentable {
+public protocol JSONRepresentable  {
     func json() -> JSON
 }
 
-extension JSONRepresentable {
-    public static var supportedTypes: [Content.Type] {
-        return [JSON.self]
-    }
-    
-    public var content: Content {
-        return json()
-    }
-    
-    public func content(for mediaType: MediaType) throws -> Content {
-        guard JSON.mediaType.matches(other: mediaType) else {
-            throw ContentError.unsupportedType
-        }
-        
-        return json()
-    }
-}
-
 public protocol JSONConvertible : JSONInitializable, JSONRepresentable {}
-
-extension JSONConvertible {
-    public static var supportedTypes: [Content.Type] {
-        return [JSON.self]
-    }
-}
 
 extension JSON : JSONConvertible {
     public init(json: JSON) throws {

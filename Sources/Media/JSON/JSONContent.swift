@@ -1,9 +1,7 @@
 import Venice
 import Core
 
-extension JSON : Content {
-    public static var mediaType: MediaType = .json
-    
+extension JSON {
     public static func parse(from readable: Readable, deadline: Deadline) throws -> JSON {
         let parser = JSONParser()
         let buffer = UnsafeMutableRawBufferPointer.allocate(count: 4096)
