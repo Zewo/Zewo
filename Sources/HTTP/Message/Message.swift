@@ -130,6 +130,31 @@ extension Message {
         throw lastError
     }
     
+    public func content<M : MediaCodable>(
+        deadline: Deadline = 5.minutes.fromNow()
+    ) throws -> M {
+        guard let mediaType = self.contentType else {
+            throw MessageError.noContentTypeHeader
+        }
+        
+        guard let readable = try? body.convertedToReadable() else {
+            throw MessageError.noReadableBody
+        }
+        
+        var lastError: Error = MessageError.unsupportedMediaType
+        
+        for decoder in M.contentTypes where decoder.mediaType.matches(other: mediaType) {
+            do {
+                return try decoder.decode(from: readable, deadline: deadline)
+            } catch {
+                lastError = error
+                continue
+            }
+        }
+        
+        throw lastError
+    }
+    
     public func content<C : Content & ContentInitializable>(
         deadline: Deadline = 5.minutes.fromNow()
     ) throws -> C {

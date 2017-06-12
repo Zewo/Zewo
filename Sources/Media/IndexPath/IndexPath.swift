@@ -47,3 +47,31 @@ extension Array where Element == IndexPathComponent {
         return map({ $0.description }).joined(separator: ".")
     }
 }
+
+extension IndexPathComponent : CodingKey {
+    public var stringValue: String {
+        switch self {
+        case let .index(index):
+            return index.description
+        case let .key(key):
+            return key
+        }
+    }
+    
+    public init?(stringValue: String) {
+        self = .key(stringValue)
+    }
+    
+    public var intValue: Int?  {
+        switch self {
+        case let .index(index):
+            return index
+        default:
+            return nil
+        }
+    }
+    
+    public init?(intValue: Int) {
+        self = .index(intValue)
+    }
+}

@@ -1,8 +1,50 @@
 import XCTest
 @testable import Media
-import Foundation
 
-public class JSONTests: XCTestCase {
+struct B : Codable {
+    let f: UInt8
+}
+
+extension B : Equatable {
+    static func ==(lhs: B, rhs: B) -> Bool {
+        return lhs.f == rhs.f
+    }
+}
+
+struct A : Codable {
+    let a: Int
+    let b: String?
+    let c: [Double]
+    let d: [String: Float]
+    let e: B
+}
+
+extension A : Equatable {
+    static func ==(lhs: A, rhs: A) -> Bool {
+        return lhs.a == rhs.a &&
+        lhs.b == rhs.b &&
+        lhs.c == rhs.c &&
+        lhs.d == rhs.d &&
+        lhs.e == rhs.e
+    }
+}
+
+public class JSONTests : XCTestCase {
+    func testEncoding() throws {
+        let a = A(
+            a: 42,
+            b: nil,
+            c: [4.2],
+            d: ["foo": 6.9],
+            e: B(f: 23)
+        )
+        
+        let json = try JSON.encode(a)
+        let b: A = try JSON.decode(json)
+        
+        XCTAssertEqual(a, b)
+    }
+    
     func testJSONSchema() throws {
         let schema = JSON.Schema([
             "type": "object",
