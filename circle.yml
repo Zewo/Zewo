@@ -1,3 +1,6 @@
+machine:
+  xcode:
+    version: 9.0
 dependencies:
   override:
     - eval "$(curl -sL http://sh.zewo.io/install-zewo.sh)"

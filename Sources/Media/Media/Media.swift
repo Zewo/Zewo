@@ -19,6 +19,7 @@ public protocol Coder {
 // TODO: Make error CustomStringConvertible and ResponseRepresentable
 public enum ContentError : Error {
     case unsupportedMediaType
+    case noDefaultCoder
 }
 
 public protocol Content : Codable {
@@ -30,6 +31,18 @@ public struct Coders {
     
     public init(_ coders: Coder...) {
         self.coders = coders
+    }
+    
+    public init() {
+        self.coders = [JSONCoder()]
+    }
+    
+    public func defaultCoder() throws -> Coder {
+        guard let coder = coders.first else {
+            throw ContentError.noDefaultCoder
+        }
+        
+        return coder
     }
     
     public func coder(for mediaType: MediaType) throws -> Coder {

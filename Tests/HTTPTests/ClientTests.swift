@@ -9,7 +9,7 @@ struct Resources : Content {
     static var coders: Coders = defaultCoders
     
     let currentUserURL: String
-    let currentUserAuthorizationsHtmlUrl: String
+    let currentUserAuthorizationsHtmlURL: String
     let authorizationsURL: String
     let codeSearchURL: String
     let commitSearchURL: String
@@ -24,7 +24,6 @@ struct Resources : Content {
     let issueSearchURL: String
     let issuesURL: String
     let keysURL: String
-    
     let notificationsURL: String
     let organizationRepositoriesURL: String
     let organizationURL: String
@@ -50,7 +49,7 @@ public class ClientTests: XCTestCase {
             let resources: Resources = try response.content()
             
             XCTAssertEqual(resources.currentUserURL, "https://api.github.com/user")
-            XCTAssertEqual(resources.currentUserAuthorizationsHtmlUrl, "https://github.com/settings/connections/applications{/client_id}")
+            XCTAssertEqual(resources.currentUserAuthorizationsHtmlURL, "https://github.com/settings/connections/applications{/client_id}")
             XCTAssertEqual(resources.authorizationsURL, "https://api.github.com/authorizations")
             XCTAssertEqual(resources.codeSearchURL, "https://api.github.com/search/code?q={query}{&page,per_page,sort,order}")
             XCTAssertEqual(resources.commitSearchURL, "https://api.github.com/search/commits?q={query}{&page,per_page,sort,order}")
