@@ -1,5 +1,8 @@
 <p align="center">
-    <a href="http://zewo.io"><img src="https://raw.githubusercontent.com/Zewo/Zewo/master/Images/zewo.png" alt="Zewo"/></a>
+    <a href="http://zewo.io"><img src="https://raw.githubusercontent.com/Zewo/Zewo/master/Images/zewo.png" height="250" alt="Zewo"/></a>
+<br />
+<br />
+<a href="https://github.com/Zewo/Venice"><img src="https://github.com/Zewo/Venice/blob/master/Images/badge.png?raw=true" height="50" /></a>
 </p>
 
 <p align="center">
