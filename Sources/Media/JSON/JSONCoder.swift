@@ -9,10 +9,6 @@ import Venice
 import Core
 import Foundation
 
-#if os(Linux)
-extension Date : Codable {}
-#endif
-
 public struct JSONCoder : Coder {
     public static var mediaType: MediaType = .json
     
@@ -69,8 +65,8 @@ public struct JSONCoder : Coder {
     
     /// The strategy to use for coding `Date` values.
     public enum DateCodingStrategy {
-        /// Defer to `Date` for choosing a coding. This is the default strategy.
-        case deferredToDate
+//        /// Defer to `Date` for choosing a coding. This is the default strategy.
+//        case deferredToDate
         
         /// Code the `Date` as a UNIX timestamp (as a JSON number).
         case secondsSince1970
@@ -130,7 +126,7 @@ public struct JSONCoder : Coder {
     public init(
         outputFormatting: OutputFormatting = .compact,
         fieldNamingPolicy: FieldNamingPolicy = .identity,
-        dateCodingStrategy: DateCodingStrategy = .deferredToDate,
+        dateCodingStrategy: DateCodingStrategy = .secondsSince1970,
         dataCodingStrategy: DataCodingStrategy = .base64,
         nonConformingFloatCodingStrategy: NonConformingFloatCodingStrategy = .throw,
         userInfo: [CodingUserInfoKey: Any] = [:]
@@ -860,10 +856,10 @@ extension _JSONEncoder {
     
     fileprivate func box(_ date: Date) throws -> JSON {
         switch self.options.dateCodingStrategy {
-        case .deferredToDate:
-            // Must be called with a surrounding with(pushedKey:) call.
-            try date.encode(to: self)
-            return self.storage.popContainer()
+//        case .deferredToDate:
+//            // Must be called with a surrounding with(pushedKey:) call.
+//            try date.encode(to: self)
+//            return self.storage.popContainer()
             
         case .secondsSince1970:
             return .double(date.timeIntervalSince1970)
@@ -2258,11 +2254,11 @@ extension _JSONDecoder {
         }
         
         switch self.options.dateCodingStrategy {
-        case .deferredToDate:
-            self.storage.push(container: value)
-            let date = try Date(from: self)
-            self.storage.popContainer()
-            return date
+//        case .deferredToDate:
+//            self.storage.push(container: value)
+//            let date = try Date(from: self)
+//            self.storage.popContainer()
+//            return date
             
         case .secondsSince1970:
             let double = try self.unbox(value, as: Double.self)!
