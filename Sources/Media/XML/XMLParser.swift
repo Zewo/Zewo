@@ -47,25 +47,9 @@ fileprivate class ParserStream : InputStream {
         buffer.deallocate()
     }
     
-    #if os(macOS)
     fileprivate override var streamError: Error? {
         return lastError
     }
-    #else
-    fileprivate override var streamError: NSError? {
-        let userInfo: [String: Any] = [
-            NSLocalizedDescriptionKey: lastError.map({ String(describing: $0) }) ?? ""
-        ]
-        
-        let error = NSError(
-            domain: "XMLParserError",
-            code: 0,
-            userInfo: userInfo
-        )
-        
-        return error
-    }
-    #endif
     
     fileprivate override func open() {}
     fileprivate override func close() {}

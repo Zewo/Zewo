@@ -9,6 +9,10 @@ import Venice
 import Core
 import Foundation
 
+#if os(Linux)
+extendion Date : Codable {}
+#endif
+
 public struct JSONCoder : Coder {
     public static var mediaType: MediaType = .json
     
