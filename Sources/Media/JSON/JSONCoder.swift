@@ -10,7 +10,7 @@ import Core
 import Foundation
 
 #if os(Linux)
-extendion Date : Codable {}
+extension Date : Codable {}
 #endif
 
 public struct JSONCoder : Coder {
