@@ -5,16 +5,7 @@ import PackageDescription
 let package = Package(
     name: "Zewo",
     products: [
-        .library(
-            name: "Zewo",
-            type: .dynamic,
-            targets: [
-                "Core",
-                "IO",
-                "Media",
-                "HTTP"
-            ]
-        )
+        .library(name: "Zewo", targets: ["Core", "IO", "Media", "HTTP"])
     ],
     dependencies: [
         .package(url: "https://github.com/Zewo/CLibdill.git", .branch("swift-4")),
