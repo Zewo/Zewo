@@ -101,7 +101,7 @@ public final class Server {
         group.cancel()
     }
     
-    static var defaultHeader: String {
+    public static var defaultHeader: String {
         var header = "\n"
         header += "                        _____                         \n"
         header += "     _.-ˆˆ-._.-ˆˆ-._   /__  /   ____ _      __ ____   \n"

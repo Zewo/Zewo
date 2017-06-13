@@ -7,8 +7,8 @@ public struct Version {
         self.minor = minor
     }
 
-    internal static let oneDotZero = Version(major: 1, minor: 0)
-    internal static let oneDotOne = Version(major: 1, minor: 1)
+    public static let oneDotZero = Version(major: 1, minor: 0)
+    public static let oneDotOne = Version(major: 1, minor: 1)
 }
 
 extension Version : Hashable {
