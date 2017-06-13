@@ -30,5 +30,10 @@ let package = Package(
         .target(name: "IO", dependencies: ["Core"]),
         .target(name: "Media", dependencies: ["CYAJL", "Core"]),
         .target(name: "HTTP", dependencies: ["Media", "IO", "CHTTPParser"]),
+
+        .testTarget(name: "CoreTests", dependencies: ["Core"]),
+        .testTarget(name: "IOTests", dependencies: ["IO"]),
+        .testTarget(name: "MediaTests", dependencies: ["Media"]),
+        .testTarget(name: "HTTPTests", dependencies: ["HTTP"]),
     ]
 )
