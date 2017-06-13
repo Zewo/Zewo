@@ -14,7 +14,7 @@ let package = Package(
         .package(url: "https://github.com/Zewo/CLibreSSL.git", .branch("swift-4")),
     ],
     targets: [
-        .target(name: "CYAJL", dependencies: []),
+        .target(name: "CYAJL"),
         .target(name: "CHTTPParser"),
         
         .target(name: "Core", dependencies: ["Venice"]),
