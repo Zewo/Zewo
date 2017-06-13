@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "Zewo",
     products: [
-        .library(name: "Zewo", targets: ["Core", "IO", "Media", "HTTP", "Zewo"])
+        .library(name: "Zewo", targets: ["CYAJL", "CHTTPParser", "Core", "IO", "Media", "HTTP", "Zewo"])
     ],
     dependencies: [
         .package(url: "https://github.com/Zewo/CLibdill.git", .branch("swift-4")),
