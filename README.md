@@ -57,7 +57,9 @@ With **Zewo** you get:
 
 ## Test Coverage
 
-[![Test Coverage][codecov-sunburst]][codecov-url]
+<p align="center">
+    <a href="https://codecov.io/gh/Zewo/Zewo"><img src="https://codecov.io/gh/Zewo/Zewo/branch/master/graphs/sunburst.svg" height="200" alt="Coverage Sunburst"/></a>
+</p>
 
 The inner-most circle is the entire project, moving away from the center are folders then, finally, a single file. The size and color of each slice is represented by the number of statements and the coverage, respectively.
 
@@ -147,5 +149,4 @@ All **Zewo** modules are released under the MIT license. See [LICENSE](LICENSE) 
 
 [slack-image]: http://s13.postimg.org/ybwy92ktf/Slack.png
 [slack-url]: http://slack.zewo.io
-[codecov-url]: https://codecov.io/gh/Zewo/Zewo
-[codecov-sunburst]: https://codecov.io/gh/Zewo/Zewo/branch/master/graphs/sunburst.svg
+
