@@ -153,7 +153,7 @@ extension Response {
         contentLength = buffer.bufferSize
     }
     
-    public convenience init<C : Content>(
+    public convenience init<C : Renderable>(
         status: Status,
         headers: Headers = [:],
         content: C,
@@ -178,7 +178,7 @@ extension Response {
         self.transferEncoding = "chunked"
     }
     
-    public convenience init<C : Content>(
+    public convenience init<C : Renderable>(
         status: Status,
         headers: Headers = [:],
         content: C,

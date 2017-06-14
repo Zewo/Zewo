@@ -22,11 +22,11 @@ public enum ContentError : Error {
     case noDefaultCoder
 }
 
-public protocol Content : Codable {
+public protocol Renderable : Codable {
     static var coders: Coders { get }
 }
 
-extension Content {
+extension Renderable {
     public static var coders: Coders {
         return Coders()
     }

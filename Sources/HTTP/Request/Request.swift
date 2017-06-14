@@ -114,7 +114,7 @@ extension Request {
         contentLength = buffer.bufferSize
     }
     
-    public convenience init<C : Content>(
+    public convenience init<C : Renderable>(
         method: Method,
         uri: String,
         headers: Headers = [:],
@@ -137,7 +137,7 @@ extension Request {
         self.transferEncoding = "chunked"
     }
     
-    public convenience init<C : Content>(
+    public convenience init<C : Renderable>(
         method: Method,
         uri: String,
         headers: Headers = [:],

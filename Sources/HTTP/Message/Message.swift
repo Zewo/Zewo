@@ -99,7 +99,7 @@ extension Message {
         return headers["Upgrade"]
     }
     
-    public func content<C : Content>(
+    public func content<C : Renderable>(
         deadline: Deadline = 5.minutes.fromNow()
     ) throws -> C {
         guard let mediaType = self.contentType else {
