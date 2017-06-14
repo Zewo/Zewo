@@ -27,6 +27,11 @@ extension JSON {
         return try parser.finish()
     }
     
+    public static func parse(from buffer: UnsafeRawBufferPointer, deadline: Deadline) throws -> JSON {
+        let readable = ReadableBuffer(buffer)
+        return try parse(from: readable, deadline: deadline)
+    }
+    
     public func serialize(to writable: Writable, deadline: Deadline) throws {
         let serializer = JSONSerializer()
         
