@@ -26,6 +26,12 @@ public protocol Content : Codable {
     static var coders: Coders { get }
 }
 
+extension Content {
+    public static var coders: Coders {
+        return Coders()
+    }
+}
+
 public struct Coders {
     let coders: [Coder]
     
