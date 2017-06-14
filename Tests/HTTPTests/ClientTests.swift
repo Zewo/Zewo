@@ -5,7 +5,7 @@ import HTTP
 let jsonCoder = JSONCoder(fieldNamingPolicy: .snakeCase)
 let defaultCoders = Coders(jsonCoder)
 
-struct Resources : Content {
+struct Resources : Renderable {
     static var coders: Coders = defaultCoders
     
     let currentUserURL: String
