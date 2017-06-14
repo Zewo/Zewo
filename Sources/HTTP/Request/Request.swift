@@ -119,6 +119,29 @@ extension Request {
         uri: String,
         headers: Headers = [:],
         content: C,
+        timeout: Duration = 5.minutes
+    ) throws {
+        let coder = try C.coders.defaultCoder()
+        
+        try self.init(
+            method: method,
+            uri: uri,
+            headers: headers,
+            body: { writable in
+                try coder.encode(content, to: writable, deadline: timeout.fromNow())
+            }
+        )
+        
+        self.contentType = type(of: coder).mediaType
+        self.contentLength = nil
+        self.transferEncoding = "chunked"
+    }
+    
+    public convenience init<C : Content>(
+        method: Method,
+        uri: String,
+        headers: Headers = [:],
+        content: C,
         contentType mediaType: MediaType,
         timeout: Duration = 5.minutes
     ) throws {

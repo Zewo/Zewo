@@ -157,6 +157,31 @@ extension Response {
         status: Status,
         headers: Headers = [:],
         content: C,
+        timeout: Duration = 5.minutes
+    ) throws {
+        let coder = try C.coders.defaultCoder()
+        
+        self.init(
+            status: status,
+            headers: headers,
+            body: { writable in
+                try coder.encode(
+                    content,
+                    to: writable,
+                    deadline: timeout.fromNow()
+                )
+            }
+        )
+        
+        self.contentType = type(of: coder).mediaType
+        self.contentLength = nil
+        self.transferEncoding = "chunked"
+    }
+    
+    public convenience init<C : Content>(
+        status: Status,
+        headers: Headers = [:],
+        content: C,
         contentType mediaType: MediaType,
         timeout: Duration = 5.minutes
     ) throws {
