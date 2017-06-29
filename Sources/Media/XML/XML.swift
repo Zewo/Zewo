@@ -89,6 +89,12 @@ public struct XML {
     }
 }
 
+extension XML : CustomStringConvertible {
+    public var description: String {
+        return root.description
+    }
+}
+
 extension XML.Element : CustomStringConvertible {
     public var description: String {
         var attributes = ""
