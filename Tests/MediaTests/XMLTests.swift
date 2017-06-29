@@ -2,34 +2,102 @@ import XCTest
 @testable import Media
 import Foundation
 
-public class XMLTests: XCTestCase {
-    func testXML() throws {
-        let xml = XML(name: "Root", children: [
-            XML(name: "Catalog", children: [
-                XML(name: "Book", attributes: ["id": "a"], children: [
-                    XML(name: "Author", children: ["Bob"]),
-                ]),
-                XML(name: "Book", attributes: ["id": "b"], children: [
-                    XML(name: "Author", children: ["John"]),
-                ]),
-                XML(name: "Book", attributes: ["id": "c"], children: [
-                    XML(name: "Author", children: ["Mark"]),
-                ]),
-            ]),
-        ])
-        
-        try print(xml.get("Catalog", "Book", 1, "Author").contents)
-        try print(xml.get("Catalog", 0, "Book", 1, "Author", 0).contents)
-        try print(xml.get("Catalog", "Book", 1).getAttribute("id") ?? "nope")
-        try print(xml.get("Catalog", "Book").withAttribute("id", equalTo: "b")?.get("Author").contents ?? "nope")
-        
-        for element in try xml.get("Catalog", "Book") {
-            try print(element.get("Author").contents)
-        }
+struct Book : Codable {
+    let author: String
+    
+    enum Key : String, CodingKey {
+        case author = "Author"
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: Key.self)
+        author = try container.decode(String.self, forKey: .author)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: Key.self)
+        try container.encode(author, forKey: .author)
     }
 }
 
+struct Catalog : Codable {
+    let books: [Book]
+    
+    enum Key : String, CodingKey {
+        case book = "Book"
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: Key.self)
+        books = try container.decode([Book].self, forKey: .book)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: Key.self)
+        try container.encode(books, forKey: .book)
+    }
+}
 
+struct Root : Codable {
+    let catalog: Catalog
+    
+    enum Key : String, CodingKey {
+        case catalog = "Catalog"
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: Key.self)
+        catalog = try container.decode(Catalog.self, forKey: .catalog)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: Key.self)
+        try container.encode(catalog, forKey: .catalog)
+    }
+}
+
+public class XMLTests: XCTestCase {
+    func testXML() throws {
+        do {
+            let xml = XML(root:
+                XML.Element(name: "Catalog", children: [
+                    XML.Element(name: "Book", attributes: ["id": "a"], children: [
+                        XML.Element(name: "Author", children: ["Bob"]),
+                    ]),
+                    XML.Element(name: "Book", attributes: ["id": "b"], children: [
+                        XML.Element(name: "Author", children: ["John"]),
+                    ]),
+                    XML.Element(name: "Book", attributes: ["id": "c"], children: [
+                        XML.Element(name: "Author", children: ["Mark"]),
+                    ]),
+                ])
+            )
+            
+            var json: JSON = [
+                "Catalog": [
+                    "Book": [
+                        ["Author": "Bob"],
+                        ["Author": "John"],
+                        ["Author": "Mark"],
+                    ]
+                ]
+            ]
+            
+            var root: Root
+            
+            root = try Root(from: json)
+            print(root)
+            
+            root = try Root(from: xml)
+            print(root)
+            
+            json = try JSON(from: root)
+            print(json)
+        } catch {
+            print(error)
+        }
+    }
+}
 
 extension XMLTests {
     public static var allTests: [(String, (XMLTests) -> () throws -> Void)] {

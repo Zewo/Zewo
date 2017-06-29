@@ -8,25 +8,21 @@ import CYAJL
 import Venice
 
 public struct JSONSerializerError : Error, CustomStringConvertible {
-    let reason: String
-
-    public var description: String {
-        return reason
-    }
+    public let description: String
 }
 
-public final class JSONSerializer {
+final class JSONSerializer {
     private var ordering: Bool
     private var buffer: String = ""
     private var bufferSize: Int = 0
 
     private var handle: yajl_gen?
 
-    public convenience init() {
+    convenience init() {
         self.init(ordering: false)
     }
 
-    public init(ordering: Bool) {
+    init(ordering: Bool) {
         self.ordering = ordering
         self.handle = yajl_gen_alloc(nil)
     }
@@ -35,7 +31,7 @@ public final class JSONSerializer {
         yajl_gen_free(handle)
     }
 
-    public func serialize(_ json: JSON, bufferSize: Int = 4096, body: (UnsafeRawBufferPointer) throws -> Void) throws {
+    func serialize(_ json: JSON, bufferSize: Int = 4096, body: (UnsafeRawBufferPointer) throws -> Void) throws {
         yajl_gen_reset(handle, nil)
         self.bufferSize = bufferSize
         try generate(json, body: body)
@@ -141,23 +137,23 @@ public final class JSONSerializer {
     private func check(status: yajl_gen_status) throws {
         switch status {
         case yajl_gen_keys_must_be_strings:
-            throw JSONSerializerError(reason: "Keys must be strings.")
+            throw JSONSerializerError(description: "Keys must be strings.")
         case yajl_max_depth_exceeded:
-            throw JSONSerializerError(reason: "Max depth exceeded.")
+            throw JSONSerializerError(description: "Max depth exceeded.")
         case yajl_gen_in_error_state:
-            throw JSONSerializerError(reason: "In error state.")
+            throw JSONSerializerError(description: "In error state.")
         case yajl_gen_invalid_number:
-            throw JSONSerializerError(reason: "Invalid number.")
+            throw JSONSerializerError(description: "Invalid number.")
         case yajl_gen_no_buf:
-            throw JSONSerializerError(reason: "No buffer.")
+            throw JSONSerializerError(description: "No buffer.")
         case yajl_gen_invalid_string:
-            throw JSONSerializerError(reason: "Invalid string.")
+            throw JSONSerializerError(description: "Invalid string.")
         case yajl_gen_status_ok:
             break
         case yajl_gen_generation_complete:
             break
         default:
-            throw JSONSerializerError(reason: "Unknown.")
+            throw JSONSerializerError(description: "Unknown.")
         }
     }
 
@@ -166,7 +162,7 @@ public final class JSONSerializer {
         var bufferLength: Int = 0
 
         guard yajl_gen_get_buf(handle, &buffer, &bufferLength) == yajl_gen_status_ok else {
-            throw JSONSerializerError(reason: "Could not get buffer.")
+            throw JSONSerializerError(description: "Could not get buffer.")
         }
 
         guard bufferLength >= highwater else {

@@ -67,24 +67,22 @@ extension JSON {
     public struct Schema {
         public let title: String?
         public let description: String?
-        
         public let type: [JSONType]?
         
         let formats: [String: Validate]
-        
         let schema: JSON
         
         public init(_ schema: JSON) {
-            title = try? schema.get("title")
-            description = try? schema.get("description")
+            title = try? schema.decode(String.self, forKey: "title")
+            description = try? schema.decode(String.self, forKey: "description")
             
-            if let type = try? schema.get("type") as String {
+            if let type = try? schema.decode(String.self, forKey: "type") {
                 if let type = JSONType(rawValue: type) {
                     self.type = [type]
                 } else {
                     self.type = []
                 }
-            } else if let types = try? schema.get("type") as [String] {
+            } else if let types = try? schema.decode([String].self, forKey: "type") {
                 self.type = types.map { JSONType(rawValue: $0) }.filter { $0 != nil }.map { $0! }
             } else {
                 self.type = []
@@ -110,26 +108,26 @@ extension JSON {
                     let reference = tmp.removingPercentEncoding
                 {
                     var components = reference.components(separatedBy: "/")
-                    var schema = self.schema
+                    let schema = self.schema
                     
                     while let component = components.first {
                         components.remove(at: components.startIndex)
                         
-                        if let _ = try? schema.get(.key(component)) as [String: JSON] {
-                            schema = try! schema.get(.key(component)) as JSON
-                            continue
-                        } else if let _ = try? schema.get(.key(component)) as [[String: JSON]] {
-                            let schemas = try! schema.get(.key(component)) as [JSON]
-                            
-                            if let component = components.first, let index = Int(component) {
-                                components.remove(at: components.startIndex)
-                                
-                                if schemas.count > index {
-                                    schema = schemas[index]
-                                    continue
-                                }
-                            }
-                        }
+//                        if let _ = try? schema.get(component) as [String: JSON] {
+//                            schema = try! schema.get(component) as JSON
+//                            continue
+//                        } else if let _ = try? schema.get(component) as [[String: JSON]] {
+//                            let schemas = try! schema.get(component) as [JSON]
+//
+//                            if let component = components.first, let index = Int(component) {
+//                                components.remove(at: components.startIndex)
+//
+//                                if schemas.count > index {
+//                                    schema = schemas[index]
+//                                    continue
+//                                }
+//                            }
+//                        }
                         
                         return invalidValidation("Reference not found '\(component)' in '\(reference)'")
                     }
@@ -153,44 +151,44 @@ func getValidators(_ root: JSON.Schema) -> (_ schema: JSON) -> [Validate] {
     return { schema in
         var validators: [Validate] = []
         
-        if let ref = try? schema.get("$ref") as String {
+        if let ref = try? schema.decode(String.self, forKey: "$ref") {
             validators.append(root.validatorForReference(ref))
         }
         
-        if let type = try? schema.get("type") as String {
+        if let type = try? schema.decode(String.self, forKey: "type") {
             validators.append(validateType(type))
         }
         
-        if let _ = try? schema.get("allOf") as [[String: JSON]] {
-            let allOf = try! schema.get("allOf") as [JSON]
-            validators += allOf.map(getValidators(root)).reduce([], +)
-        }
-        
-        if let _ = try? schema.get("anyOf") as [[String: JSON]] {
-            let anyOfSchemas = try! schema.get("anyOf") as [JSON]
-            let anyOfValidators = anyOfSchemas.map(getValidators(root)).map(allOf) as [Validate]
-            validators.append(anyOf(anyOfValidators))
-        }
-
-        if let _ = try? schema.get("oneOf") as [[String: JSON]] {
-            let oneOfSchemas = try! schema.get("oneOf") as [JSON]
-            let oneOfValidators = oneOfSchemas.map(getValidators(root)).map(allOf) as [Validate]
-            validators.append(oneOf(oneOfValidators))
-        }
-        
-        if let _ = try? schema.get("not") as [String: JSON] {
-            let notSchema = try! schema.get("not") as JSON
-            let notValidator = allOf(getValidators(root)(notSchema))
-            validators.append(not(notValidator))
-        }
-        
-        if let enumValues = try? schema.get("enum") as [JSON] {
-            validators.append(validateEnum(enumValues))
-        }
+//        if let _ = try? schema.get("allOf") as [[String: JSON]] {
+//            let allOf = try! schema.get("allOf") as [JSON]
+//            validators += allOf.map(getValidators(root)).reduce([], +)
+//        }
+//
+//        if let _ = try? schema.get("anyOf") as [[String: JSON]] {
+//            let anyOfSchemas = try! schema.get("anyOf") as [JSON]
+//            let anyOfValidators = anyOfSchemas.map(getValidators(root)).map(allOf) as [Validate]
+//            validators.append(anyOf(anyOfValidators))
+//        }
+//
+//        if let _ = try? schema.get("oneOf") as [[String: JSON]] {
+//            let oneOfSchemas = try! schema.get("oneOf") as [JSON]
+//            let oneOfValidators = oneOfSchemas.map(getValidators(root)).map(allOf) as [Validate]
+//            validators.append(oneOf(oneOfValidators))
+//        }
+//
+//        if let _ = try? schema.get("not") as [String: JSON] {
+//            let notSchema = try! schema.get("not") as JSON
+//            let notValidator = allOf(getValidators(root)(notSchema))
+//            validators.append(not(notValidator))
+//        }
+//
+//        if let enumValues = try? schema.get("enum") as [JSON] {
+//            validators.append(validateEnum(enumValues))
+//        }
         
         // String
         
-        if let maxLength = try? schema.get("maxLength") as Int {
+        if let maxLength = try? schema.decode(Int.self, forKey: "maxLength") {
             validators.append(
                 validateLength(
                     <=,
@@ -200,7 +198,7 @@ func getValidators(_ root: JSON.Schema) -> (_ schema: JSON) -> [Validate] {
             )
         }
         
-        if let minLength = try? schema.get("minLength") as Int {
+        if let minLength = try? schema.decode(Int.self, forKey: "minLength") {
             validators.append(
                 validateLength(
                     >=,
@@ -210,35 +208,35 @@ func getValidators(_ root: JSON.Schema) -> (_ schema: JSON) -> [Validate] {
             )
         }
         
-        if let pattern = try? schema.get("pattern") as String {
+        if let pattern = try? schema.decode(String.self, forKey: "pattern") {
             validators.append(validatePattern(pattern))
         }
         
         // Numerical
         
-        if let multipleOf = try? schema.get("multipleOf") as Double {
+        if let multipleOf = try? schema.decode(Double.self, forKey: "multipleOf") {
             validators.append(validateMultipleOf(multipleOf))
         }
         
-        if let minimum = try? schema.get("minimum") as Double {
+        if let minimum = try? schema.decode(Double.self, forKey: "minimum") {
             validators.append(
                 validateNumericLength(
                     minimum,
                     comparator: >=,
                     exclusiveComparitor: >,
-                    exclusive: try? schema.get("exclusiveMinimum") as Bool,
+                    exclusive: try? schema.decode(Bool.self, forKey: "exclusiveMinimum"),
                     error: "Value is lower than minimum value of \(minimum)"
                 )
             )
         }
 
-        if let maximum = try? schema.get("maximum") as Double {
+        if let maximum = try? schema.decode(Double.self, forKey: "maximum") {
             validators.append(
                 validateNumericLength(
                     maximum,
                     comparator: <=,
                     exclusiveComparitor: <,
-                    exclusive: try? schema.get("exclusiveMaximum") as Bool,
+                    exclusive: try? schema.decode(Bool.self, forKey: "exclusiveMaximum"),
                     error: "Value exceeds maximum value of \(maximum)"
                 )
             )
@@ -246,7 +244,7 @@ func getValidators(_ root: JSON.Schema) -> (_ schema: JSON) -> [Validate] {
         
         // Array
         
-        if let minItems = try? schema.get("minItems") as Int {
+        if let minItems = try? schema.decode(Int.self, forKey: "minItems") {
             validators.append(
                 validateArrayLength(
                     minItems,
@@ -256,7 +254,7 @@ func getValidators(_ root: JSON.Schema) -> (_ schema: JSON) -> [Validate] {
             )
         }
         
-        if let maxItems = try? schema.get("maxItems") as Int {
+        if let maxItems = try? schema.decode(Int.self, forKey: "maxItems") {
             validators.append(
                 validateArrayLength(
                     maxItems,
@@ -272,56 +270,56 @@ func getValidators(_ root: JSON.Schema) -> (_ schema: JSON) -> [Validate] {
 //            }
 //        }
         
-        if let _ = try? schema.get("items") as [String: JSON] {
-            let items = try! schema.get("items") as JSON
-            let itemsValidators = allOf(getValidators(root)(items))
-            validators.append(validateItems(itemsValidators))
-        } else if let _ = try? schema.get("items") as [[String: JSON]] {
-            func createAdditionalItemsValidator(_ additionalItems: JSON?) -> Validate {
-                if let items = additionalItems, let _ = try? items.get() as [String: JSON] {
-                    let additionalItems = try! additionalItems!.get() as JSON
-                    return allOf(getValidators(root)(additionalItems))
-                }
-                
-                let additionalItems = additionalItems.flatMap({ try? $0.get() as Bool }) ?? true
-                
-                if additionalItems {
-                    return validValidation
-                }
-                
-                return invalidValidation("Additional results are not permitted in this array.")
-            }
-            
-            let additionalItemsValidator = createAdditionalItemsValidator(
-                try? schema.get("additionalItems")
-            )
-            
-            let items = try! schema.get("items") as [JSON]
-            let itemValidators = items.map(getValidators(root))
-            
-            func validateItems(_ value: JSON) -> ValidationResult {
-                if let value = try? value.get() as [JSON] {
-                    var results: [ValidationResult] = []
-                    
-                    for (index, element) in value.enumerated() {
-                        if index >= itemValidators.count {
-                            results.append(additionalItemsValidator(element))
-                        } else {
-                            let validators = allOf(itemValidators[index])
-                            results.append(validators(element))
-                        }
-                    }
-                    
-                    return flatten(results)
-                }
-                
-                return .valid
-            }
-            
-            validators.append(validateItems)
-        }
+//        if let _ = try? schema.get("items") as [String: JSON] {
+//            let items = try! schema.get("items") as JSON
+//            let itemsValidators = allOf(getValidators(root)(items))
+//            validators.append(validateItems(itemsValidators))
+//        } else if let _ = try? schema.get("items") as [[String: JSON]] {
+//            func createAdditionalItemsValidator(_ additionalItems: JSON?) -> Validate {
+//                if let items = additionalItems, let _ = try? items.get() as [String: JSON] {
+//                    let additionalItems = try! additionalItems!.get() as JSON
+//                    return allOf(getValidators(root)(additionalItems))
+//                }
+//
+//                let additionalItems = additionalItems.flatMap({ try? $0.decode(Bool.self) }) ?? true
+//
+//                if additionalItems {
+//                    return validValidation
+//                }
+//
+//                return invalidValidation("Additional results are not permitted in this array.")
+//            }
+//
+//            let additionalItemsValidator = createAdditionalItemsValidator(
+//                try? schema.get("additionalItems")
+//            )
+//
+//            let items = try! schema.get("items") as [JSON]
+//            let itemValidators = items.map(getValidators(root))
+//
+//            func validateItems(_ value: JSON) -> ValidationResult {
+//                if let value = try? value.get() as [JSON] {
+//                    var results: [ValidationResult] = []
+//
+//                    for (index, element) in value.enumerated() {
+//                        if index >= itemValidators.count {
+//                            results.append(additionalItemsValidator(element))
+//                        } else {
+//                            let validators = allOf(itemValidators[index])
+//                            results.append(validators(element))
+//                        }
+//                    }
+//
+//                    return flatten(results)
+//                }
+//
+//                return .valid
+//            }
+//
+//            validators.append(validateItems)
+//        }
         
-        if let maxProperties = try? schema.get("maxProperties") as Int {
+        if let maxProperties = try? schema.decode(Int.self, forKey: "maxProperties") {
             validators.append(
                 validatePropertiesLength(
                     maxProperties,
@@ -331,7 +329,7 @@ func getValidators(_ root: JSON.Schema) -> (_ schema: JSON) -> [Validate] {
             )
         }
         
-        if let minProperties = try? schema.get("minProperties") as Int {
+        if let minProperties = try? schema.decode(Int.self, forKey: "minProperties") {
             validators.append(
                 validatePropertiesLength(
                     minProperties,
@@ -341,7 +339,7 @@ func getValidators(_ root: JSON.Schema) -> (_ schema: JSON) -> [Validate] {
             )
         }
         
-        if let required = try? schema.get("required") as [String] {
+        if let required = try? schema.decode([String].self, forKey: "required") {
             validators.append(validateRequired(required))
         }
         
@@ -384,19 +382,19 @@ func getValidators(_ root: JSON.Schema) -> (_ schema: JSON) -> [Validate] {
 //            validators.append(validateProperties(properties, patternProperties: patternProperties, additionalProperties: additionalPropertyValidator))
 //        }
         
-        if let dependencies = try? schema.get("dependencies") as [String: JSON] {
-            for (key, dependencies) in dependencies {
-                if let _ = try? dependencies.get() as [String: JSON] {
-                    let dependencies = try! dependencies.get() as JSON
-                    let schema = allOf(getValidators(root)(dependencies))
-                    validators.append(validateDependency(key, validator: schema))
-                } else if let dependencies = try? dependencies.get() as [String] {
-                    validators.append(validateDependencies(key, dependencies: dependencies))
-                }
-            }
-        }
-
-        if let format = try? schema.get("format") as String {
+//        if let dependencies = try? schema.get("dependencies") as [String: JSON] {
+//            for (key, dependencies) in dependencies {
+//                if let _ = try? dependencies.get() as [String: JSON] {
+//                    let dependencies = try! dependencies.get() as JSON
+//                    let schema = allOf(getValidators(root)(dependencies))
+//                    validators.append(validateDependency(key, validator: schema))
+//                } else if let dependencies = try? dependencies.get() as [String] {
+//                    validators.append(validateDependencies(key, dependencies: dependencies))
+//                }
+//            }
+//        }
+        
+        if let format = try? schema.decode(String.self, forKey: "format") {
             if let validator = root.formats[format] {
                 validators.append(validator)
             } else {
@@ -411,7 +409,7 @@ func getValidators(_ root: JSON.Schema) -> (_ schema: JSON) -> [Validate] {
 }
 
 public func validate(_ value: JSON, schema: [String: JSON]) -> ValidationResult {
-    let schema = JSON(schema)
+    let schema = JSON.object(schema)
     let root = JSON.Schema(schema)
     let validator = allOf(getValidators(root)(schema))
     let result = validator(value)
@@ -581,7 +579,7 @@ func validateLength(
     error: String
 ) -> (_ value: JSON) -> ValidationResult {
     return { value in
-        if let value = try? value.get() as String {
+        if let value = try? value.decode(String.self) {
             if !comparator(value.characters.count, length) {
                 return .invalid([error])
             }
@@ -594,7 +592,7 @@ func validateLength(
 
 func validatePattern(_ pattern: String) -> (_ value: JSON) -> ValidationResult {
     return { value in
-        if let value = try? value.get() as String {
+        if let value = try? value.decode(String.self) {
             let expression = try? NSRegularExpression(
                 pattern: pattern,
                 options: []
@@ -620,7 +618,7 @@ func validatePattern(_ pattern: String) -> (_ value: JSON) -> ValidationResult {
 func validateMultipleOf(_ number: Double) -> (_ value: JSON) -> ValidationResult {
     return { value in
         if number > 0.0 {
-            if let value = try? value.get() as Double {
+            if let value = try? value.decode(Double.self) {
                 let result = value / number
                 
                 if result != floor(result) {
@@ -641,7 +639,7 @@ func validateNumericLength(
     error: String
 ) -> (_ value: JSON) -> ValidationResult {
     return { value in
-        if let value = try? value.get() as Double {
+        if let value = try? value.decode(Double.self) {
             if exclusive ?? false {
                 if !exclusiveComparitor(value, length) {
                     return .invalid([error])
@@ -665,7 +663,7 @@ func validateArrayLength(
     error: String
 ) -> (_ value: JSON) -> ValidationResult {
     return { value in
-        if let value = try? value.get() as [JSON] {
+        if case let .array(value) = value {
             if !comparator(value.count, rhs) {
                 return .invalid([error])
             }
@@ -683,7 +681,7 @@ func validatePropertiesLength(
     error: String
 ) -> (_ value: JSON)  -> ValidationResult {
     return { value in
-        if let value = try? value.get() as [String: JSON] {
+        if case let .object(value) = value {
             if !comparator(length, value.count) {
                 return .invalid([error])
             }
@@ -695,7 +693,7 @@ func validatePropertiesLength(
 
 func validateRequired(_ required: [String]) -> (_ value: JSON)  -> ValidationResult {
     return { value in
-        if let value = try? value.get() as [String: JSON] {
+        if case let .object(value) = value {
             if (required.filter { r in !value.keys.contains(r) }.count == 0) {
                 return .valid
             }
@@ -712,7 +710,7 @@ func validateDependency(
     validator: @escaping Validate
 ) -> (_ value: JSON) -> ValidationResult {
     return { value in
-        if let object = try? value.get() as [String: JSON] {
+        if case let .object(object) = value {
             if object[key] != nil {
                 return validator(value)
             }
@@ -727,7 +725,7 @@ func validateDependencies(
     dependencies: [String]
 ) -> (_ value: JSON) -> ValidationResult {
     return { value in
-        if let value = try? value.get() as [String: JSON] {
+        if case let .object(value) = value {
             if value[key] != nil {
                 return flatten(dependencies.map { dependency in
                     if value[dependency] == nil {
@@ -747,7 +745,7 @@ func validateItems(
     _ itemsValidators: @escaping (JSON) -> ValidationResult
 ) -> (_ value: JSON) -> ValidationResult {
     return { value in
-        if let document = try? value.get() as [JSON] {
+        if case let .array(document) = value {
             return flatten(document.map(itemsValidators))
         }
         

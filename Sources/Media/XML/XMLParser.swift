@@ -30,14 +30,14 @@ public enum XMLParserError : Error {
 }
 
 fileprivate class ParserStream : InputStream {
-    private let stream: Readable
+    private let readable: Readable
     private let deadline: Deadline
     private let buffer: UnsafeMutableRawBufferPointer
     private var lastError: Error?
     private var finished = false
     
-    fileprivate init(stream: Readable, deadline: Deadline, bufferSize: Int = 4096) {
-        self.stream = stream
+    fileprivate init(readable: Readable, deadline: Deadline, bufferSize: Int = 4096) {
+        self.readable = readable
         self.deadline = deadline
         self.buffer = UnsafeMutableRawBufferPointer.allocate(count: bufferSize)
         super.init(data: Data())
@@ -58,7 +58,7 @@ fileprivate class ParserStream : InputStream {
         let buffer = UnsafeMutableRawBufferPointer(start: buffer, count: count)
         
         do {
-            let read = try stream.read(buffer, deadline: deadline)
+            let read = try readable.read(buffer, deadline: deadline)
             
             if read.isEmpty {
                 finished = true
@@ -85,17 +85,16 @@ fileprivate class ParserStream : InputStream {
     }
 }
 
-public class XMLParser : NSObject, XMLParserDelegate {
-    var stack = Stack()
+class XMLParser : NSObject, XMLParserDelegate {
+    var stack = ElementStack()
     
-    public static func parse(
-        _ stream: Readable,
+    static func parse(
+        _ readable: Readable,
         bufferSize: Int = 4096,
         deadline: Deadline
     ) throws -> XML {
         let xmlParser = XMLParser()
-        
-        let parseStream = ParserStream(stream: stream, deadline: deadline)
+        let parseStream = ParserStream(readable: readable, deadline: deadline)
         let parser = Foundation.XMLParser(stream: parseStream)
         parser.delegate = xmlParser
         
@@ -107,44 +106,44 @@ public class XMLParser : NSObject, XMLParserDelegate {
             throw XMLParserError.invalidXML
         }
         
-        return root
+        return XML(root: root)
     }
     
-    public func parser(
+    func parser(
         _ parser: Foundation.XMLParser,
         didStartElement name: String,
         namespaceURI: String?,
         qualifiedName: String?,
         attributes: [String: String]
     ) {
-        let element = XML(name: name, attributes: attributes)
+        let element = XML.Element(name: name, attributes: attributes)
         
         if !stack.isEmpty {
-            stack.top().addElement(element)
+            stack.addElement(element)
         }
         
         stack.push(element)
     }
     
-    public func parser(_ parser: Foundation.XMLParser, foundCharacters content: String) {
-        stack.top().addContent(content)
+    func parser(_ parser: Foundation.XMLParser, foundCharacters content: String) {
+        stack.addContent(content)
     }
     
-    public func parser(
+    func parser(
         _ parser: Foundation.XMLParser,
         didEndElement elementName: String,
         namespaceURI: String?,
-        qualifiedName qName: String?
+        qualifiedName: String?
     ) {
         stack.drop()
     }
 }
 
-struct Stack {
-    var root: XML?
-    private var items: [XML] = []
+struct ElementStack {
+    var root: XML.Element?
+    private var items: [XML.Element] = []
     
-    mutating func push(_ item: XML) {
+    mutating func push(_ item: XML.Element) {
         if root == nil {
             root = item
         }
@@ -160,8 +159,16 @@ struct Stack {
         items.removeAll(keepingCapacity: false)
     }
     
-    func top() -> XML {
-        return items[items.count - 1]
+    mutating func addElement(_ element: XML.Element) {
+        var item = items[items.count - 1]
+        item.add(element: element)
+        items[items.count - 1] = item
+    }
+    
+    mutating func addContent(_ content: String) {
+        var item = items[items.count - 1]
+        item.add(content: content)
+        items[items.count - 1] = item
     }
     
     var isEmpty: Bool {
@@ -193,7 +200,7 @@ extension XMLParserDelegate {
         _ parser: Foundation.XMLParser,
         foundAttributeDeclarationWithName attributeName: String,
         forElement elementName: String,
-        type: String?,
+        media: String?,
         defaultValue: String?
     ) {}
     

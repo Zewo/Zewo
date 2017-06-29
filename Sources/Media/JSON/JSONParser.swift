@@ -10,27 +10,27 @@ public struct JSONParserError : Error, CustomStringConvertible {
     public let description: String
 }
 
-public final class JSONParser {
-    public struct Options : OptionSet {
-        public let rawValue: Int
-        public static let allowComments = Options(rawValue: 1 << 0)
-        public static let dontValidateStrings = Options(rawValue: 1 << 1)
-        public static let allowTrailingGarbage = Options(rawValue: 1 << 2)
-        public static let allowMultipleValues = Options(rawValue: 1 << 3)
-        public static let allowPartialValues = Options(rawValue: 1 << 4)
+final class JSONParser {
+    struct Options : OptionSet {
+        let rawValue: Int
+        static let allowComments = Options(rawValue: 1 << 0)
+        static let dontValidateStrings = Options(rawValue: 1 << 1)
+        static let allowTrailingGarbage = Options(rawValue: 1 << 2)
+        static let allowMultipleValues = Options(rawValue: 1 << 3)
+        static let allowPartialValues = Options(rawValue: 1 << 4)
         
-        public init(rawValue: Int) {
+        init(rawValue: Int) {
             self.rawValue = rawValue
         }
     }
     
-    public static func parse(_ bytes: UnsafeRawBufferPointer, options: Options = []) throws -> JSON {
+    static func parse(_ bytes: UnsafeRawBufferPointer, options: Options = []) throws -> JSON {
         let parser = JSONParser(options: options)
         try parser.parse(bytes)
         return try parser.finish()
     }
     
-    public let options: Options
+    let options: Options
     
     fileprivate var state: JSONParserState = JSONParserState(dictionary: true)
     fileprivate var stack: [JSONParserState] = []
@@ -42,11 +42,11 @@ public final class JSONParser {
     
     fileprivate var handle: yajl_handle?
     
-    public convenience init() {
+    convenience init() {
         self.init(options: [])
     }
     
-    public init(options: Options = []) {
+    init(options: Options = []) {
         self.options = options
         self.state.dictionaryKey = "root"
         self.stack.reserveCapacity(12)
@@ -62,7 +62,6 @@ public final class JSONParser {
         yajl_config_set(handle, yajl_allow_trailing_garbage, options.contains(.allowTrailingGarbage) ? 1 : 0)
         yajl_config_set(handle, yajl_allow_multiple_values, options.contains(.allowMultipleValues) ? 1 : 0)
         yajl_config_set(handle, yajl_allow_partial_values, options.contains(.allowPartialValues) ? 1 : 0)
-        
     }
     
     deinit {
@@ -70,8 +69,7 @@ public final class JSONParser {
         buffer.deallocate(capacity: bufferCapacity)
     }
     
-    @discardableResult
-    public func parse(_ bytes: UnsafeRawBufferPointer) throws -> JSON? {
+    @discardableResult func parse(_ bytes: UnsafeRawBufferPointer) throws -> JSON? {
         let final = bytes.isEmpty
         
         guard result == nil else {
@@ -129,7 +127,7 @@ public final class JSONParser {
         return result
     }
     
-    public func finish() throws -> JSON {
+    func finish() throws -> JSON {
         let empty = UnsafeRawBufferPointer(start: nil, count: 0)
         
         guard let result = try self.parse(empty) else {

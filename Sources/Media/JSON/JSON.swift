@@ -1,34 +1,5 @@
 import Foundation
 
-public enum JSONError : Error {
-    case noContent(type: Any.Type)
-    case cannotInitialize(type: Any.Type, json: JSON)
-    case valueNotArray(indexPath: [IndexPathComponent], json: JSON)
-    case outOfBounds(indexPath: [IndexPathComponent], json: JSON)
-    case valueNotDictionary(indexPath: [IndexPathComponent], json: JSON)
-    case valueNotFound(indexPath: [IndexPathComponent], json: JSON)
-}
-
-extension JSONError : CustomStringConvertible {
-    /// :nodoc:
-    public var description: String {
-        switch self {
-        case let .noContent(type):
-            return "Cannot initialize type \"\(String(describing: type))\" with no content."
-        case let .cannotInitialize(type, json):
-            return "Cannot initialize type \"\(String(describing: type))\" with json \(json)."
-        case let .valueNotArray(indexPath, content):
-            return "Cannot get json element for index path \"\(indexPath.string)\". Element is not an array \(content)."
-        case let .outOfBounds(indexPath, content):
-            return "Cannot get json element for index path \"\(indexPath.string)\". Index is out of bounds for element \(content)."
-        case let .valueNotDictionary(indexPath, content):
-            return "Cannot get json element for index path \"\(indexPath.string)\". Element is not a dictionary \(content)."
-        case let .valueNotFound(indexPath, content):
-            return "Cannot get json element for index path \"\(indexPath.string)\". Key is not present in element \(content)."
-        }
-    }
-}
-
 public enum JSON {
     case null
     case bool(Bool)
@@ -40,58 +11,7 @@ public enum JSON {
 }
 
 extension JSON {
-    /// :nodoc:
-    public init<T: JSONRepresentable>(_ value: T?) {
-        self = value?.json() ?? .null
-    }
-    
-    /// :nodoc:
-    public init<T: JSONRepresentable>(_ values: [T]?) {
-        if let values = values {
-            self = .array(values.map({ $0.json() }))
-        } else {
-            self = .null
-        }
-    }
-    
-    /// :nodoc:
-    public init<T: JSONRepresentable>(_ values: [T?]?) {
-        if let values = values {
-            self = .array(values.map({ $0?.json() ?? .null}))
-        } else {
-            self = .null
-        }
-    }
-    
-    /// :nodoc:
-    public init<T: JSONRepresentable>(_ values: [String: T]?) {
-        if let values = values {
-            var dictionary: [String: JSON] = [:]
-            
-            for (key, value) in values.map({($0.key, $0.value.json() )}) {
-                dictionary[key] = value
-            }
-            
-            self = .object(dictionary)
-        } else {
-            self = .null
-        }
-    }
-    
-    /// :nodoc:
-    public init<T: JSONRepresentable>(_ values: [String: T?]?) {
-        if let values = values {
-            var dictionary: [String: JSON] = [:]
-            
-            for (key, value) in values.map({($0.key, $0.value?.json() ?? .null)}) {
-                dictionary[key] = value
-            }
-            
-            self = .object(dictionary)
-        } else {
-            self = .null
-        }
-    }
+    public static var mediaType: MediaType = .json
 }
 
 extension JSON {
@@ -153,51 +73,6 @@ extension JSON {
         }
         
         return false
-    }
-}
-
-extension JSON {
-    public func get<T : JSONInitializable>(_ indexPath: IndexPathComponent...) throws -> T {
-        let content = try _get(indexPath as [IndexPathComponent])
-        return try T(json: content)
-    }
-    
-    public func get(_ indexPath: IndexPathComponent...) throws -> JSON {
-        return try _get(indexPath as [IndexPathComponent])
-    }
-    
-    private func _get(_ indexPath: [IndexPathComponent]) throws -> JSON {
-        var value = self
-        var visited: [IndexPathComponent] = []
-        
-        for component in indexPath {
-            visited.append(component)
-            
-            switch component {
-            case let .index(index):
-                guard case let .array(array) = value else {
-                    throw JSONError.valueNotArray(indexPath: visited, json: self)
-                }
-                
-                guard array.indices.contains(index) else {
-                    throw JSONError.outOfBounds(indexPath: visited, json: self)
-                }
-                
-                value = array[index]
-            case let .key(key):
-                guard case let .object(dictionary) = value else {
-                    throw JSONError.valueNotDictionary(indexPath: visited, json: self)
-                }
-                
-                guard let newValue = dictionary[key] else {
-                    throw JSONError.valueNotFound(indexPath: visited, json: self)
-                }
-                
-                value = newValue
-            }
-        }
-        
-        return value
     }
 }
 
@@ -265,7 +140,7 @@ extension JSON : ExpressibleByStringLiteral {
 extension JSON : ExpressibleByArrayLiteral {
     /// :nodoc:
     public init(arrayLiteral elements: JSON...) {
-        self = .array(elements.map({ $0.json() }))
+        self = .array(elements)
     }
 }
 
@@ -275,7 +150,7 @@ extension JSON : ExpressibleByDictionaryLiteral {
         var dictionary = [String: JSON](minimumCapacity: elements.count)
         
         for (key, value) in elements {
-            dictionary[key] = value.json()
+            dictionary[key] = value
         }
         
         self = .object(dictionary)

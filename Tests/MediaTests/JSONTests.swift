@@ -1,34 +1,6 @@
 import XCTest
 @testable import Media
 
-struct B : Codable {
-    let f: UInt8
-}
-
-extension B : Equatable {
-    static func ==(lhs: B, rhs: B) -> Bool {
-        return lhs.f == rhs.f
-    }
-}
-
-struct A : Codable {
-    let a: Int
-    let b: String?
-    let c: [Double]
-    let d: [String: Float]
-    let e: B
-}
-
-extension A : Equatable {
-    static func ==(lhs: A, rhs: A) -> Bool {
-        return lhs.a == rhs.a &&
-        lhs.b == rhs.b &&
-        lhs.c == rhs.c &&
-        lhs.d == rhs.d &&
-        lhs.e == rhs.e
-    }
-}
-
 public class JSONTests : XCTestCase {
     func testJSONSchema() throws {
         let schema = JSON.Schema([
