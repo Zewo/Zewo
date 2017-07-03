@@ -25,6 +25,12 @@ public struct XML {
         public let attributes: [String: String]
         public internal(set) var children: [Node]
         
+        init(name: String, attributes: [String: String], children: [XML.Node]) {
+            self.name = name
+            self.attributes = attributes
+            self.children = children
+        }
+        
         public init(name: String, attributes: [String: String] = [:], children: [XMLNode] = []) {
             self.name = name
             self.attributes = attributes

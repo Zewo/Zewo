@@ -86,7 +86,7 @@ fileprivate class ParserStream : InputStream {
 }
 
 class XMLParser : NSObject, XMLParserDelegate {
-    var stack = ElementStack()
+    var stack = Stack()
     
     static func parse(
         _ readable: Readable,
@@ -106,7 +106,7 @@ class XMLParser : NSObject, XMLParserDelegate {
             throw XMLParserError.invalidXML
         }
         
-        return XML(root: root)
+        return XML(root: root.xmlElement)
     }
     
     func parser(
@@ -116,13 +116,8 @@ class XMLParser : NSObject, XMLParserDelegate {
         qualifiedName: String?,
         attributes: [String: String]
     ) {
-        let element = XML.Element(name: name, attributes: attributes)
-        
-        if !stack.isEmpty {
-            stack.addElement(element)
-        }
-        
-        stack.push(element)
+        let element = Element(name: name, attributes: attributes)
+        stack.addElement(element)
     }
     
     func parser(_ parser: Foundation.XMLParser, foundCharacters content: String) {
@@ -131,48 +126,87 @@ class XMLParser : NSObject, XMLParserDelegate {
     
     func parser(
         _ parser: Foundation.XMLParser,
-        didEndElement elementName: String,
+        didEndElement name: String,
         namespaceURI: String?,
         qualifiedName: String?
     ) {
         stack.drop()
     }
-}
-
-struct ElementStack {
-    var root: XML.Element?
-    private var items: [XML.Element] = []
     
-    mutating func push(_ item: XML.Element) {
-        if root == nil {
-            root = item
+    enum Node {
+        case element(Element)
+        case content(String)
+        
+        var xmlNode: XML.Node {
+            switch self {
+            case let .element(element):
+                return .element(
+                    XML.Element(
+                        name: element.name,
+                        attributes: element.attributes,
+                        children: element.children.map({ $0.xmlNode })
+                    )
+                )
+            case let .content(content):
+                return .content(content)
+            }
+        }
+    }
+    
+    class Element {
+        let name: String
+        let attributes: [String: String]
+        var children: [Node] = []
+        
+        init(name: String, attributes: [String: String]) {
+            self.name = name
+            self.attributes = attributes
         }
         
-        items.append(item)
+        var xmlElement: XML.Element {
+            return XML.Element(
+                name: name,
+                attributes: attributes,
+                children: children.map({ $0.xmlNode })
+            )
+        }
     }
     
-    mutating func drop() {
-        items.removeLast()
-    }
-    
-    mutating func removeAll() {
-        items.removeAll(keepingCapacity: false)
-    }
-    
-    mutating func addElement(_ element: XML.Element) {
-        var item = items[items.count - 1]
-        item.add(element: element)
-        items[items.count - 1] = item
-    }
-    
-    mutating func addContent(_ content: String) {
-        var item = items[items.count - 1]
-        item.add(content: content)
-        items[items.count - 1] = item
-    }
-    
-    var isEmpty: Bool {
-        return items.isEmpty
+    struct Stack {
+        var root: Element? = nil
+        private var items: [Element] = []
+        
+        mutating func addElement(_ element: Element) {
+            if !isEmpty {
+                let item = items[items.count - 1]
+                item.children.append(.element(element))
+                items[items.count - 1] = item
+            }
+            
+            items.append(element)
+        }
+        
+        mutating func addContent(_ content: String) {
+            let item = items[items.count - 1]
+            item.children.append(.content(content))
+            items[items.count - 1] = item
+        }
+        
+        mutating func drop() {
+            let item = items.removeLast()
+            
+            if isEmpty {
+                root = item
+            }
+        }
+        
+        mutating func removeAll() {
+            items.removeAll(keepingCapacity: false)
+        }
+        
+        var isEmpty: Bool {
+            return items.isEmpty
+        }
     }
 }
 
