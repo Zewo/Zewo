@@ -100,7 +100,8 @@ extension Message {
     }
     
     public func content<Content : MediaDecodable>(
-        deadline: Deadline = 5.minutes.fromNow()
+        deadline: Deadline = 5.minutes.fromNow(),
+        userInfo: [CodingUserInfoKey: Any] = [:]
     ) throws -> Content {
         guard let mediaType = self.contentType else {
             throw MessageError.noContentTypeHeader
@@ -111,11 +112,12 @@ extension Message {
         }
         
         let media = try Content.decodingMedia(for: mediaType)
-        return try media.decode(Content.self, from: readable, deadline: deadline)
+        return try media.decode(Content.self, from: readable, deadline: deadline, userInfo: userInfo)
     }
     
     public func content<Content : DecodingMedia>(
-        deadline: Deadline = 5.minutes.fromNow()
+        deadline: Deadline = 5.minutes.fromNow(),
+        userInfo: [CodingUserInfoKey: Any] = [:]
     ) throws -> Content {
         guard let readable = try? body.convertedToReadable() else {
             throw MessageError.noReadableBody

@@ -15,10 +15,11 @@ extension DecodingMedia {
     public static func decode<T : Decodable>(
         _ type: T.Type,
         from readable: Readable,
-        deadline: Deadline
+        deadline: Deadline,
+        userInfo: [CodingUserInfoKey: Any] = [:]
     ) throws -> T {
         let media = try self.init(from: readable, deadline: deadline)
-        return try T(from: media)
+        return try T(from: media, userInfo: userInfo)
     }
     
     public init(from buffer: UnsafeRawBufferPointer, deadline: Deadline) throws {

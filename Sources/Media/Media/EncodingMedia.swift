@@ -11,9 +11,10 @@ extension EncodingMedia {
     public static func encode<T : Encodable>(
         _ value: T,
         to writable: Writable,
-        deadline: Deadline
+        deadline: Deadline,
+        userInfo: [CodingUserInfoKey: Any] = [:]
     ) throws {
-        let media = try self.init(from: value)
+        let media = try self.init(from: value, userInfo: userInfo)
         try media.encode(to: writable, deadline: deadline)
     }
 }
