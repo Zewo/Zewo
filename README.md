@@ -10,7 +10,6 @@
     <a href="https://tldrlegal.com/license/mit-license"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat" alt="License" /></a>
     <a href="http://slack.zewo.io"><img src="https://zewo-slackin.herokuapp.com/badge.svg" alt="Slack" /></a>
     <a href="https://travis-ci.org/Zewo/Zewo"><img src="https://api.travis-ci.org/Zewo/Zewo.svg?branch=master" alt="Travis" /></a>
-    <a href="https://codecov.io/gh/Zewo/Zewo"><img src="https://codecov.io/gh/Zewo/Zewo/branch/master/graph/badge.svg" alt="Codecov" /></a>
     <a href="https://codebeat.co/projects/github-com-zewo-zewo"><img src="https://codebeat.co/badges/d580cc1f-5bdb-494b-8391-d147c7a287a1" alt="Codebeat" /></a>
     <a href="#backers"><img src="https://opencollective.com/zewo/backers/badge.svg"></a>
     <a href="#sponsors"><img src="https://opencollective.com/zewo/sponsors/badge.svg"></a>
@@ -33,7 +32,7 @@ Zewo is **not** a web framework. Zewo is a lightweight library for web applicati
 
 Node.js is the best example of how callbacks can be frustrating. Express.js creator **TJ Holowaychuk** wrote a blog post about [Callback vs Coroutines](https://medium.com/@tjholowaychuk/callbacks-vs-coroutines-174f1fe66127#.3l3pf1xqf) in 2013 and one year later [left the Node.js community](https://medium.com/@tjholowaychuk/farewell-node-js-4ba9e7f3e52b#.okwqsltyx) in favor of Go. There were many reasons for that but one of the main reasons was the concurrency model. Sure we have futures and promises and functional reactive programming. They all mitigate the problem, but the async nature of the code will always be there.
 
-At **Zewo** we use **coroutines**. Coroutines allow concurrency while maintaining **synchronous** APIs. We all learn how to program with synchronous code. We're used to reason about our code synchronously. Being able to use synchronous APIs makes the code much more readable and understandable. Coroutines are also **faster** than threads, because they're much lighter.
+At **Zewo** we use **coroutines**. Coroutines allow concurrency while maintaining **synchronous** APIs. We all learn how to program with synchronous code. We're used to reason about our code synchronously. Being able to use synchronous APIs makes the code much more readable and understandable. Coroutines are also **faster** than threads, because they live in user-space, unlike threads which are managed by the kernel. 
 
 Our implementation of **coroutines** (which is based on [libdill](https://github.com/sustrik/libdill)) is **single-threaded**. This means that you don't have to worry about **locks** or **race conditions**. So your code is **safer** by default. To use all the CPU power available all you have to do is to replicate the work according to the number of logical CPUs available. As an example, this could mean running as many processes of your server as cores in your machine. **Rob Pike**, one of the creators of Go had a talk called [Concurrency is not Parallelism](https://www.youtube.com/watch?v=cN_DpYBzKso) that explains this concept **very** well. Go also has the philosophy:
 
@@ -54,12 +53,6 @@ With **Zewo** you get:
 * Proper error handling
 * No callback hell
 * No race conditions
-
-## Test Coverage
-
-[![Test Coverage][codecov-sunburst]][codecov-url]
-
-The inner-most circle is the entire project, moving away from the center are folders then, finally, a single file. The size and color of each slice is represented by the number of statements and the coverage, respectively.
 
 ## Support
 
