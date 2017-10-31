@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-    <a href="https://swift.org"><img src="https://img.shields.io/badge/Swift-3.0-orange.svg?style=flat" alt="Swift" /></a>
+    <a href="https://swift.org"><img src="https://img.shields.io/badge/Swift-4.0-orange.svg?style=flat" alt="Swift" /></a>
     <a href="https://tldrlegal.com/license/mit-license"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat" alt="License" /></a>
     <a href="http://slack.zewo.io"><img src="https://zewo-slackin.herokuapp.com/badge.svg" alt="Slack" /></a>
     <a href="https://travis-ci.org/Zewo/Zewo"><img src="https://api.travis-ci.org/Zewo/Zewo.svg?branch=master" alt="Travis" /></a>
@@ -70,5 +70,4 @@ All **Zewo** modules are released under the MIT license. See [LICENSE](LICENSE) 
 
 [slack-image]: http://s13.postimg.org/ybwy92ktf/Slack.png
 [slack-url]: http://slack.zewo.io
-[codecov-url]: https://codecov.io/gh/Zewo/Zewo
-[codecov-sunburst]: https://codecov.io/gh/Zewo/Zewo/branch/master/graphs/sunburst.svg
+

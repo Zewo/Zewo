@@ -1,21 +1,31 @@
-// swift-tools-version:3.1
+// swift-tools-version:4.0
 
 import PackageDescription
 
 let package = Package(
     name: "Zewo",
-    targets: [
-        Target(name: "CYAJL"),
-        Target(name: "CHTTPParser"),
-        
-        Target(name: "Core"),
-        Target(name: "IO", dependencies: ["Core"]),
-        Target(name: "Content", dependencies: ["CYAJL", "Core"]),
-        Target(name: "HTTP", dependencies: ["Content", "IO", "CHTTPParser"]),
+    products: [
+        .library(name: "Zewo", targets: ["CYAJL", "CHTTPParser", "Core", "IO", "Media", "HTTP", "Zewo"])
     ],
     dependencies: [
-        .Package(url: "https://github.com/Zewo/Venice.git", majorVersion: 0, minor: 19),
-        .Package(url: "https://github.com/Zewo/CBtls.git", majorVersion: 1),
-        .Package(url: "https://github.com/Zewo/CLibreSSL.git", majorVersion: 3),
+        .package(url: "https://github.com/Zewo/CLibdill.git", .branch("swift-4")),
+        .package(url: "https://github.com/Zewo/Venice.git", .branch("swift-4")),
+        .package(url: "https://github.com/Zewo/CBtls.git", .branch("swift-4")),
+        .package(url: "https://github.com/Zewo/CLibreSSL.git", .branch("swift-4")),
+    ],
+    targets: [
+        .target(name: "CYAJL"),
+        .target(name: "CHTTPParser"),
+        
+        .target(name: "Core", dependencies: ["Venice"]),
+        .target(name: "IO", dependencies: ["Core"]),
+        .target(name: "Media", dependencies: ["Core", "CYAJL"]),
+        .target(name: "HTTP", dependencies: ["Media", "IO", "CHTTPParser"]),
+        .target(name: "Zewo", dependencies: ["Core", "IO", "Media", "HTTP"]),
+        
+        .testTarget(name: "CoreTests", dependencies: ["Core"]),
+        .testTarget(name: "IOTests", dependencies: ["IO"]),
+        .testTarget(name: "MediaTests", dependencies: ["Media"]),
+        .testTarget(name: "HTTPTests", dependencies: ["HTTP"]),
     ]
 )

@@ -1,5 +1,5 @@
 import Core
-import Content
+import Media
 import Venice
 
 // TODO: Make error CustomStringConvertible and ResponseRepresentable
@@ -99,13 +99,10 @@ extension Message {
         return headers["Upgrade"]
     }
     
-    public func content<C : Content>(deadline: Deadline = 5.minutes.fromNow()) throws -> C {
-        return try _content(deadline: deadline)
-    }
-    
-    public func content<C : ContentInitializable>(
-        deadline: Deadline = 5.minutes.fromNow()
-    ) throws -> C {
+    public func content<Content : MediaDecodable>(
+        deadline: Deadline = 5.minutes.fromNow(),
+        userInfo: [CodingUserInfoKey: Any] = [:]
+    ) throws -> Content {
         guard let mediaType = self.contentType else {
             throw MessageError.noContentTypeHeader
         }
@@ -114,41 +111,18 @@ extension Message {
             throw MessageError.noReadableBody
         }
         
-        var lastError: Error = MessageError.unsupportedMediaType
-        
-        for contentType in C.supportedTypes where contentType.mediaType.matches(other: mediaType) {
-            let content = try contentType.parse(from: readable, deadline: deadline)
-            
-            do {
-                return try C(content: content)
-            } catch {
-                lastError = error
-                continue
-            }
-        }
-        
-        throw lastError
+        let media = try Content.decodingMedia(for: mediaType)
+        return try media.decode(Content.self, from: readable, deadline: deadline, userInfo: userInfo)
     }
     
-    public func content<C : Content & ContentInitializable>(
-        deadline: Deadline = 5.minutes.fromNow()
-    ) throws -> C {
-        return try _content()
-    }
-    
-    public func _content<C : Content>(deadline: Deadline = 5.minutes.fromNow()) throws -> C {
-        guard let mediaType = self.contentType else {
-            throw MessageError.noContentTypeHeader
-        }
-        
-        guard mediaType == C.mediaType else {
-            throw MessageError.unsupportedMediaType
-        }
-        
+    public func content<Content : DecodingMedia>(
+        deadline: Deadline = 5.minutes.fromNow(),
+        userInfo: [CodingUserInfoKey: Any] = [:]
+    ) throws -> Content {
         guard let readable = try? body.convertedToReadable() else {
             throw MessageError.noReadableBody
         }
         
-        return try C.parse(from: readable, deadline: deadline)
+        return try Content(from: readable, deadline: deadline)
     }
 }

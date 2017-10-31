@@ -256,11 +256,11 @@ fileprivate class Pool {
     fileprivate var waitList: Channel<Void>
     fileprivate var waiting: Int = 0
     
-    fileprivate let create: (Void) throws -> Client.Connection
+    fileprivate let create: () throws -> Client.Connection
     
     fileprivate init(
         size: ClosedRange<Int>,
-        _ create: @escaping (Void) throws -> Client.Connection
+        _ create: @escaping () throws -> Client.Connection
     ) throws {
         self.size = size
         self.create = create

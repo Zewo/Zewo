@@ -1,5 +1,6 @@
 import Core
-import Content
+import IO
+import Media
 import Venice
 
 public final class Request : Message {
@@ -12,7 +13,6 @@ public final class Request : Message {
     public var body: Body
     
     public var storage: Storage = [:]
-    
     public var upgradeConnection: UpgradeConnection?
     
     public init(
@@ -114,7 +114,7 @@ extension Request {
         contentLength = buffer.bufferSize
     }
     
-    private convenience init(
+    public convenience init<Content : EncodingMedia>(
         method: Method,
         uri: String,
         headers: Headers = [:],
@@ -126,72 +126,60 @@ extension Request {
             uri: uri,
             headers: headers,
             body: { writable in
-                try content.serialize(to: writable, deadline: timeout.fromNow())
+                try content.encode(to: writable, deadline: timeout.fromNow())
             }
         )
         
-        self.contentType = type(of: content).mediaType
+        self.contentType = Content.mediaType
         self.contentLength = nil
         self.transferEncoding = "chunked"
     }
     
-    public convenience init<C : ContentRepresentable>(
+    public convenience init<Content : MediaEncodable>(
         method: Method,
         uri: String,
         headers: Headers = [:],
-        content representable: C,
+        content: Content,
         timeout: Duration = 5.minutes
     ) throws {
+        let media = try Content.defaultEncodingMedia()
+        
         try self.init(
             method: method,
             uri: uri,
             headers: headers,
-            content: representable.content,
-            timeout: timeout
+            body: { writable in
+                try media.encode(content, to: writable, deadline: timeout.fromNow())
+            }
         )
+        
+        self.contentType = media.mediaType
+        self.contentLength = nil
+        self.transferEncoding = "chunked"
     }
     
-    public convenience init<C : Content & ContentRepresentable>(
+    public convenience init<Content : MediaEncodable>(
         method: Method,
         uri: String,
         headers: Headers = [:],
-        content: C,
-        timeout: Duration = 5.minutes
-    ) throws {
-        try self.init(
-            method: method,
-            uri: uri,
-            headers: headers,
-            content: content as Content,
-            timeout: timeout
-        )
-    }
-    
-    public convenience init<C : ContentRepresentable>(
-        method: Method,
-        uri: String,
-        headers: Headers = [:],
-        content representable: C,
+        content: Content,
         contentType mediaType: MediaType,
         timeout: Duration = 5.minutes
     ) throws {
-        for contentType in C.supportedTypes where contentType.mediaType.matches(other: mediaType) {
-            guard let content = try? representable.content(for: mediaType) else {
-                continue
-            }
-            
-            try self.init(
-                method: method,
-                uri: uri,
-                headers: headers,
-                content: content,
-                timeout: timeout
-            )
-            
-            return
-        }
+        let media = try Content.encodingMedia(for: mediaType)
         
-        throw MessageError.unsupportedMediaType
+        try self.init(
+            method: method,
+            uri: uri,
+            headers: headers,
+            body: { writable in
+                try media.encode(content, to: writable, deadline: timeout.fromNow())
+            }
+        )
+        
+        self.contentType = media.mediaType
+        self.contentLength = nil
+        self.transferEncoding = "chunked"
     }
 }
 
@@ -238,22 +226,6 @@ extension Request {
         set(userAgent) {
             headers["User-Agent"] = userAgent
         }
-    }
-}
-
-extension Request {
-    public func negotiate<C : ContentRepresentable>(
-        _ representable: C
-    ) throws -> Content {
-        for contentType in C.supportedTypes where contentType.mediaType.matches(any: accept) {
-            guard let content = try? representable.content(for: contentType.mediaType) else {
-                continue
-            }
-            
-            return content
-        }
-        
-        throw ContentError.unsupportedType
     }
 }
 

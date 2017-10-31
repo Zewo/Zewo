@@ -1,13 +1,5 @@
 import Foundation
 
-#if os(macOS)
-extension NSTextCheckingResult {
-    func range(at index: Int) -> NSRange {
-        return rangeAt(index)
-    }
-}
-#endif
-
 public enum EnvironmentError : Error {
     case valueNotFound(key: String, variables: [String: String])
     case cannotInitialize(type: LosslessStringConvertible.Type, variable: String)
@@ -96,15 +88,14 @@ public struct Environment {
             guard let keyRange = match.range(at: 1).range(for: line) else {
                 continue
             }
-            
-            let key = line.substring(with: keyRange)
+            let key = String(line[keyRange])
             var value = ""
             
             if
                 match.numberOfRanges == 3,
                 let valueRange = match.range(at: 2).range(for: line)
             {
-                value = line.substring(with: valueRange)
+                value = String(line[valueRange])
             }
             
             value = value.trimmingCharacters(in: .whitespaces)

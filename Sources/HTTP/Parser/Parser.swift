@@ -44,7 +44,12 @@ internal class Parser {
             
             let bytesRead = min(bodyBuffer.count, buffer.count)
             memcpy(baseAddress, bodyBaseAddress, bytesRead)
-            bodyBuffer = bodyBuffer.suffix(from: bytesRead)
+            
+            #if swift(>=3.2)
+                bodyBuffer = UnsafeRawBufferPointer(rebasing: bodyBuffer.suffix(from: bytesRead))
+            #else
+                bodyBuffer = bodyBuffer.suffix(from: bytesRead)
+            #endif
             
             return UnsafeRawBufferPointer(start: baseAddress, count: bytesRead)
         }
@@ -125,7 +130,7 @@ internal class Parser {
         buffer.deallocate()
     }
     
-    func headersComplete(context: Context, body: BodyStream) -> Bool {
+    func headersComplete(context: Context, body: BodyStream, method: Int32, http_major: Int16, http_minor: Int16) -> Bool {
         return false
     }
     
@@ -167,14 +172,14 @@ internal class Parser {
         }
     }
     
-    fileprivate func process(state newState: State, data: UnsafeRawBufferPointer? = nil) -> Int32 {
+    fileprivate func process(state newState: State, data: UnsafeRawBufferPointer? = nil, method: Int32, status_code: Int32, http_major: Int16, http_minor: Int16) -> Int32 {
         if state != newState {
             switch state {
             case .ready, .messageBegin, .body, .messageComplete:
                 break
             case .uri:
                 guard let uri = bytes.withUnsafeBytes({ buffer in
-                    return URI(buffer: buffer, isConnect: parser.method == HTTP_CONNECT.rawValue)
+                    return URI(buffer: buffer, isConnect: method == HTTP_CONNECT.rawValue)
                 }) else {
                     return 1
                 }
@@ -186,9 +191,9 @@ internal class Parser {
                 let string = bytes.withUnsafeBufferPointer { (pointer: UnsafeBufferPointer<UInt8>) -> String in
                     return String(cString: pointer.baseAddress!)
                 }
-                
                 context.status = Response.Status(
-                    statusCode: Int(parser.status_code),
+                   
+                    statusCode: Int(status_code),
                     reasonPhrase: string
                 )
             case .headerField:
@@ -212,7 +217,7 @@ internal class Parser {
                 let body = BodyStream(parser: self)
                 context.bodyStream = body
                 
-                if !headersComplete(context: context, body: body) {
+                if !headersComplete(context: context, body: body, method: method, http_major: http_major, http_minor: http_minor) {
                     return 1
                 }
             }
@@ -241,62 +246,62 @@ internal class Parser {
     }
 }
 
-private func http_parser_on_message_begin(pointer: UnsafeMutablePointer<http_parser>?) -> Int32 {
+private func http_parser_on_message_begin(pointer: UnsafeMutablePointer<http_parser>?, method: Int32, status_code: Int32, http_major: Int16, http_minor: Int16) -> Int32 {
     let parser = Unmanaged<Parser>.fromOpaque(pointer!.pointee.data).takeUnretainedValue()
-    return parser.process(state: .messageBegin)
+    return parser.process(state: .messageBegin, method: method, status_code: status_code, http_major: http_major, http_minor: http_minor)
 }
 
 private func http_parser_on_url(
     pointer: UnsafeMutablePointer<http_parser>?,
     data: UnsafePointer<Int8>?,
-    length: Int
+    length: Int, method: Int32, status_code: Int32, http_major: Int16, http_minor: Int16
 ) -> Int32 {
     let parser = Unmanaged<Parser>.fromOpaque(pointer!.pointee.data).takeUnretainedValue()
-    return parser.process(state: .uri, data: UnsafeRawBufferPointer(start: data, count: length))
+    return parser.process(state: .uri, data: UnsafeRawBufferPointer(start: data, count: length), method: method, status_code: status_code, http_major: http_major, http_minor: http_minor)
 }
 
 private func http_parser_on_status(
     pointer: UnsafeMutablePointer<http_parser>?,
     data: UnsafePointer<Int8>?,
-    length: Int
+    length: Int, method: Int32, status_code: Int32, http_major: Int16, http_minor: Int16
 ) -> Int32 {
     let parser = Unmanaged<Parser>.fromOpaque(pointer!.pointee.data).takeUnretainedValue()
-    return parser.process(state: .status, data: UnsafeRawBufferPointer(start: data, count: length))
+    return parser.process(state: .status, data: UnsafeRawBufferPointer(start: data, count: length), method: method, status_code: status_code, http_major: http_major, http_minor: http_minor)
 }
 
 private func http_parser_on_header_field(
     pointer: UnsafeMutablePointer<http_parser>?,
     data: UnsafePointer<Int8>?,
-    length: Int
+    length: Int, method: Int32, status_code: Int32, http_major: Int16, http_minor: Int16
 ) -> Int32 {
     let parser = Unmanaged<Parser>.fromOpaque(pointer!.pointee.data).takeUnretainedValue()
-    return parser.process(state: .headerField, data: UnsafeRawBufferPointer(start: data, count: length))
+    return parser.process(state: .headerField, data: UnsafeRawBufferPointer(start: data, count: length), method: method, status_code: status_code, http_major: http_major, http_minor: http_minor)
 }
 
 private func http_parser_on_header_value(
     pointer: UnsafeMutablePointer<http_parser>?,
     data: UnsafePointer<Int8>?,
-    length: Int
+    length: Int, method: Int32, status_code: Int32, http_major: Int16, http_minor: Int16
 ) -> Int32 {
     let parser = Unmanaged<Parser>.fromOpaque(pointer!.pointee.data).takeUnretainedValue()
-    return parser.process(state: .headerValue, data: UnsafeRawBufferPointer(start: data, count: length))
+    return parser.process(state: .headerValue, data: UnsafeRawBufferPointer(start: data, count: length), method: method, status_code: status_code, http_major: http_major, http_minor: http_minor)
 }
 
-private func http_parser_on_headers_complete(pointer: UnsafeMutablePointer<http_parser>?) -> Int32 {
+private func http_parser_on_headers_complete(pointer: UnsafeMutablePointer<http_parser>?, method: Int32, status_code: Int32, http_major: Int16, http_minor: Int16) -> Int32 {
     let parser = Unmanaged<Parser>.fromOpaque(pointer!.pointee.data).takeUnretainedValue()
-    return parser.process(state: .headersComplete)
+    return parser.process(state: .headersComplete, method: method, status_code: status_code, http_major: http_major, http_minor: http_minor)
 }
 
 private func http_parser_on_body(
     pointer: UnsafeMutablePointer<http_parser>?,
     data: UnsafePointer<Int8>?,
-    length: Int
+    length: Int, method: Int32, status_code: Int32, http_major: Int16, http_minor: Int16
 ) -> Int32 {
     let parser = Unmanaged<Parser>.fromOpaque(pointer!.pointee.data).takeUnretainedValue()
-    return parser.process(state: .body, data: UnsafeRawBufferPointer(start: data, count: length))
+    return parser.process(state: .body, data: UnsafeRawBufferPointer(start: data, count: length), method: method, status_code: status_code, http_major: http_major, http_minor: http_minor)
 }
 
-private func http_parser_on_message_complete(pointer: UnsafeMutablePointer<http_parser>?) -> Int32 {
+private func http_parser_on_message_complete(pointer: UnsafeMutablePointer<http_parser>?, method: Int32, status_code: Int32, http_major: Int16, http_minor: Int16) -> Int32 {
     let parser = Unmanaged<Parser>.fromOpaque(pointer!.pointee.data).takeUnretainedValue()
-    return parser.process(state: .messageComplete)
+    return parser.process(state: .messageComplete, method: method, status_code: status_code, http_major: http_major, http_minor: http_minor)
 }

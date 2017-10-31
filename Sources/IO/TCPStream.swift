@@ -69,7 +69,11 @@ public final class TCPStream : DuplexStream {
             }
         }
         
-        return UnsafeRawBufferPointer(buffer).prefix(upTo: result)
+        #if swift(>=3.2)
+            return UnsafeRawBufferPointer(rebasing: buffer.prefix(upTo: result))
+        #else
+            return UnsafeRawBufferPointer(buffer.prefix(upTo: result))
+        #endif
     }
     
     public func write(_ buffer: UnsafeRawBufferPointer, deadline: Deadline) throws {

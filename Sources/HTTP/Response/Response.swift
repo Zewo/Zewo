@@ -1,5 +1,6 @@
 import Core
-import Content
+import IO
+import Media
 import Venice
 
 public final class Response : Message {
@@ -11,9 +12,7 @@ public final class Response : Message {
     public var body: Body
     
     public var storage: Storage = [:]
-    
     public var upgradeConnection: UpgradeConnection?
-    
     public var cookieHeaders: Set<String> = []
     
     public init(
@@ -154,76 +153,66 @@ extension Response {
         contentLength = buffer.bufferSize
     }
     
-    public convenience init(
+    public convenience init<Content : EncodingMedia>(
         status: Status,
         headers: Headers = [:],
         content: Content,
         timeout: Duration = 5.minutes
-    ) {
+    ) throws {
         self.init(
             status: status,
             headers: headers,
             body: { writable in
-                try content.serialize(to: writable, deadline: timeout.fromNow())
+                try content.encode(to: writable, deadline: timeout.fromNow())
             }
         )
         
-        self.contentType = type(of: content).mediaType
+        self.contentType = Content.mediaType
         self.contentLength = nil
         self.transferEncoding = "chunked"
     }
     
-    public convenience init<C : ContentRepresentable>(
+    public convenience init<Content : MediaEncodable>(
         status: Status,
         headers: Headers = [:],
-        content representable: C,
+        content: Content,
         timeout: Duration = 5.minutes
-    ) {
+    ) throws {
+        let media = try Content.defaultEncodingMedia()
+        
         self.init(
             status: status,
             headers: headers,
-            content: representable.content,
-            timeout: timeout
+            body: { writable in
+                try media.encode(content, to: writable, deadline: timeout.fromNow())
+            }
         )
+        
+        self.contentType = media.mediaType
+        self.contentLength = nil
+        self.transferEncoding = "chunked"
     }
     
-    public convenience init<C : Content & ContentRepresentable>(
+    public convenience init<Content : MediaEncodable>(
         status: Status,
         headers: Headers = [:],
-        content: C,
-        timeout: Duration = 5.minutes
-    ) {
-        self.init(
-            status: status,
-            headers: headers,
-            content: content as Content,
-            timeout: timeout
-        )
-    }
-    
-    public convenience init<C : ContentRepresentable>(
-        status: Status,
-        headers: Headers = [:],
-        content representable: C,
+        content: Content,
         contentType mediaType: MediaType,
         timeout: Duration = 5.minutes
     ) throws {
-        for contentType in C.supportedTypes where contentType.mediaType.matches(other: mediaType) {
-            guard let content = try? representable.content(for: mediaType) else {
-                continue
-            }
-            
-            self.init(
-                status: status,
-                headers: headers,
-                content: content,
-                timeout: timeout
-            )
-            
-            return
-        }
+        let media = try Content.encodingMedia(for: mediaType)
         
-        throw MessageError.unsupportedMediaType
+        self.init(
+            status: status,
+            headers: headers,
+            body: { writable in
+                try media.encode(content, to: writable, deadline: timeout.fromNow())
+            }
+        )
+        
+        self.contentType = media.mediaType
+        self.contentLength = nil
+        self.transferEncoding = "chunked"
     }
 }
 

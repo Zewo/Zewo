@@ -1,10 +1,8 @@
 os:
   - linux
-  - osx
 language: generic
 sudo: false
 dist: trusty
-osx_image: xcode8.3
 addons:
   apt:
     sources:
