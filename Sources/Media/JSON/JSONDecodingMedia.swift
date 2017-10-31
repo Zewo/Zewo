@@ -88,10 +88,7 @@ extension JSON : DecodingMedia {
         return self
     }
     
-    public func decodeIfPresent(
-        _ type: DecodingMedia.Type,
-        forKey key: CodingKey
-    ) throws -> DecodingMedia? {
+    public func decode(_ type: DecodingMedia.Type, forKey key: CodingKey) throws -> DecodingMedia {
         if let index = key.intValue {
             guard case let .array(array) = self else {
                 throw DecodingError.typeMismatch(
@@ -124,6 +121,47 @@ extension JSON : DecodingMedia {
             }
             
             return newValue
+        }
+    }
+    
+    public func decodeIfPresent(
+        _ type: DecodingMedia.Type,
+        forKey key: CodingKey
+    ) throws -> DecodingMedia? {
+        if let index = key.intValue {
+            guard case let .array(array) = self else {
+                throw DecodingError.typeMismatch(
+                    [JSON].self,
+                    DecodingError.Context(codingPath: [key])
+                )
+            }
+            
+            guard array.indices.contains(index) else {
+                throw DecodingError.valueNotFound(
+                    JSON.self,
+                    DecodingError.Context(codingPath: [key])
+                )
+            }
+            
+            return array[index]
+
+        } else {
+            guard case let .object(object) = self else {
+                throw DecodingError.typeMismatch(
+                    [String: JSON].self,
+                    DecodingError.Context(codingPath: [key])
+                )
+            }
+            
+            guard let newValue = object[key.stringValue] else {
+                throw DecodingError.valueNotFound(
+                    JSON.self,
+                    DecodingError.Context(codingPath: [key])
+                )
+            }
+            
+            return newValue
+
         }
     }
     

@@ -27,7 +27,7 @@ public final class Server {
         header: String = defaultHeader,
         parserBufferSize: Int = 4096,
         serializerBufferSize: Int = 4096,
-        parseTimeout: Duration = 5.minutes,
+        parseTimeout: Duration = 10.seconds,
         serializeTimeout: Duration = 5.minutes,
         closeConnectionTimeout: Duration = 1.minute,
         respond: @escaping Respond
@@ -128,11 +128,14 @@ public final class Server {
             do {
                 try self.process(stream)
             } catch SystemError.brokenPipe {
+                Logger.error("Broken pipe while processing connection.")
                 return
             } catch SystemError.connectionResetByPeer {
-                return
+                Logger.error("Connection reset by peer while processing connection.")
+               return
             } catch VeniceError.canceledCoroutine {
-                return
+                Logger.error("Cancelled coroutine while processing connection.")
+               return
             } catch {
                 Logger.error("Error while processing connection.", error: error)
             }

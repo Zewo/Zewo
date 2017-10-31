@@ -88,15 +88,14 @@ public struct Environment {
             guard let keyRange = match.range(at: 1).range(for: line) else {
                 continue
             }
-            
-            let key = line.substring(with: keyRange)
+            let key = String(line[keyRange])
             var value = ""
             
             if
                 match.numberOfRanges == 3,
                 let valueRange = match.range(at: 2).range(for: line)
             {
-                value = line.substring(with: valueRange)
+                value = String(line[valueRange])
             }
             
             value = value.trimmingCharacters(in: .whitespaces)

@@ -73,7 +73,7 @@ public class XMLTests: XCTestCase {
                 ])
             )
             
-            var json: JSON = [
+            let json: JSON = [
                 "Catalog": [
                     "Book": [
                         ["Author": "Bob"],
@@ -86,13 +86,12 @@ public class XMLTests: XCTestCase {
             var root: Root
             
             root = try Root(from: json)
-            print(root)
             
             root = try Root(from: xml)
-            print(root)
+
             
-            json = try JSON(from: root)
-            print(json)
+            let json2 = try JSON(from: root)
+            XCTAssertEqual(json, json2)
         } catch {
             print(error)
         }

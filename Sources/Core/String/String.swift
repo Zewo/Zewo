@@ -104,16 +104,6 @@ extension String {
     }
 }
 
-extension Int : LosslessStringConvertible {
-    public init?(_ string: String) {
-        guard let int = Int(string, radix: 10) else {
-            return nil
-        }
-        
-        self = int
-    }
-}
-
 extension UUID : LosslessStringConvertible {
     public init?(_ string: String) {
         guard let uuid = UUID(uuidString: string) else {

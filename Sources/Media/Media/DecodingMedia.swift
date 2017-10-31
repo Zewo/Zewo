@@ -5,7 +5,7 @@ extension Decodable {
     public init<Map : DecodingMedia>(
         from map: Map,
         userInfo: [CodingUserInfoKey: Any] = [:]
-    ) throws {
+        ) throws {
         let decoder = MediaDecoder<Map>(referencing: map, userInfo: userInfo)
         try self.init(from: decoder)
     }
@@ -42,6 +42,7 @@ public protocol DecodingMedia {
     func singleValueContainer() throws -> DecodingMedia
     
     func decodeIfPresent(_ type: DecodingMedia.Type, forKey key: CodingKey) throws -> DecodingMedia?
+    func decode(_ type: DecodingMedia.Type, forKey key: CodingKey) throws -> DecodingMedia
     func decodeNil() -> Bool
     func decode(_ type: Bool.Type) throws -> Bool
     func decode(_ type: Int.Type) throws -> Int
@@ -118,7 +119,7 @@ extension DecodingMedia {
         
         return try D(from: map)
     }
-    
+
     public func decode(_ type: Bool.Type, forKey key: CodingKey) throws -> Bool {
         guard let map = try decodeIfPresent(Self.self, forKey: key) else {
             throw DecodingError.valueNotFound(type, DecodingError.Context())
@@ -236,11 +237,19 @@ extension DecodingMedia {
             return nil
         }
         
+        guard !map.decodeNil() else {
+            return nil
+        }
+        
         return try map.decode(type)
     }
     
     public func decodeIfPresent(_ type: Int.Type, forKey key: CodingKey) throws -> Int? {
         guard let map = try decodeIfPresent(Self.self, forKey: key) else {
+            return nil
+        }
+        
+        guard !map.decodeNil() else {
             return nil
         }
         
@@ -252,11 +261,19 @@ extension DecodingMedia {
             return nil
         }
         
+        guard !map.decodeNil() else {
+            return nil
+        }
+        
         return try map.decode(type)
     }
     
     public func decodeIfPresent(_ type: Int16.Type, forKey key: CodingKey) throws -> Int16? {
         guard let map = try decodeIfPresent(Self.self, forKey: key) else {
+            return nil
+        }
+        
+        guard !map.decodeNil() else {
             return nil
         }
         
@@ -268,11 +285,19 @@ extension DecodingMedia {
             return nil
         }
         
+        guard !map.decodeNil() else {
+            return nil
+        }
+        
         return try map.decode(type)
     }
     
     public func decodeIfPresent(_ type: Int64.Type, forKey key: CodingKey) throws -> Int64? {
         guard let map = try decodeIfPresent(Self.self, forKey: key) else {
+            return nil
+        }
+        
+        guard !map.decodeNil() else {
             return nil
         }
         
@@ -284,11 +309,19 @@ extension DecodingMedia {
             return nil
         }
         
+        guard !map.decodeNil() else {
+            return nil
+        }
+        
         return try map.decode(type)
     }
     
     public func decodeIfPresent(_ type: UInt8.Type, forKey key: CodingKey) throws -> UInt8? {
         guard let map = try decodeIfPresent(Self.self, forKey: key) else {
+            return nil
+        }
+        
+        guard !map.decodeNil() else {
             return nil
         }
         
@@ -300,11 +333,19 @@ extension DecodingMedia {
             return nil
         }
         
+        guard !map.decodeNil() else {
+            return nil
+        }
+        
         return try map.decode(type)
     }
     
     public func decodeIfPresent(_ type: UInt32.Type, forKey key: CodingKey) throws -> UInt32? {
         guard let map = try decodeIfPresent(Self.self, forKey: key) else {
+            return nil
+        }
+        
+        guard !map.decodeNil() else {
             return nil
         }
         
@@ -316,11 +357,19 @@ extension DecodingMedia {
             return nil
         }
         
+        guard !map.decodeNil() else {
+            return nil
+        }
+        
         return try map.decode(type)
     }
     
     public func decodeIfPresent(_ type: Float.Type, forKey key: CodingKey) throws -> Float? {
         guard let map = try decodeIfPresent(Self.self, forKey: key) else {
+            return nil
+        }
+        
+        guard !map.decodeNil() else {
             return nil
         }
         
@@ -332,11 +381,19 @@ extension DecodingMedia {
             return nil
         }
         
+        guard !map.decodeNil() else {
+            return nil
+        }
+        
         return try map.decode(type)
     }
     
     public func decodeIfPresent(_ type: String.Type, forKey key: CodingKey) throws -> String? {
         guard let map = try decodeIfPresent(Self.self, forKey: key) else {
+            return nil
+        }
+        
+        guard !map.decodeNil() else {
             return nil
         }
         

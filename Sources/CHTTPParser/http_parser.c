@@ -77,13 +77,13 @@ do {                                                                 \
 
 
 /* Run the notify callback FOR, returning ER if it fails */
-#define CALLBACK_NOTIFY_(FOR, ER)                                    \
+#define CALLBACK_NOTIFY_(FOR, ER, METHOD, STATUS_CODE, HTTP_MAJOR, HTTP_MINOR)                                    \
 do {                                                                 \
   assert(HTTP_PARSER_ERRNO(parser) == HPE_OK);                       \
                                                                      \
   if (LIKELY(settings->on_##FOR)) {                                  \
     parser->state = CURRENT_STATE();                                 \
-    if (UNLIKELY(0 != settings->on_##FOR(parser))) {                 \
+    if (UNLIKELY(0 != settings->on_##FOR(parser, (METHOD), (STATUS_CODE), (HTTP_MAJOR), (HTTP_MINOR)))) {                 \
       SET_ERRNO(HPE_CB_##FOR);                                       \
     }                                                                \
     UPDATE_STATE(parser->state);                                     \
@@ -96,13 +96,13 @@ do {                                                                 \
 } while (0)
 
 /* Run the notify callback FOR and consume the current byte */
-#define CALLBACK_NOTIFY(FOR)            CALLBACK_NOTIFY_(FOR, p - data + 1)
+#define CALLBACK_NOTIFY(FOR, METHOD, STATUS_CODE, HTTP_MAJOR, HTTP_MINOR)            CALLBACK_NOTIFY_(FOR, p - data + 1, (METHOD), (STATUS_CODE), (HTTP_MAJOR), (HTTP_MINOR))
 
 /* Run the notify callback FOR and don't consume the current byte */
-#define CALLBACK_NOTIFY_NOADVANCE(FOR)  CALLBACK_NOTIFY_(FOR, p - data)
+#define CALLBACK_NOTIFY_NOADVANCE(FOR, METHOD, STATUS_CODE, HTTP_MAJOR, HTTP_MINOR)  CALLBACK_NOTIFY_(FOR, p - data, (METHOD), (STATUS_CODE), (HTTP_MAJOR), (HTTP_MINOR))
 
-/* Run data callback FOR with LEN bytes, returning ER if it fails */
-#define CALLBACK_DATA_(FOR, LEN, ER)                                 \
+/* Run data callback FOR with LEN bytes, returning ER if it fails  (long version)*/
+#define CALLBACK_DATA_(FOR, LEN, ER, METHOD, STATUS_CODE, HTTP_MAJOR, HTTP_MINOR)                                 \
 do {                                                                 \
   assert(HTTP_PARSER_ERRNO(parser) == HPE_OK);                       \
                                                                      \
@@ -110,7 +110,7 @@ do {                                                                 \
     if (LIKELY(settings->on_##FOR)) {                                \
       parser->state = CURRENT_STATE();                               \
       if (UNLIKELY(0 !=                                              \
-                   settings->on_##FOR(parser, FOR##_mark, (LEN)))) { \
+                   settings->on_##FOR(parser, FOR##_mark, (LEN), (METHOD), (STATUS_CODE), (HTTP_MAJOR), (HTTP_MINOR)))) { \
         SET_ERRNO(HPE_CB_##FOR);                                     \
       }                                                              \
       UPDATE_STATE(parser->state);                                   \
@@ -125,12 +125,12 @@ do {                                                                 \
 } while (0)
 
 /* Run the data callback FOR and consume the current byte */
-#define CALLBACK_DATA(FOR)                                           \
-    CALLBACK_DATA_(FOR, p - FOR##_mark, p - data + 1)
+#define CALLBACK_DATA(FOR, METHOD, STATUS_CODE, HTTP_MAJOR, HTTP_MINOR)                                           \
+CALLBACK_DATA_(FOR, p - FOR##_mark, p - data + 1, METHOD, STATUS_CODE, HTTP_MAJOR, HTTP_MINOR)
 
 /* Run the data callback FOR and don't consume the current byte */
-#define CALLBACK_DATA_NOADVANCE(FOR)                                 \
-    CALLBACK_DATA_(FOR, p - FOR##_mark, p - data)
+#define CALLBACK_DATA_NOADVANCE(FOR, METHOD, STATUS_CODE, HTTP_MAJOR, HTTP_MINOR)                                 \
+CALLBACK_DATA_(FOR, p - FOR##_mark, p - data, METHOD, STATUS_CODE, HTTP_MAJOR, HTTP_MINOR)
 
 /* Set the mark FOR; non-destructive if mark is already set */
 #define MARK(FOR)                                                    \
@@ -658,7 +658,7 @@ size_t http_parser_execute (http_parser *parser,
         /* Use of CALLBACK_NOTIFY() here would erroneously return 1 byte read if
          * we got paused.
          */
-        CALLBACK_NOTIFY_NOADVANCE(message_complete);
+        CALLBACK_NOTIFY_NOADVANCE(message_complete, parser->method, parser->status_code, parser->http_major, parser->http_minor);
         return 0;
 
       case s_dead:
@@ -728,7 +728,7 @@ reexecute:
         if (ch == 'H') {
           UPDATE_STATE(s_res_or_resp_H);
 
-          CALLBACK_NOTIFY(message_begin);
+          CALLBACK_NOTIFY(message_begin, parser->method, parser->status_code, parser->http_major, parser->http_minor);
         } else {
           parser->type = HTTP_REQUEST;
           UPDATE_STATE(s_start_req);
@@ -774,7 +774,7 @@ reexecute:
             goto error;
         }
 
-        CALLBACK_NOTIFY(message_begin);
+        CALLBACK_NOTIFY(message_begin, parser->method, parser->status_code, parser->http_major, parser->http_minor);
         break;
       }
 
@@ -934,13 +934,13 @@ reexecute:
       case s_res_status:
         if (ch == CR) {
           UPDATE_STATE(s_res_line_almost_done);
-          CALLBACK_DATA(status);
+          CALLBACK_DATA(status, parser->method, parser->status_code, parser->http_major, parser->http_minor);
           break;
         }
 
         if (ch == LF) {
           UPDATE_STATE(s_header_field_start);
-          CALLBACK_DATA(status);
+          CALLBACK_DATA(status, parser->method, parser->status_code, parser->http_major, parser->http_minor);
           break;
         }
 
@@ -989,7 +989,7 @@ reexecute:
         }
         UPDATE_STATE(s_req_method);
 
-        CALLBACK_NOTIFY(message_begin);
+        CALLBACK_NOTIFY(message_begin, parser->method, parser->status_code, parser->http_major, parser->http_minor);
 
         break;
       }
@@ -1102,7 +1102,7 @@ reexecute:
         switch (ch) {
           case ' ':
             UPDATE_STATE(s_req_http_start);
-            CALLBACK_DATA(url);
+            CALLBACK_DATA(url, parser->method, parser->status_code, parser->http_major, parser->http_minor);
             break;
           case CR:
           case LF:
@@ -1111,7 +1111,7 @@ reexecute:
             UPDATE_STATE((ch == CR) ?
               s_req_line_almost_done :
               s_header_field_start);
-            CALLBACK_DATA(url);
+            CALLBACK_DATA(url, parser->method, parser->status_code, parser->http_major, parser->http_minor);
             break;
           default:
             UPDATE_STATE(parse_url_char(CURRENT_STATE(), ch));
@@ -1421,7 +1421,7 @@ reexecute:
 
         if (ch == ':') {
           UPDATE_STATE(s_header_value_discard_ws);
-          CALLBACK_DATA(header_field);
+          CALLBACK_DATA(header_field, parser->method, parser->status_code, parser->http_major, parser->http_minor);
           break;
         }
 
@@ -1511,7 +1511,7 @@ reexecute:
           if (ch == CR) {
             UPDATE_STATE(s_header_almost_done);
             parser->header_state = h_state;
-            CALLBACK_DATA(header_value);
+            CALLBACK_DATA(header_value, parser->method, parser->status_code, parser->http_major, parser->http_minor);
             break;
           }
 
@@ -1519,7 +1519,7 @@ reexecute:
             UPDATE_STATE(s_header_almost_done);
             COUNT_HEADER_SIZE(p - start);
             parser->header_state = h_state;
-            CALLBACK_DATA_NOADVANCE(header_value);
+            CALLBACK_DATA_NOADVANCE(header_value, parser->method, parser->status_code, parser->http_major, parser->http_minor);
             REEXECUTE();
           }
 
@@ -1766,7 +1766,7 @@ reexecute:
           /* header value was empty */
           MARK(header_value);
           UPDATE_STATE(s_header_field_start);
-          CALLBACK_DATA_NOADVANCE(header_value);
+          CALLBACK_DATA_NOADVANCE(header_value, parser->method, parser->status_code, parser->http_major, parser->http_minor);
           REEXECUTE();
         }
       }
@@ -1778,7 +1778,7 @@ reexecute:
         if (parser->flags & F_TRAILING) {
           /* End of a chunked request */
           UPDATE_STATE(s_message_done);
-          CALLBACK_NOTIFY_NOADVANCE(chunk_complete);
+          CALLBACK_NOTIFY_NOADVANCE(chunk_complete, parser->method, parser->status_code, parser->http_major, parser->http_minor);
           REEXECUTE();
         }
 
@@ -1808,7 +1808,7 @@ reexecute:
          * we have to simulate it by handling a change in errno below.
          */
         if (settings->on_headers_complete) {
-          switch (settings->on_headers_complete(parser)) {
+          switch (settings->on_headers_complete(parser, parser->method, parser->status_code, parser->http_major, parser->http_minor)) {
             case 0:
               break;
 
@@ -1842,13 +1842,13 @@ reexecute:
                                 (parser->flags & F_SKIPBODY) || !hasBody)) {
           /* Exit, the rest of the message is in a different protocol. */
           UPDATE_STATE(NEW_MESSAGE());
-          CALLBACK_NOTIFY(message_complete);
+          CALLBACK_NOTIFY(message_complete, parser->method, parser->status_code, parser->http_major, parser->http_minor);
           RETURN((p - data) + 1);
         }
 
         if (parser->flags & F_SKIPBODY) {
           UPDATE_STATE(NEW_MESSAGE());
-          CALLBACK_NOTIFY(message_complete);
+          CALLBACK_NOTIFY(message_complete, parser->method, parser->status_code, parser->http_major, parser->http_minor);
         } else if (parser->flags & F_CHUNKED) {
           /* chunked encoding - ignore Content-Length header */
           UPDATE_STATE(s_chunk_size_start);
@@ -1856,7 +1856,7 @@ reexecute:
           if (parser->content_length == 0) {
             /* Content-Length header given but zero: Content-Length: 0\r\n */
             UPDATE_STATE(NEW_MESSAGE());
-            CALLBACK_NOTIFY(message_complete);
+            CALLBACK_NOTIFY(message_complete, parser->method, parser->status_code, parser->http_major, parser->http_minor);
           } else if (parser->content_length != ULLONG_MAX) {
             /* Content-Length header given and non-zero */
             UPDATE_STATE(s_body_identity);
@@ -1864,7 +1864,7 @@ reexecute:
             if (!http_message_needs_eof(parser)) {
               /* Assume content-length 0 - read the next */
               UPDATE_STATE(NEW_MESSAGE());
-              CALLBACK_NOTIFY(message_complete);
+              CALLBACK_NOTIFY(message_complete, parser->method, parser->status_code, parser->http_major, parser->http_minor);
             } else {
               /* Read body until EOF */
               UPDATE_STATE(s_body_identity_eof);
@@ -1904,7 +1904,7 @@ reexecute:
            * complete-on-length. It's not clear that this distinction is
            * important for applications, but let's keep it for now.
            */
-          CALLBACK_DATA_(body, p - body_mark + 1, p - data);
+          CALLBACK_DATA_(body, p - body_mark + 1, p - data, parser->method, parser->status_code, parser->http_major, parser->http_minor);
           REEXECUTE();
         }
 
@@ -1920,7 +1920,7 @@ reexecute:
 
       case s_message_done:
         UPDATE_STATE(NEW_MESSAGE());
-        CALLBACK_NOTIFY(message_complete);
+        CALLBACK_NOTIFY(message_complete, parser->method, parser->status_code, parser->http_major, parser->http_minor);
         if (parser->upgrade) {
           /* Exit, the rest of the message is in a different protocol. */
           RETURN((p - data) + 1);
@@ -2004,7 +2004,7 @@ reexecute:
         } else {
           UPDATE_STATE(s_chunk_data);
         }
-        CALLBACK_NOTIFY(chunk_header);
+        CALLBACK_NOTIFY(chunk_header, parser->method, parser->status_code, parser->http_major, parser->http_minor);
         break;
       }
 
@@ -2036,7 +2036,7 @@ reexecute:
         assert(parser->content_length == 0);
         STRICT_CHECK(ch != CR);
         UPDATE_STATE(s_chunk_data_done);
-        CALLBACK_DATA(body);
+        CALLBACK_DATA(body, parser->method, parser->status_code, parser->http_major, parser->http_minor);
         break;
 
       case s_chunk_data_done:
@@ -2044,7 +2044,7 @@ reexecute:
         STRICT_CHECK(ch != LF);
         parser->nread = 0;
         UPDATE_STATE(s_chunk_size_start);
-        CALLBACK_NOTIFY(chunk_complete);
+        CALLBACK_NOTIFY(chunk_complete, parser->method, parser->status_code, parser->http_major, parser->http_minor);
         break;
 
       default:
@@ -2070,11 +2070,11 @@ reexecute:
           (body_mark ? 1 : 0) +
           (status_mark ? 1 : 0)) <= 1);
 
-  CALLBACK_DATA_NOADVANCE(header_field);
-  CALLBACK_DATA_NOADVANCE(header_value);
-  CALLBACK_DATA_NOADVANCE(url);
-  CALLBACK_DATA_NOADVANCE(body);
-  CALLBACK_DATA_NOADVANCE(status);
+  CALLBACK_DATA_NOADVANCE(header_field, parser->method, parser->status_code, parser->http_major, parser->http_minor);
+  CALLBACK_DATA_NOADVANCE(header_value, parser->method, parser->status_code, parser->http_major, parser->http_minor);
+  CALLBACK_DATA_NOADVANCE(url, parser->method, parser->status_code, parser->http_major, parser->http_minor);
+  CALLBACK_DATA_NOADVANCE(body, parser->method, parser->status_code, parser->http_major, parser->http_minor);
+  CALLBACK_DATA_NOADVANCE(status, parser->method, parser->status_code, parser->http_major, parser->http_minor);
 
   RETURN(len);
 

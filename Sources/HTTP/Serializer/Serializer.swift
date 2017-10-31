@@ -88,8 +88,6 @@ internal class Serializer {
         if message.isChunkEncoded {
             try writeChunkEncodedBody(message, deadline: deadline)
         }
-        
-        try write(to: stream, body: message.body, deadline: deadline)
     }
     
     @inline(__always)

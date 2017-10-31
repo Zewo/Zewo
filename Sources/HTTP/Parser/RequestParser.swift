@@ -168,16 +168,16 @@ internal final class RequestParser : Parser {
         }
     }
     
-    override func headersComplete(context: Parser.Context, body: Parser.BodyStream) -> Bool {
+    override func headersComplete(context: Parser.Context, body: Parser.BodyStream, method: Int32, http_major: Int16, http_minor: Int16) -> Bool {
         guard let uri = context.uri else {
             return false
         }
         
         let request = Request(
-            method: Request.Method(code: http_method(rawValue: parser.method)),
+            method: Request.Method(code: http_method(rawValue: UInt32(Int(method)) )),
             uri: uri,
             headers: context.headers,
-            version: Version(major: Int(parser.http_major), minor: Int(parser.http_minor)),
+            version: Version(major: Int(http_major), minor: Int(http_minor)),
             body: .readable(body)
         )
         

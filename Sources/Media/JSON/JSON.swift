@@ -142,6 +142,10 @@ extension JSON : ExpressibleByArrayLiteral {
     public init(arrayLiteral elements: JSON...) {
         self = .array(elements)
     }
+    
+    public init(arrayLiteral elements: [JSON]) {
+        self = .array(elements)
+    }
 }
 
 extension JSON : ExpressibleByDictionaryLiteral {

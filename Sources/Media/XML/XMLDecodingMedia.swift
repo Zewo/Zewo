@@ -34,6 +34,11 @@ extension XML : DecodingMedia {
         throw DecodingError.typeMismatch(DecodingMedia.self, DecodingError.Context())
     }
     
+    public func decode(_ type: DecodingMedia.Type, forKey key: CodingKey) throws -> DecodingMedia {
+        
+        return XMLMap.single(root) // change this (wrap root)
+    }
+    
     public func decodeIfPresent(
         _ type: DecodingMedia.Type,
         forKey key: CodingKey
@@ -172,6 +177,29 @@ extension XMLMap : DecodingMedia {
             return self
         default:
             throw DecodingError.typeMismatch(DecodingMedia.self, DecodingError.Context())
+        }
+    }
+    
+    func decode(_ type: DecodingMedia.Type, forKey key: CodingKey) throws -> DecodingMedia {
+        switch self {
+        case let .single(element):
+            let elements = element.elements(named: key.stringValue)
+            
+            guard elements.count == 1, let element = elements.first else {
+                return XMLMap.multiple(elements)
+            }
+            
+            return XMLMap.single(element)
+        case let .multiple(elements):
+            guard let index = key.intValue else {
+                throw DecodingError.keyNotFound(key, DecodingError.Context())
+            }
+            
+            guard elements.indices.contains(index) else {
+                throw DecodingError.keyNotFound(key, DecodingError.Context())
+            }
+            
+            return XMLMap.single(elements[index])
         }
     }
     

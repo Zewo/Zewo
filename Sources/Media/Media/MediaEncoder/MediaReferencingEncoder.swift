@@ -10,7 +10,7 @@ class MediaReferencingEncoder<Map : EncodingMedia> : MediaEncoder<Map> {
         self.encoder = encoder
         self.write = write
         super.init(codingPath: encoder.codingPath, userInfo: encoder.userInfo)
-        self.codingPath.append(key)
+        if let key = key {self.codingPath.append(key)}
     }
     
     override var canEncodeNewElement: Bool {

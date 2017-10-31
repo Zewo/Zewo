@@ -21,7 +21,25 @@ public class StringTests : XCTestCase {
         XCTAssertEqual("Two  spaces".camelCaseSplit(), ["Two", "  ", "spaces"])
     }
     
+    func testUppercasedFirstCharacter() {
+        XCTAssertEqual("hello".uppercasedFirstCharacter(), "Hello")
+        XCTAssertEqual("1hello".uppercasedFirstCharacter(), "1hello")
+        XCTAssertEqual("@hello".uppercasedFirstCharacter(), "@hello")
+        XCTAssertEqual("Hello".uppercasedFirstCharacter(), "Hello")
+    }
+    
+    func testTrimmed() {
+        XCTAssertEqual("    hello".trimmed(), "hello")
+        XCTAssertEqual("hello".trimmed(), "hello")
+        XCTAssertEqual("hel  lo".trimmed(), "hel lo")
+        XCTAssertEqual("hel       lo".trimmed(), "hel lo")
+        XCTAssertEqual("hel lo".trimmed(), "hel lo")
+        XCTAssertEqual("hello   ".trimmed(), "hello")
+   }
+    
     public static var allTests = [
         ("testCamelCaseSplit", testCamelCaseSplit),
+        ("testUppercasedFirstCharacter", testUppercasedFirstCharacter),
+        ("testTrimmed", testTrimmed),
     ]
 }
