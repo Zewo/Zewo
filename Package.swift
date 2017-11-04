@@ -8,10 +8,10 @@ let package = Package(
         .library(name: "Zewo", targets: ["CYAJL", "CHTTPParser", "Core", "IO", "Media", "HTTP", "Zewo"])
     ],
     dependencies: [
-        .package(url: "https://github.com/Zewo/CLibdill.git", .branch("swift-4")),
-        .package(url: "https://github.com/Zewo/Venice.git", .branch("swift-4")),
-        .package(url: "https://github.com/Zewo/CBtls.git", .branch("swift-4")),
-        .package(url: "https://github.com/Zewo/CLibreSSL.git", .branch("swift-4")),
+        .package(url: "https://github.com/Zewo/CLibdill.git", from: "2.0.0"),
+        .package(url: "https://github.com/Zewo/Venice.git", from: "0.20.0"),
+        .package(url: "https://github.com/Zewo/CBtls.git", from: "1.1.0"),
+        .package(url: "https://github.com/Zewo/CLibreSSL.git", from: "3.1.0"),
     ],
     targets: [
         .target(name: "CYAJL"),
