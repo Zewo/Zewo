@@ -580,7 +580,7 @@ func validateLength(
 ) -> (_ value: JSON) -> ValidationResult {
     return { value in
         if let value = try? value.decode(String.self) {
-            if !comparator(value.characters.count, length) {
+            if !comparator(value.count, length) {
                 return .invalid([error])
             }
         }
@@ -599,7 +599,7 @@ func validatePattern(_ pattern: String) -> (_ value: JSON) -> ValidationResult {
             )
             
             if let expression = expression {
-                let range = NSMakeRange(0, value.characters.count)
+                let range = NSMakeRange(0, value.count)
                 
                 if expression.matches(in: value, options: [], range: range).count == 0 {
                     return .invalid(["'\(value)' does not match pattern: '\(pattern)'"])
@@ -833,7 +833,7 @@ func validateIPv4(_ value:Any) -> ValidationResult {
             pattern: "^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
             options: []
         ) {
-            if expression.matches(in: ipv4, options: [], range: NSMakeRange(0, ipv4.characters.count)).count == 1 {
+            if expression.matches(in: ipv4, options: [], range: NSMakeRange(0, ipv4.count)).count == 1 {
                 return .valid
             }
         }
@@ -861,8 +861,8 @@ func validateIPv6(_ value:Any) -> ValidationResult {
 extension String {
     func stringByRemovingPrefix(_ prefix: String) -> String? {
         if hasPrefix(prefix) {
-            let index = characters.index(startIndex, offsetBy: prefix.characters.count)
-            return String(self[index...])
+            let idx = index(startIndex, offsetBy: prefix.count)
+            return String(self[idx...])
         }
         
         return nil
