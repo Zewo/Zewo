@@ -2,7 +2,7 @@ import Venice
 
 /// Representation of a type which binary data can be written to.
 public protocol Writable {
-    /// Read `buffer` timing out at `deadline`.
+    /// Write `buffer` timing out at `deadline`.
     func write(_ buffer: UnsafeRawBufferPointer, deadline: Deadline) throws
 }
 
