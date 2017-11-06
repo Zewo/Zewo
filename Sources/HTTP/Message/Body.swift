@@ -69,6 +69,7 @@ extension Body {
 
 fileprivate final class ReadableBytes : Readable {
     var buffer: ArraySlice<UInt8>
+    var index: Int = 0
     
     fileprivate init(_ buffer: [UInt8]) {
         self.buffer = ArraySlice<UInt8>(buffer)
@@ -99,7 +100,8 @@ fileprivate final class ReadableBytes : Readable {
             let read = UnsafeRawBufferPointer(buffer.prefix(readCount))
         #endif
         
-        self.buffer = self.buffer.suffix(from: readCount)
+        self.buffer = self.buffer.suffix(from: readCount + self.index)
+        self.index += readCount
         return read
     }
 }
