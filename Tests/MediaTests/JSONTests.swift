@@ -53,7 +53,18 @@ public class JSONTests : XCTestCase {
         let json2: JSON = ["string": "string", "int": 1, "bool": true, "nil": nil, "array":["a": 1, "b": 2], "object": ["c": "d", "e": "f"], "intarray": [1, 2, 3, 5]]
 
         XCTAssertEqual(json, json2)
-
+    }
+    
+    func testSubscript() throws {
+        let str = "{\"nil\":null,\"intarray\":[1,2,3,5],\"object\":{\"e\":\"f\",\"c\":\"d\"},\"array\":{\"b\":2,\"a\":1},\"int\":1,\"bool\":true,\"string\":\"string\"}"
+        
+        let json = try str.withBuffer { (b) -> JSON in
+            return try JSON(from: b, deadline: .never)
+        }
+        
+        XCTAssertEqual(json["not"], .null)
+        XCTAssertEqual(json["intarray"][1], 2)
+        XCTAssertEqual(json["object"]["e"], "f")
     }
 }
 
@@ -63,6 +74,7 @@ extension JSONTests {
             ("testJSONSchema", testJSONSchema),
             ("testSerialize", testSerialize),
             ("testParseFromString", testParseFromString),
+            ("testSubscript", testSubscript),
         ]
     }
 }
