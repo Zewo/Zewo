@@ -15,24 +15,24 @@ extension JSON {
 }
 
 extension JSON {
-    public subscript(str: String) -> JSON {
+    public subscript(str: String) -> JSON? {
         get {
             switch self {
             case .object(let dictionary):
-                return dictionary[str] ?? .null
+                return dictionary[str]
             default:
-                return .null
+                return nil
             }
         }
     }
     
-    public subscript(_ int: Int) -> JSON {
+    public subscript(_ int: Int) -> JSON? {
         get {
             switch self {
             case .array(let elements):
                 return elements[int]
             default:
-                return .null
+                return nil
             }
         }
     }

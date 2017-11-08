@@ -62,9 +62,9 @@ public class JSONTests : XCTestCase {
             return try JSON(from: b, deadline: .never)
         }
         
-        XCTAssertEqual(json["not"], .null)
-        XCTAssertEqual(json["intarray"][1], 2)
-        XCTAssertEqual(json["object"]["e"], "f")
+        XCTAssertEqual(json["not"], nil)
+        XCTAssertEqual(json["intarray"]![1], 2)
+        XCTAssertEqual(json["object"]!["e"], "f")
     }
 }
 
