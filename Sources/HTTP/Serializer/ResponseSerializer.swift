@@ -6,7 +6,7 @@ internal final class ResponseSerializer : Serializer {
         try serializeStatusLine(response, deadline: deadline)
         try serializeHeaders(response, deadline: deadline)
         try serializeBody(response, deadline: deadline)
-        return response.contentLength == nil || response.isChunkEncoded
+        return response.contentLength != nil || response.isChunkEncoded
     }
     
     @inline(__always)
