@@ -29,6 +29,7 @@ public struct Logger {
     public struct Event {
         public let locationInfo: LocationInfo
         public let timestamp: Int
+        public let usec: Int
         public let level: Logger.Level
         public var message: Any?
         public var error: Error?
@@ -56,9 +57,11 @@ public struct Logger {
     public static var appenders: [LogAppender] = [StandardOutputAppender()]
     
     private static func log(level: Level, item: Any?, error: Error? = nil, locationInfo: LocationInfo) {
+        let (ts, usec) = getTimestamp()
         let event = Event(
             locationInfo: locationInfo,
-            timestamp: getTimestamp(),
+            timestamp: ts,
+            usec: usec,
             level: level,
             message: item,
             error: error
@@ -283,10 +286,10 @@ public struct Logger {
         )
     }
 
-    private static func getTimestamp() -> Int {
+    private static func getTimestamp() -> (Int,Int) {
         var time: timeval = timeval(tv_sec: 0, tv_usec: 0)
         gettimeofday(&time, nil)
-        return time.tv_sec
+        return (time.tv_sec, Int(time.tv_usec))
     }
 }
 
