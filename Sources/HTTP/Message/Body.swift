@@ -83,14 +83,14 @@ fileprivate final class ReadableBytes : Readable {
             return UnsafeRawBufferPointer(start: nil, count: 0)
         }
         
-        let readCount = min(buffer.count, self.buffer.count)
+        let readCount = min(buffer.count, self.buffer.count - self.index)
         
         guard let destination = buffer.baseAddress else {
             return UnsafeRawBufferPointer(start: nil, count: 0)
         }
         
         self.buffer.withUnsafeBytes {
-            memcpy(destination, $0.baseAddress!, readCount)
+            memcpy(destination, $0.baseAddress! + self.index, readCount)
             return
         }
         
@@ -100,7 +100,6 @@ fileprivate final class ReadableBytes : Readable {
             let read = UnsafeRawBufferPointer(buffer.prefix(readCount))
         #endif
         
-        self.buffer = self.buffer.suffix(from: readCount + self.index)
         self.index += readCount
         return read
     }
