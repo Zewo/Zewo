@@ -101,17 +101,17 @@ public struct Environment {
             value = value.trimmingCharacters(in: .whitespaces)
             
             if
-                value.characters.count > 1,
-                value.characters.first == "\"",
-                value.characters.last == "\""
+                value.count > 1,
+                value.first == "\"",
+                value.last == "\""
             {
                 value = value.replacingOccurrences(
                     of: "\\n",
                     with: "\n"
                 )
                 
-                value.characters.removeFirst()
-                value.characters.removeLast()
+                value.removeFirst()
+                value.removeLast()
             }
             
             variables[key] = value

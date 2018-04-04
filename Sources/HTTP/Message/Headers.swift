@@ -16,7 +16,7 @@ public struct Headers {
         public let original: String
         
         public init(_ original: String) {
-            self.original = original
+            self.original = original.lowercased()
         }
     }
 

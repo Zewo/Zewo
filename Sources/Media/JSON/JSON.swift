@@ -15,6 +15,30 @@ extension JSON {
 }
 
 extension JSON {
+    public subscript(str: String) -> JSON? {
+        get {
+            switch self {
+            case .object(let dictionary):
+                return dictionary[str]
+            default:
+                return nil
+            }
+        }
+    }
+    
+    public subscript(_ int: Int) -> JSON? {
+        get {
+            switch self {
+            case .array(let elements):
+                return elements[int]
+            default:
+                return nil
+            }
+        }
+    }
+}
+
+extension JSON {
     public var isNull: Bool {
         if case .null = self {
             return true
