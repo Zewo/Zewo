@@ -34,7 +34,7 @@ struct Resources : MediaCodable {
     let userRepositoriesURL: String
     let userSearchURL: String
     
-    enum Key : String, CodingKey {
+    private enum CodingKeys : String, CodingKey {
         case currentUserURL = "current_user_url"
         case currentUserAuthorizationsHTMLURL = "current_user_authorizations_html_url"
         case authorizationsURL = "authorizations_url"
@@ -68,7 +68,7 @@ struct Resources : MediaCodable {
     }
 }
 
-public class ClientTests: XCTestCase {
+public class ClientTests : XCTestCase {
     func testClient() throws {
         do {
             let client = try Client(uri: "https://api.github.com")
@@ -108,6 +108,7 @@ public class ClientTests: XCTestCase {
             XCTAssertEqual(resources.userSearchURL, "https://api.github.com/search/users?q={query}{&page,per_page,sort,order}")
         } catch {
             print(error)
+            throw error
         }
     }
 }
