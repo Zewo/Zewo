@@ -60,8 +60,6 @@ If you have **any** trouble create a Github [issue](https://github.com/Zewo/Zewo
 
 ## Community
 
-[![Slack][slack-image]][slack-url]
-
 We have an amazing community of open and welcoming developers. Join us on [Slack](http://slack.zewo.io) to get to know us!
 
 ## License
