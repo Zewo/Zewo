@@ -4,7 +4,7 @@ public protocol MediaDecodable : Decodable {
 
 extension MediaDecodable {
     public static var decodingMedia: [DecodingMedia.Type] {
-        return [JSON.self, XML.self]
+        return [JSON.self]
     }
 }
 
