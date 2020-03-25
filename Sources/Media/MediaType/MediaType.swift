@@ -134,8 +134,9 @@ extension MediaType : CustomStringConvertible {
 
 extension MediaType : Hashable {
     /// :nodoc:
-    public var hashValue: Int {
-        return type.hashValue ^ subtype.hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(type)
+        hasher.combine(subtype)
     }
 }
 

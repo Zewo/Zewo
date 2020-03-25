@@ -303,8 +303,8 @@ extension Response.Status {
 
 extension Response.Status : Hashable {
     /// :nodoc:
-    public var hashValue: Int {
-        return statusCode
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(statusCode)
     }
     
     /// :nodoc:

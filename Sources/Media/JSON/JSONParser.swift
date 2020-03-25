@@ -66,7 +66,7 @@ final class JSONParser {
     
     deinit {
         yajl_free(handle)
-        buffer.deallocate(capacity: bufferCapacity)
+        buffer.deallocate()
     }
     
     @discardableResult func parse(_ bytes: UnsafeRawBufferPointer) throws -> JSON? {
@@ -338,7 +338,11 @@ fileprivate func yajl_string(
             string = String(cString: UnsafePointer(parser.buffer))
         } else {
             var newBuffer = UnsafeMutablePointer<CChar>.allocate(capacity: bufferLength + 1)
-            defer { newBuffer.deallocate(capacity: bufferLength + 1) }
+            
+            defer {
+                newBuffer.deallocate()
+            }
+            
             memcpy(UnsafeMutableRawPointer(newBuffer), buffer, bufferLength)
             newBuffer[bufferLength] = 0
             string = String(cString: UnsafePointer(newBuffer))
@@ -374,7 +378,7 @@ fileprivate func yajl_map_key(
             string = String(cString: UnsafePointer(parser.buffer))
         } else {
             var newBuffer = UnsafeMutablePointer<CChar>.allocate(capacity: bufferLength + 1)
-            defer { newBuffer.deallocate(capacity: bufferLength + 1) }
+            defer { newBuffer.deallocate() }
             memcpy(UnsafeMutableRawPointer(newBuffer), buffer, bufferLength)
             newBuffer[bufferLength] = 0
             string = String(cString: UnsafePointer(newBuffer))

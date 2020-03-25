@@ -93,8 +93,8 @@ extension Headers : Equatable {
 }
 
 extension Headers.Field : Hashable {
-    public var hashValue: Int {
-        return original.hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(original)
     }
     
     public static func == (lhs: Headers.Field, rhs: Headers.Field) -> Bool {

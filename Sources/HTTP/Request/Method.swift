@@ -18,19 +18,8 @@ extension Request.Method {
 
 extension Request.Method : Hashable {
     /// :nodoc:
-    public var hashValue: Int {
-        switch self {
-        case .delete:            return 0
-        case .get:               return 1
-        case .head:              return 2
-        case .post:              return 3
-        case .put:               return 4
-        case .connect:           return 5
-        case .options:           return 6
-        case .trace:             return 7
-        case .patch:             return 8
-        case .other(let method): return 9 + method.hashValue
-        }
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(description)
     }
     
     /// :nodoc:

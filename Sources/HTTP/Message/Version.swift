@@ -13,8 +13,9 @@ public struct Version {
 
 extension Version : Hashable {
     /// :nodoc:
-    public var hashValue: Int {
-        return major ^ minor
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(major)
+        hasher.combine(minor)
     }
 
     /// :nodoc:
