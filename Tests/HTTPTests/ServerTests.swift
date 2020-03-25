@@ -2,7 +2,6 @@ import XCTest
 import Media
 import HTTP
 import Venice
-import Zewo
 
 public class ServerTests: XCTestCase {
     func testServer() throws {

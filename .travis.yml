@@ -5,6 +5,8 @@ language: generic
 sudo: false
 dist: trusty
 osx_image: xcode11.3
+rvm:
+  - 2.2.3
 addons:
   apt:
     sources:
