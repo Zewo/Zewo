@@ -21,8 +21,7 @@ struct Department: Codable {
     let manager: User
 }
 
-class MapperTests : XCTestCase {
-    
+class MapTests : XCTestCase {
     func testDecodeObject() throws {
         let json: JSON = ["string": "Paulo", "int": 100, "bool": true, "double": 0.1, "null": nil]
         
@@ -88,12 +87,10 @@ class MapperTests : XCTestCase {
         ]
         
         let result = try Organization(from: json)
-        print(result)
     }
 }
 
-
-extension MapperTests {
+extension MapTests {
     public static var allTests: [(String, (MapperTests) -> () throws -> Void)] {
         return [
             ("testDecodeObject", testDecodeObject),

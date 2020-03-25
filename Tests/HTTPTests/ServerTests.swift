@@ -4,7 +4,7 @@ import HTTP
 import Venice
 import Zewo
 
-class ServerTest: XCTestCase {
+class ServerTests: XCTestCase {
     func testServer() throws {
         let message = "Hello"
         let method: Request.Method = .get
