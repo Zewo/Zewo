@@ -22,7 +22,7 @@ extension String : CodingKey {
 
 extension Int : CodingKey {
     public var stringValue: String {
-        return description
+        return String(self)
     }
     
     public init?(stringValue: String) {
@@ -44,28 +44,36 @@ extension Int : CodingKey {
 
 extension EncodingError.Context {
     public init(codingPath: [CodingKey] = []) {
-        self.codingPath = codingPath
-        self.debugDescription = ""
-        self.underlyingError = nil;
+        self.init(
+            codingPath: codingPath,
+            debugDescription: "",
+            underlyingError: nil
+        )
     }
     
     public init(debugDescription: String) {
-        self.codingPath = []
-        self.debugDescription = debugDescription
-        self.underlyingError = nil
+        self.init(
+            codingPath: [],
+            debugDescription: debugDescription,
+            underlyingError: nil
+        )
     }
 }
 
 extension DecodingError.Context {
     public init(codingPath: [CodingKey] = []) {
-        self.codingPath = codingPath
-        self.debugDescription = ""
-        self.underlyingError = nil
+        self.init(
+            codingPath: codingPath,
+            debugDescription: "",
+            underlyingError: nil
+        )
     }
     
     public init(debugDescription: String) {
-        self.codingPath = []
-        self.debugDescription = debugDescription
-        self.underlyingError = nil
+        self.init(
+            codingPath: [],
+            debugDescription: debugDescription,
+            underlyingError: nil
+        )
     }
 }

@@ -126,7 +126,7 @@ extension URI : CustomStringConvertible {
         
         if let port = port {
             string += ":"
-            string += port.description
+            string += String(port)
         }
         
         if let path = path {

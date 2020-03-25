@@ -5,7 +5,7 @@ extension Decodable {
     public init<Map : DecodingMedia>(
         from map: Map,
         userInfo: [CodingUserInfoKey: Any] = [:]
-        ) throws {
+    ) throws {
         let decoder = MediaDecoder<Map>(referencing: map, userInfo: userInfo)
         try self.init(from: decoder)
     }

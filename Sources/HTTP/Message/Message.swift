@@ -13,6 +13,27 @@ public enum MessageError : Error {
     case incompatibleType(requestedType: Any.Type, actualType: Any.Type)
 }
 
+extension MessageError : CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .noReadableBody:
+            return "No Readable Body"
+        case .noContentTypeHeader:
+            return "No Content Type Header"
+        case .unsupportedMediaType:
+            return "Unsupported Media Type"
+        case .noDefaultContentType:
+            return "No Default Content Type"
+        case .notContentRepresentable:
+            return "No Content Representable"
+        case let .valueNotFound(key):
+            return "Value Not Found; Key: \(key)"
+        case let .incompatibleType(requestedType, actualType):
+            return "Incompatible Type; Requested Type: \(requestedType); Actual Type: \(actualType)"
+        }
+    }
+}
+
 public typealias Storage = [String: Any]
 
 public protocol Message : class {
@@ -51,11 +72,11 @@ extension Message {
     
     public var contentLength: Int? {
         get {
-            return headers["Content-Length"].flatMap({Int($0)})
+            return headers["Content-Length"].flatMap(Int.init)
         }
         
         set(contentLength) {
-            headers["Content-Length"] = contentLength?.description
+            headers["Content-Length"] = contentLength.flatMap(String.init)
         }
     }
     

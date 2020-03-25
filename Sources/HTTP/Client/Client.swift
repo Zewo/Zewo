@@ -156,7 +156,7 @@ open class Client {
         closeConnection: Bool = false
     ) {
         if request.host == nil {
-            request.host = host + ":" + port.description
+            request.host = host + ":" + String(port)
         }
         
         if request.userAgent == nil {

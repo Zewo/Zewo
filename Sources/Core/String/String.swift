@@ -9,14 +9,6 @@ extension Character {
         return isLowercase || isUppercase
     }
     
-    public var isLowercase: Bool {
-        return ("a" ... "z").contains(self)
-    }
-    
-    public var isUppercase: Bool {
-        return ("A" ... "Z").contains(self)
-    }
-    
     public var isDigit: Bool {
         return ("0" ... "9").contains(self)
     }

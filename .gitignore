@@ -6,3 +6,4 @@
 /Packages
 /*.xcodeproj
 Build
+.swiftpm
