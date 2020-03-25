@@ -1,8 +1,10 @@
 os:
   - linux
+  - osx
 language: generic
 sudo: false
 dist: trusty
+osx_image: xcode11.3
 addons:
   apt:
     sources:

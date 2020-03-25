@@ -21,7 +21,7 @@ struct Department: Codable {
     let manager: User
 }
 
-class MapTests : XCTestCase {
+public class MapTests : XCTestCase {
     func testDecodeObject() throws {
         let json: JSON = ["string": "Paulo", "int": 100, "bool": true, "double": 0.1, "null": nil]
         
@@ -86,7 +86,8 @@ class MapTests : XCTestCase {
             ]
         ]
         
-        let result = try Organization(from: json)
+        let organization = try Organization(from: json)
+        XCTAssertEqual(organization.name, "organization")
     }
 }
 
