@@ -10,6 +10,8 @@
     <a href="https://tldrlegal.com/license/mit-license"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat" alt="License" /></a>
     <a href="http://slack.zewo.io"><img src="https://zewo-slackin.herokuapp.com/badge.svg" alt="Slack" /></a>
     <a href="https://travis-ci.org/Zewo/Zewo"><img src="https://api.travis-ci.org/Zewo/Zewo.svg?branch=master" alt="Travis" /></a>
+	<img src="https://github.com/Zewo/Zewo/workflows/Swift/badge.svg" />
+    <a href="https://travis-ci.org/Zewo/Zewo"><img src="https://api.travis-ci.org/Zewo/Zewo.svg?branch=master" alt="Travis" /></a>
 	<a href="https://codecov.io/gh/Zewo/Zewo">
   <img src="https://codecov.io/gh/Zewo/Zewo/branch/master/graph/badge.svg" />
 </a>
