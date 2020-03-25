@@ -45,3 +45,11 @@ public class ServerTests: XCTestCase {
         try Coroutine.wakeUp(10.seconds.fromNow())
     }
 }
+
+extension ServerTests {
+    public static var allTests: [(String, (ServerTests) -> () throws -> Void)] {
+        return [
+            ("testServer", testServer),
+        ]
+    }
+}
