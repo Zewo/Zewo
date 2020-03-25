@@ -62,7 +62,7 @@ public class JSONTests : XCTestCase {
     func testParseFromString() throws {
         let string = "{\"nil\":null,\"intarray\":[1,2,3,5],\"object\":{\"e\":\"f\",\"c\":\"d\"},\"array\":{\"b\":2,\"a\":1},\"int\":1,\"bool\":true,\"string\":\"string\"}"
         
-        let jsonA = try string.withBuffer { buffer -> JSON in
+        let jsonA = try string.withUnsafeBytes { buffer -> JSON in
             return try JSON(from: buffer, deadline: .never)
         }
         
@@ -82,7 +82,7 @@ public class JSONTests : XCTestCase {
     func testSubscript() throws {
         let string = "{\"nil\":null,\"intarray\":[1,2,3,5],\"object\":{\"e\":\"f\",\"c\":\"d\"},\"array\":{\"b\":2,\"a\":1},\"int\":1,\"bool\":true,\"string\":\"string\"}"
         
-        let json = try string.withBuffer { buffer -> JSON in
+        let json = try string.withUnsafeBytes { buffer -> JSON in
             return try JSON(from: buffer, deadline: .never)
         }
         

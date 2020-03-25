@@ -8,7 +8,7 @@ public protocol Writable {
 
 extension Writable {
     public func write(_ buffer: BufferRepresentable, deadline: Deadline) throws {
-        try buffer.withBuffer {
+        try buffer.withUnsafeBytes {
             try write($0, deadline: deadline)
         }
     }
