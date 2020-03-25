@@ -57,11 +57,12 @@ extension JSON : DecodingMedia {
     }
     
     public func contains<Key>(_ key: Key) -> Bool where Key : CodingKey {
-        guard let map = try? decodeIfPresent(type(of: self), forKey: key) else {
+        do {
+            _ = try decodeIfPresent(type(of: self), forKey: key)
+            return true
+        } catch {
             return false
         }
-        
-        return map != nil
     }
     
     public func keyedContainer() throws -> DecodingMedia {
