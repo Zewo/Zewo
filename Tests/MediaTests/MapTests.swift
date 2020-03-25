@@ -91,7 +91,7 @@ class MapTests : XCTestCase {
 }
 
 extension MapTests {
-    public static var allTests: [(String, (MapperTests) -> () throws -> Void)] {
+    public static var allTests: [(String, (MapTests) -> () throws -> Void)] {
         return [
             ("testDecodeObject", testDecodeObject),
             ("testDecodeArrayOfObjects", testDecodeArrayOfObjects),
