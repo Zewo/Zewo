@@ -36,13 +36,9 @@ We host our documentation at [docs.zewo.io](http://docs.zewo.io). If you have a 
 
 Even if you're not part of the organization yet you can help reviewing pull requests. It's as simple as adding a comment on the PR body or in a file line. If you're already a member of the organization you're free to merge the PR directly if it's a trivial one and it passes all checks. If it's a big PR it can only be merged after discussion with the team.
 
-![Status Check](http://i65.tinypic.com/2aipmop.png)
-
 ### Managing labels and milestones
 
 We use Github for most of our workflow. Keeping labels and milestones up to date help a lot in the general organization of tasks.
-
-![Labels](http://i63.tinypic.com/aw4zdt.png)
 
 ## How do I become a member of the organization?
 
