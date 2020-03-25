@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Install
+      run: eval "$(curl -sL http://sh.zewo.io/install-zewo.sh)"
     - name: Build
-      run: swift build -v
-    - name: Run tests
-      run: swift test -v
+      run: eval "$(curl -sL http://sh.zewo.io/build.sh)"
