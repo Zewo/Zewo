@@ -20,3 +20,10 @@ jobs:
       run: eval "$(curl -sL http://sh.zewo.io/install-zewo.sh)"
     - name: Build
       run: eval "$(curl -sL http://sh.zewo.io/build.sh)"
+    - name: Coverage
+      uses: paambaati/codeclimate-action@v2.5.5
+      env:
+        CC_TEST_REPORTER_ID: ${{ secrets.codeClimateTestReporterId }}
+      with:
+        coverageCommand: eval "$(curl -sL http://sh.zewo.io/install-zewo.sh)"
+        debug: true
